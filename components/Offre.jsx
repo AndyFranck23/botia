@@ -23,11 +23,11 @@ export const Offre = ({ data, navigation, params }) => {
 }
 
 export const Chatbot = ({ data, className, params }) => {
-    const classements = getData(); // récupère tous les classements
+    const { data: classements, loading } = getData(); // récupère tous les classements
 
     const navigation = (pageName) => {
         let out = '';
-        classements.forEach((element) => {
+        !loading && classements.forEach((element) => {
             element.classement.forEach((ele) => {
                 if (ele.title === pageName) {
                     out = element.title;

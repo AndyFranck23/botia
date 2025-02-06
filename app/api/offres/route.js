@@ -23,7 +23,7 @@ AND JSON_CONTAINS(CAST(classement AS JSON), '"${classement}"') AND id_produit=? 
             return NextResponse.json(offre[0]);
         }
     } catch (error) {
-        res.status(500).json({ error: "Erreur serveur" }, { status: 500 });
+        NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 }
 

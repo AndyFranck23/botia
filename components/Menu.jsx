@@ -10,6 +10,10 @@ export const Menu = ({ className, classement }) => {
         setIsActive(prev => prev === index ? null : index);
     }
 
+    if (!classement) {
+        // Afficher un message de chargement ou ne rien afficher tant que les données ne sont pas disponibles
+        return <div>Chargement...</div>;
+    }
     return (
         <div className="flex w-screen justify-end">
             <div className={`fixed bg-white w-[250px] h-screen z-40 px-2 pr-5 border-l-2 border-gray-100 mt-[65px] ${className}`}>

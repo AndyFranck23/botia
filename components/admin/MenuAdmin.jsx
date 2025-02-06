@@ -1,27 +1,15 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { fetchCombinedData } from '../Header'
 import { NOM_DE_DOMAIN } from '../env'
 
 export const MenuAdmin = ({ className, userType, active }) => {
     const [activeId, setActiveId] = useState(active)
-    // const classements = getData()
     const [loading, setLoading] = useState(true)
-    const [classements, setClassements] = useState([])
     const [produit, setProduit] = useState([])
 
 
     useEffect(() => {
-        // Définition d'une fonction asynchrone pour récupérer les données
-        const fetchClassements = async () => {
-            try {
-                const data = await fetchCombinedData()  // On attend le résultat de getData()
-                setClassements(data)          // On stocke les données récupérées dans le state
-            } catch (err) {
-                console.error(err)
-            }
-        }
         const fetchProduit = async () => {
             try {
                 const response = await fetch(`${NOM_DE_DOMAIN}/api/produit`)
@@ -32,7 +20,6 @@ export const MenuAdmin = ({ className, userType, active }) => {
             }
         }
         fetchProduit()
-        fetchClassements() // On appelle la fonction pour lancer la récupération
         setLoading(false)
     }, [])
 

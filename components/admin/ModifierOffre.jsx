@@ -6,8 +6,7 @@ import { MyInput } from "@/app/signup/page"
 import { NOM_DE_DOMAIN } from "../env"
 
 export default function ModifierOffre({ id }) {
-    const classements = getData()
-    const [loading, setLoading] = useState(true)
+    const { data: classements, loading } = getData();
     const [descCourt, setDescCourt] = useState('')
     const [message, setMessage] = useState('')
     const [produit, setProduit] = useState([])
@@ -27,7 +26,6 @@ export default function ModifierOffre({ id }) {
     useEffect(() => {
         fetchProduit()
         offre()
-        setLoading(false)
     }, [])
 
     const fetchProduit = async () => {
@@ -111,7 +109,12 @@ export default function ModifierOffre({ id }) {
     };
 
     if (loading)
-        return <div className="w-full h-screen flex justify-center items-center text-black">Loading...</div>
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        )
+
     return (
         <div className="text-black">
             <h1 className='flex justify-center text-xl font-medium mb-5'>Modifier un offre</h1>
