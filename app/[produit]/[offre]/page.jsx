@@ -5,7 +5,7 @@ import { Chatbot } from '@/components/Offre'
 import React from 'react'
 
 const page = async ({ params }) => {
-    const { offre, produit } = params
+    const { offre, produit } = await params
     const nbreOffre = 10
     const [offresRes, alternativeRes] = await Promise.all([
         fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?title=${offre}`),
@@ -34,7 +34,7 @@ const page = async ({ params }) => {
 
     const filteredData = filterData(alternative, filters);
 
-    console.log(filteredData)
+    // console.log(filteredData)
 
     return (
         <>
