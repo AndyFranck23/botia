@@ -2,90 +2,94 @@ import { queryDB } from '@/lib/db';
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
-    const { searchParams } = new URL(request.url)
-    const produit = searchParams.get('produit')
-    const limit = searchParams.get('limit')
-    const title = searchParams.get('title')
-    const classement = searchParams.get('classement')
     try {
+        const { searchParams } = new URL(request.url);
+        const produit = searchParams.get('produit');
+        const limit = searchParams.get('limit');
+        const title = searchParams.get('title');
+        const classement = searchParams.get('classement');
+
         if (!title) {
-            let out = ''
+            let sqlQuery = '';
+            let params = [];
+
             if (classement) {
-                out = `SELECT * FROM offres WHERE JSON_VALID(classement) 
-AND JSON_CONTAINS(CAST(classement AS JSON), '"${classement}"') AND id_produit=? ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`
+                sqlQuery = `SELECT * FROM offres WHERE id_produit = ? AND JSON_CONTAINS(classement, ?, '$') ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
+                params = [produit, JSON.stringify(classement)];
             } else {
-                out = `SELECT * FROM offres ${produit ? "WHERE id_produit=? " : ""} ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`
+                sqlQuery = `SELECT * FROM offres ${produit ? "WHERE id_produit = ? " : ""} ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
+                params = produit ? [produit] : [];
             }
-            const offres = await queryDB(out, produit ? [produit] : null);
-            return NextResponse.json(offres);
+
+            const offres = await queryDB(sqlQuery, params);
+
+            return NextResponse.json(offres || []); // ⚠️ Évite de renvoyer `undefined`
         } else {
-            const offre = await queryDB(`SELECT * FROM offres WHERE title=?`, [title]);
-            return NextResponse.json(offre[0]);
+            const offre = await queryDB(`SELECT * FROM offres WHERE title = ?`, [title]);
+            return NextResponse.json(offre?.[0] || { message: "Aucune offre trouvée" });
         }
     } catch (error) {
-        NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
+        console.error("Erreur dans GET /offres:", error);
+        return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });
     }
 }
 
-
 export async function POST(request) {
     try {
-        // On récupère les données envoyées par le formulaire
-        const { form } = await request.json()
+        const body = await request.json();
+        const form = body.form || {}; // ⚠️ Vérification que `form` existe
 
         // Validation des champs obligatoires
-        if (!form.title || !form.classement || !form.descriptionOC || !form.image || !form.lien) {
-            return NextResponse.json(
-                { message: "Veuillez remplir les champs nécessaires" },
-                { status: 400 }
-            )
+        const requiredFields = ["title", "classement", "descriptionOC", "image", "lien"];
+        for (let field of requiredFields) {
+            if (!form[field]) {
+                return NextResponse.json(
+                    { message: `Le champ ${field} est requis.` },
+                    { status: 400 }
+                );
+            }
         }
 
-        // Si l'utilisateur a activé OD, on s'assure que descriptionOD est remplie
         if (form.odActive && !form.descriptionOD) {
             return NextResponse.json(
-                { message: "Veuillez remplir le champ OD" },
+                { message: "Veuillez remplir le champ descriptionOD" },
                 { status: 400 }
-            )
+            );
         }
 
-        // Préparation des données à insérer.
-        // On convertit les tableaux en chaîne JSON pour les stocker en BDD (ou adaptez selon votre schéma)
-        const classementStr = JSON.stringify(form.classement)
-        const descriptionOCStr = JSON.stringify(form.descriptionOC)
+        // Conversion des objets en JSON si nécessaire
+        const classementStr = JSON.stringify(form.classement);
+        const descriptionOCStr = JSON.stringify(form.descriptionOC);
 
-        // Préparez la requête SQL d'insertion (adaptez le nom de la table et des colonnes à votre base)
         const sql = `
-      INSERT INTO offres 
-        (title, classement, descriptionOC, image, prix, reduction, lien, descriptionOD, id_produit)
-      VALUES 
-        (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
+            INSERT INTO offres 
+            (title, classement, descriptionOC, image, prix, reduction, lien, descriptionOD, id_produit)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `;
+
         const values = [
             form.title,
             classementStr,
             descriptionOCStr,
             form.image,
-            form.prix,
-            form.reduction,
+            form.prix || 0,
+            form.reduction || 0,
             form.lien,
             form.descriptionOD || '',
-            form.produit
-        ]
+            form.produit || null
+        ];
 
-        // Exécutez la requête dans votre base de données
-        await queryDB(sql, values)
+        await queryDB(sql, values);
 
-        // Retourne une réponse positive
         return NextResponse.json(
             { message: "Offre ajoutée avec succès" },
             { status: 200 }
-        )
+        );
     } catch (error) {
-        console.error(error)
+        console.error("Erreur dans POST /offres:", error);
         return NextResponse.json(
             { message: error.message || "Erreur serveur" },
             { status: 500 }
-        )
+        );
     }
 }

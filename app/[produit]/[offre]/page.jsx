@@ -14,8 +14,8 @@ const page = async ({ params }) => {
 
     const [data, offres] = await Promise.all([offresRes.json(), alternativeRes.json()])
 
-    data.classement = JSON.parse(data.classement)
-    data.descriptionOC = JSON.parse(data.descriptionOC)
+    data.classement = data.classement ? JSON.parse(data.classement) : [];
+    data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];
 
     const alternative = offres.map((item) => ({
         ...item,
