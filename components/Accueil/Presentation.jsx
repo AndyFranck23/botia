@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 
 const Presentation = () => {
@@ -41,7 +42,7 @@ const Presentation = () => {
 
             <div className="py-8 sm:p-10">
                 <h1 className="text-2xl sm:text-3xl max-w-full text-center font-cursive">
-                    "Découvrez BOTIA.AI, Simplifiez votre recherche en quelques clics et trouvez facilement 
+                    "Découvrez BOTIA.AI, Simplifiez votre recherche en quelques clics et trouvez facilement
                     le partenaire idéal pour transformer vos projets et optimiser votre expérience client !"
                 </h1>
             </div>

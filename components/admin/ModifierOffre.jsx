@@ -5,8 +5,7 @@ import { getData } from "../Header"
 import { MyInput } from "@/app/signup/page"
 import { NOM_DE_DOMAIN } from "../env"
 
-export default function ModifierOffre({ id }) {
-    const { data: classements, loading } = getData();
+export default function ModifierOffre({ id, classements }) {
     const [descCourt, setDescCourt] = useState('')
     const [message, setMessage] = useState('')
     const [produit, setProduit] = useState([])
@@ -107,13 +106,6 @@ export default function ModifierOffre({ id }) {
             };
         });
     };
-
-    if (loading)
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        )
 
     return (
         <div className="text-black">

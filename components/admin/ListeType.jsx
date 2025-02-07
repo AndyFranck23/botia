@@ -2,10 +2,8 @@
 import axios from 'axios'
 import Link from 'next/link'
 import { NOM_DE_DOMAIN } from '../env'
-import { getData } from '../Header'
 
-const ListeType = () => {
-    const { data: classements, loading } = getData();
+const ListeType = ({ classements }) => {
 
     const handleDelete = async (id) => {
         try {
@@ -16,12 +14,6 @@ const ListeType = () => {
         }
     }
 
-    if (loading)
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        )
     return (
         <div className='text-black p-4'>
             {classements.map((item) => (

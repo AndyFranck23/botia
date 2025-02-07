@@ -2,13 +2,11 @@
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { MyInput } from "@/app/signup/page"
-import { getData } from "../Header"
 import { NOM_DE_DOMAIN } from "../env"
 
-export default function AddOffre() {
+export default function AddOffre({ classements }) {
     const [descCourt, setDescCourt] = useState('')
     const [odActive, setOdActive] = useState(false)
-    const { data: classements, loading } = getData();
     const [produit, setProduit] = useState([])
 
     const [message, setMessage] = useState('')
@@ -96,13 +94,6 @@ export default function AddOffre() {
         console.log(e.target.checked)
         setOdActive(e.target.checked)
     }
-
-    if (loading)
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        )
 
     return (
         <div className="text-black">

@@ -3,49 +3,8 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { NOM_DE_DOMAIN } from "./env";
-// import { getData } from "./Header";
 
-export const Offre = ({ data, params, className }) => {
-    const [classements, setClassements] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchClassement = async () => {
-            try {
-                const [typesRes, classementsRes] = await Promise.all([
-                    fetch(`${NOM_DE_DOMAIN}/api/types`),
-                    fetch(`${NOM_DE_DOMAIN}/api/classements`)
-                ]);
-
-                if (!typesRes.ok || !classementsRes.ok) throw new Error('Échec du chargement des données');
-
-                const [types, classements] = await Promise.all([
-                    typesRes.json(),
-                    classementsRes.json()
-                ]);
-
-                const data = types.map(category => ({
-                    ...category,
-                    classement: classements.filter(item => item.type === category.title)
-                }));
-                setClassements(data)
-            } catch (err) {
-                console.log("fetchClassement erreur: ", err)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchClassement()
-    }, [])
-
-    if (loading)
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        )
-
+export const Offre = ({ data, params, className, classements }) => {
     return (
         <>
             <div className={`${className ? "" : "flex justify-center w-full"}`}>
@@ -110,7 +69,7 @@ export const Chatbot = ({ data, className, params, classements }) => {
 };
 
 
-export const Pagination = ({ data = [], params }) => {
+export const Pagination = ({ data = [], params, classements }) => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -178,7 +137,7 @@ export const Pagination = ({ data = [], params }) => {
 
     return (
         <div>
-            <Offre data={currentItems} params={params} />
+            <Offre data={currentItems} params={params} classements={classements} />
 
             {totalPages > 1 && (
                 <div className="flex my-10 justify-center">{renderPageNumbers()}</div>

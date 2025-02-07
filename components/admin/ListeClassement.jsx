@@ -1,12 +1,9 @@
 'use client'
 import React from 'react'
-// import { fetchCombinedData } from '../Header'
 import axios from 'axios'
 import { NOM_DE_DOMAIN } from '../env'
-import { getData } from '../Header'
 
-const ListeClassement = () => {
-    const { data: classement, loading } = getData();
+const ListeClassement = ({ classement }) => {
 
     const handleDelete = async (id) => {
         try {
@@ -16,13 +13,6 @@ const ListeClassement = () => {
             console.error("Erreur de suppression:", error)
         }
     }
-
-    if (loading)
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        )
 
     return (
         <div className="text-black">

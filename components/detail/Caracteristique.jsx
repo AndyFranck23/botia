@@ -1,48 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react";
-import { navigation } from "../Offre";
-import { NOM_DE_DOMAIN } from "../env";
-
-const Caracteristiques = ({ data, params }) => {
-    const [classements, setClassements] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchClassement = async () => {
-            try {
-                const [typesRes, classementsRes] = await Promise.all([
-                    fetch(`${NOM_DE_DOMAIN}/api/types`),
-                    fetch(`${NOM_DE_DOMAIN}/api/classements`)
-                ]);
-
-                if (!typesRes.ok || !classementsRes.ok) throw new Error('Échec du chargement des données');
-
-                const [types, classements] = await Promise.all([
-                    typesRes.json(),
-                    classementsRes.json()
-                ]);
-
-                const data = types.map(category => ({
-                    ...category,
-                    classement: classements.filter(item => item.type === category.title)
-                }));
-                setClassements(data)
-            } catch (err) {
-                console.log("fetchClassement erreur: ", err)
-            } finally {
-                setLoading(false)
-            }
-        }
-        fetchClassement()
-    }, [])
-
-    if (loading)
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-            </div>
-        )
+const Caracteristiques = ({ data, params, classements }) => {
 
     return (
         <div className='rounded-lg p-5 bg-white mt-8  '>
@@ -66,7 +24,7 @@ const Caracteristiques = ({ data, params }) => {
             </div>
             <p className='p-4 text-[15px]'>Most popular alternative:  <span className='font-bold'> MetaVoice Studio  </span> (321 saves)</p>
             <div className=''>
-                <button onClick={() => scrollToSection("alternative")} className='flex bg-gray-100 rounded-lg  px-3 py-2 m-2 text-[15px] w-full'> View all 9alternatives</button>
+                <button onClick={() => alert("alternative")} className='flex bg-gray-100 rounded-lg  px-3 py-2 m-2 text-[15px] w-full'> View all 9alternatives</button>
                 <button className='flex bg-gray-100 rounded-lg px-3 py-2 m-2 text-[15px] w-full'> recommendation </button>
             </div>
 
@@ -83,4 +41,16 @@ export const scrollToSection = (id) => {
     if (element) {
         element.scrollIntoView({ behavior: "smooth" });
     }
+};
+
+const navigation = (pageName, classements, params) => {
+    let out = '';
+    classements.forEach((element) => {
+        element.classement.forEach((ele) => {
+            if (ele.title === pageName) {
+                out = element.title;
+            }
+        });
+    });
+    return "/" + params + "/" + out.toLowerCase() + "/" + pageName.toLowerCase();
 };

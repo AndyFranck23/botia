@@ -1,79 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Menu } from './Menu';
 import Link from 'next/link';
-import { NOM_DE_DOMAIN } from './env';
-
-// Cache pour les données et les promesses
-let cachedData = null;
-let dataPromise = null;
-
-export async function fetchCombinedData() {
-    try {
-        const [typesRes, classementsRes] = await Promise.all([
-            fetch(`${NOM_DE_DOMAIN}/api/types`),
-            fetch(`${NOM_DE_DOMAIN}/api/classements`)
-        ]);
-
-        if (!typesRes.ok || !classementsRes.ok) throw new Error('Échec du chargement des données');
-
-        const [types, classements] = await Promise.all([
-            typesRes.json(),
-            classementsRes.json()
-        ]);
-
-        return types.map(category => ({
-            ...category,
-            classement: classements.filter(item => item.type === category.title)
-        }));
-    } catch (error) {
-        console.error('Erreur de récupération:', error);
-        throw error;
-    }
-}
-
-// Utilisation de `useState` et `useEffect` pour charger les données
-export function getData() {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        // Si les données sont déjà en cache, on les utilise directement
-        if (cachedData) {
-            setData(cachedData);
-            setLoading(false);
-            return;
-        }
-
-        // Sinon, on charge les données
-        if (!dataPromise) {
-            dataPromise = fetchCombinedData().then(fetchedData => {
-                cachedData = fetchedData;
-                setData(fetchedData);
-                setLoading(false);
-            });
-        }
-
-        // On gère l'état de la promesse
-        dataPromise.catch(() => setLoading(false));
-    }, []);
-
-    return { data, loading };
-}
 
 // Composant principal Header
-export const Header = () => {
+export const Header = ({ classement }) => {
     const [isActive, setIsActive] = useState(false);
-    const { data: classement, loading } = getData(); // Utilisation du hook personnalisé
 
     const toggleMenu = () => {
         setIsActive(!isActive);
     };
-
-    if (loading) {
-        return <div>Chargement...</div>; // Indicateur de chargement pendant la récupération des données
-    }
 
     return (
         <>

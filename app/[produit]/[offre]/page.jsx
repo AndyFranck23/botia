@@ -1,18 +1,20 @@
 import Caracteristiques from '@/components/detail/Caracteristique'
 import Description from '@/components/detail/Description'
 import { Footer } from '@/components/Footer'
-import { Chatbot, Offre } from '@/components/Offre'
+import { Chatbot } from '@/components/Offre'
 import React from 'react'
 
 const page = async ({ params }) => {
     const { offre, produit } = await params
     const nbreOffre = 10
-    const [offresRes, alternativeRes] = await Promise.all([
+    const [offresRes, alternativeRes, typesRes, classementsRes] = await Promise.all([
         fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?title=${offre}`),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?produit=${produit}&limit=${nbreOffre}`)
+        fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?produit=${produit}&limit=${nbreOffre}`),
+        fetch(`${process.env.NOM_DE_DOMAIN}/api/types`),
+        fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`)
     ])
 
-    const [data, offres] = await Promise.all([offresRes.json(), alternativeRes.json()])
+    const [data, offres, types, classe] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json()])
 
     data.classement = data.classement ? JSON.parse(data.classement) : [];
     data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];
@@ -21,6 +23,11 @@ const page = async ({ params }) => {
         ...item,
         classement: JSON.parse(item.classement),
         descriptionOC: JSON.parse(item.descriptionOC),
+    }));
+
+    const classements = types.map(category => ({
+        ...category,
+        classement: classe.filter(item => item.type === category.title)
     }));
 
     const filters = data.classement
@@ -68,7 +75,7 @@ const page = async ({ params }) => {
                     <div className='pt-4'>
                         <img src={data.image} alt="Illustration" className="w-full rounded-md h-[400px] sm:h-[500px]  sm:w-full " />
                     </div>
-                    <Caracteristiques data={data} params={produit} />
+                    <Caracteristiques data={data} params={produit} classements={classements} />
                     <Description />
                     <div className='p-5 space-y-3'>
                         <button className='bg-blue-800 hover:bg-blue-900 rounded-lg text-white py-3 w-full'>
@@ -111,10 +118,10 @@ const page = async ({ params }) => {
                         Alternative
                     </h1>
                     <div className="w-full space-y-4">
-                        {/* {filteredData.map((item, index) =>
-                            <Chatbot key={index} data={item} params={produit} />
-                        )} */}
-                        <Offre data={filteredData} params={produit} className={true} />
+                        {filteredData.map((item, index) =>
+                            <Chatbot key={index} data={item} params={produit} classements={classements} />
+                        )}
+                        {/* <Offre data={filteredData} params={produit} className={true} /> */}
                     </div>
                 </div>
             </div>
