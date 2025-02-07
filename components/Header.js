@@ -95,11 +95,11 @@ export const Header = () => {
 // Composant Category
 export const Category = ({ className }) => {
     const NavLinks = [
-        { id: 1, link: "chatbot", name: 'Chatbot' },
-        { id: 2, link: "mailbot", name: 'Mailbot' },
-        { id: 3, link: "callbot", name: 'CallBot' },
-        { id: 4, link: "chatbot", name: 'Chatbot' },
-        { id: 5, link: "agent-ai", name: 'Agent AI' },
+        { id: 1, link: "/chatbot", name: 'Chatbot' },
+        { id: 2, link: "/mailbot", name: 'Mailbot' },
+        { id: 3, link: "/callbot", name: 'CallBot' },
+        { id: 4, link: "/chatbot", name: 'Chatbot' },
+        { id: 5, link: "/agent-ai", name: 'Agent AI' },
     ];
 
     return (

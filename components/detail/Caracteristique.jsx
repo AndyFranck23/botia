@@ -1,6 +1,48 @@
 'use client'
 
-const Caracteristiques = ({ data }) => {
+import { useEffect, useState } from "react";
+import { navigation } from "../Offre";
+import { NOM_DE_DOMAIN } from "../env";
+
+const Caracteristiques = ({ data, params }) => {
+    const [classements, setClassements] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchClassement = async () => {
+            try {
+                const [typesRes, classementsRes] = await Promise.all([
+                    fetch(`${NOM_DE_DOMAIN}/api/types`),
+                    fetch(`${NOM_DE_DOMAIN}/api/classements`)
+                ]);
+
+                if (!typesRes.ok || !classementsRes.ok) throw new Error('Échec du chargement des données');
+
+                const [types, classements] = await Promise.all([
+                    typesRes.json(),
+                    classementsRes.json()
+                ]);
+
+                const data = types.map(category => ({
+                    ...category,
+                    classement: classements.filter(item => item.type === category.title)
+                }));
+                setClassements(data)
+            } catch (err) {
+                console.log("fetchClassement erreur: ", err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchClassement()
+    }, [])
+
+    if (loading)
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        )
 
     return (
         <div className='rounded-lg p-5 bg-white mt-8  '>
@@ -14,13 +56,13 @@ const Caracteristiques = ({ data }) => {
                     <p className='text-white p-1'>*un most recent</p>
                 </div>
             </div>
-            <div className='flex flex-wrap m-3 gap-4'>
+            <div className='flex flex-wrap m-3 gap-4 items-center'>
                 {
                     data.classement.map((item, index) =>
-                        <button key={index} className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'>{item} </button>
+                        <a href={navigation(item, classements, params)} key={index} className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'>{item} </a>
                     )
                 }
-                <p className='bg-yellow-400 text-red-400 font-bold text-3xl p-1'>from $13,5/mo</p>
+                <p className='bg-yellow-400 text-red-400 font-bold text-3xl p-1'>from ${data.prix}/mois</p>
             </div>
             <p className='p-4 text-[15px]'>Most popular alternative:  <span className='font-bold'> MetaVoice Studio  </span> (321 saves)</p>
             <div className=''>

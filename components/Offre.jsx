@@ -3,17 +3,57 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getData } from "./Header";
+import { NOM_DE_DOMAIN } from "./env";
+// import { getData } from "./Header";
 
-export const Offre = ({ data, navigation, params }) => {
+export const Offre = ({ data, params, className }) => {
+    const [classements, setClassements] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchClassement = async () => {
+            try {
+                const [typesRes, classementsRes] = await Promise.all([
+                    fetch(`${NOM_DE_DOMAIN}/api/types`),
+                    fetch(`${NOM_DE_DOMAIN}/api/classements`)
+                ]);
+
+                if (!typesRes.ok || !classementsRes.ok) throw new Error('Échec du chargement des données');
+
+                const [types, classements] = await Promise.all([
+                    typesRes.json(),
+                    classementsRes.json()
+                ]);
+
+                const data = types.map(category => ({
+                    ...category,
+                    classement: classements.filter(item => item.type === category.title)
+                }));
+                setClassements(data)
+            } catch (err) {
+                console.log("fetchClassement erreur: ", err)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchClassement()
+    }, [])
+
+    if (loading)
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+            </div>
+        )
+
     return (
         <>
-            <div className="flex justify-center w-full ">
+            <div className={`${className ? "" : "flex justify-center w-full"}`}>
                 <div className="">
                     {/* {path ? <h1 className='text-gray-600 text-3xl text-center font-bold my-10 '>{type + ': ' + path} </h1> : <h1 className='text-gray-600 text-3xl text-center font-bold my-10 '>Acceuil </h1>} */}
-                    <div className='flex flex-wrap gap-8 justify-around mx-5'>
+                    <div className={`${className ? "" : " flex flex-wrap gap-8 justify-around mx-5"}`}>
                         {data.map((item, index) =>
-                            <Chatbot key={index} data={item} navigation={navigation} params={params} />
+                            <Chatbot key={index} data={item} classements={classements} params={params} />
                         )}
                     </div>
                 </div>
@@ -22,20 +62,19 @@ export const Offre = ({ data, navigation, params }) => {
     )
 }
 
-export const Chatbot = ({ data, className, params }) => {
-    const { data: classements, loading } = getData(); // récupère tous les classements
-
-    const navigation = (pageName) => {
-        let out = '';
-        !loading && classements.forEach((element) => {
-            element.classement.forEach((ele) => {
-                if (ele.title === pageName) {
-                    out = element.title;
-                }
-            });
+export const navigation = (pageName, classements, params) => {
+    let out = '';
+    classements.forEach((element) => {
+        element.classement.forEach((ele) => {
+            if (ele.title === pageName) {
+                out = element.title;
+            }
         });
-        return "/" + params + "/" + out.toLowerCase() + "/" + pageName.toLowerCase();
-    };
+    });
+    return "/" + params + "/" + out.toLowerCase() + "/" + pageName.toLowerCase();
+};
+
+export const Chatbot = ({ data, className, params, classements }) => {
 
     return (
         <>
@@ -45,15 +84,15 @@ export const Chatbot = ({ data, className, params }) => {
                         <img src={data.image} className='mr-4 w-[65px] h-[65px] rounded-lg shadow-sm' alt={data.title} />
                         <div className="space-y-2">
                             <h1 className='text-2xl text-black font-bold'>{data.title}</h1>
-                            <p className='font-medium text-sm bg-gray-100 text-gray-700 px-3 py-1 rounded-full inline-block'>
-                                Screen recording
+                            <p className='font-medium text-sm bg-gray-100 max-w-[200px] text-gray-700 px-3 py-1 rounded-full inline-block'>
+                                {data.descriptionOC}
                             </p>
                         </div>
                     </Link>
                     <div className="px-4 py-3 flex flex-wrap gap-2 list-none sm:w-[350px] w-full text-white text-xs sm:text-sm">
                         {data.classement.map((item, index) => (
                             <Link
-                                href={navigation(item)}
+                                href={navigation(item, classements, params)}
                                 key={index}
                                 className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'
                             >
@@ -63,7 +102,7 @@ export const Chatbot = ({ data, className, params }) => {
                     </div>
                 </div>
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 px-5 py-2 text-xs sm:text-sm rounded-b-xl">
-                    <p className='text-white font-medium text-center'>From $16</p>
+                    <p className='text-white font-medium text-center'>From ${data.prix} </p>
                 </div>
             </div>
         </>
@@ -71,7 +110,7 @@ export const Chatbot = ({ data, className, params }) => {
 };
 
 
-export const Pagination = ({ data = [], navigation, params }) => {
+export const Pagination = ({ data = [], params }) => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -139,7 +178,7 @@ export const Pagination = ({ data = [], navigation, params }) => {
 
     return (
         <div>
-            <Offre data={currentItems} navigation={navigation} params={params} />
+            <Offre data={currentItems} params={params} />
 
             {totalPages > 1 && (
                 <div className="flex my-10 justify-center">{renderPageNumbers()}</div>

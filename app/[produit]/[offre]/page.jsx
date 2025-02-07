@@ -1,7 +1,7 @@
 import Caracteristiques from '@/components/detail/Caracteristique'
 import Description from '@/components/detail/Description'
 import { Footer } from '@/components/Footer'
-import { Chatbot } from '@/components/Offre'
+import { Chatbot, Offre } from '@/components/Offre'
 import React from 'react'
 
 const page = async ({ params }) => {
@@ -68,7 +68,7 @@ const page = async ({ params }) => {
                     <div className='pt-4'>
                         <img src={data.image} alt="Illustration" className="w-full rounded-md h-[400px] sm:h-[500px]  sm:w-full " />
                     </div>
-                    <Caracteristiques data={data} />
+                    <Caracteristiques data={data} params={produit} />
                     <Description />
                     <div className='p-5 space-y-3'>
                         <button className='bg-blue-800 hover:bg-blue-900 rounded-lg text-white py-3 w-full'>
@@ -111,9 +111,10 @@ const page = async ({ params }) => {
                         Alternative
                     </h1>
                     <div className="w-full space-y-4">
-                        {filteredData.map((item, index) =>
+                        {/* {filteredData.map((item, index) =>
                             <Chatbot key={index} data={item} params={produit} />
-                        )}
+                        )} */}
+                        <Offre data={filteredData} params={produit} className={true} />
                     </div>
                 </div>
             </div>
