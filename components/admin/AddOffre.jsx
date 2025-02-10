@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { MyInput } from "@/app/signup/page"
 import { NOM_DE_DOMAIN } from "../env"
+import { slugify } from "../Slug"
 
 export default function AddOffre({ classements }) {
     const [descCourt, setDescCourt] = useState('')
@@ -12,6 +13,7 @@ export default function AddOffre({ classements }) {
     const [message, setMessage] = useState('')
     const [form, setForm] = useState({
         title: '',
+        slug: '',
         classement: [],
         descriptionOC: [],
         image: '',
@@ -43,20 +45,20 @@ export default function AddOffre({ classements }) {
 
     // Fonction pour gérer les changements
     const handleCheckboxChange = (event) => {
-        const value = event.target.value;
+        const value = JSON.parse(event.target.value); // On parse la valeur en objet avec title et slug
 
         setForm((prevForm) => {
-            const alreadySelected = prevForm.classement.includes(value);
+            // Vérifie si l'élément avec ce slug est déjà dans le classement
+            const alreadySelected = prevForm.classement.some(item => item.slug === value.slug);
 
             return {
                 ...prevForm,
                 classement: alreadySelected
-                    ? prevForm.classement.filter((item) => item !== value) // Supprime si déjà présent
+                    ? prevForm.classement.filter((item) => item.slug !== value.slug) // Supprime si déjà présent
                     : [...prevForm.classement, value], // Ajoute sinon
             };
         });
     };
-
     // const handleFileChange = (e) => {
     //     const file = e.target.files[0];
     //     if (file) {
@@ -110,7 +112,7 @@ export default function AddOffre({ classements }) {
                     ))}
                 </select>
             </div>
-            <MyInput type={'text'} label={'Titre'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+            <MyInput type={'text'} label={'Titre'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value, slug: slugify(e.target.value) })} />
 
             <MyInput type={'text'} label={'Description court'} value={descCourt} onChange={(e) => descCourtControle(e.target.value)} />
 
@@ -148,9 +150,9 @@ export default function AddOffre({ classements }) {
                                             <div key={i} className="flex items-center   ">
                                                 <input
                                                     type="checkbox"
-                                                    value={elt.title}
+                                                    value={JSON.stringify({ title: elt.title, slug: slugify(elt.title) })}
                                                     className="mr-2"
-                                                    checked={form.classement.includes(elt.title)}
+                                                    checked={form.classement.some((item) => item.slug === slugify(elt.title))}
                                                     onChange={handleCheckboxChange}
                                                 />
                                                 <p>{elt.title}</p>

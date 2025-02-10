@@ -53,6 +53,7 @@ export async function PUT(request, { params }) {
       UPDATE offres
       SET 
         title = ?,
+        slug = ?,
         classement = ?,
         descriptionOC = ?,
         image = ?,
@@ -66,6 +67,7 @@ export async function PUT(request, { params }) {
 
         const values = [
             form.title,
+            form.slug,
             classementStr,
             descriptionOCStr,
             form.image,

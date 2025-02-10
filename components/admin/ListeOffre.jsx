@@ -94,7 +94,7 @@ const Offre = ({ data, onClickUpdate, onClickDel }) => {
                     <p className='text-gray-700 font-medium mb-2 text-sm sm:text-md'>Classements: </p>
                     {
                         JSON.parse(data.classement).map((elt, index) =>
-                            index <= 1 ? <p key={index}>{elt}</p> : ''
+                            index <= 1 ? <p key={index}>{elt.title}</p> : ''
                         )
                     }
                     {

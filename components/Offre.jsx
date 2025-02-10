@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { slugify } from "./Slug";
 
 export const Offre = ({ data, params, className, classements }) => {
     return (
@@ -25,12 +26,12 @@ export const navigation = (pageName, classements, params) => {
     let out = '';
     classements.forEach((element) => {
         element.classement.forEach((ele) => {
-            if (ele.title === pageName) {
+            if (ele.title === pageName.title) {
                 out = element.title;
             }
         });
     });
-    return "/" + params + "/" + out.toLowerCase() + "/" + pageName.toLowerCase();
+    return "/" + params + "/" + out.toLowerCase() + "/" + pageName.slug;
 };
 
 export const Chatbot = ({ data, className, params, classements }) => {
@@ -39,7 +40,7 @@ export const Chatbot = ({ data, className, params, classements }) => {
         <>
             <div className={`hover:bg-gray-100 transition-all duration-300 bg-white backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg my-3 w-full xs:w-[400px] ${className}`}>
                 <div className="z-40">
-                    <Link href={"/" + params + "/" + data.title} className="flex items-center px-4 pt-4">
+                    <Link href={"/" + params + "/" + data.slug} className="flex items-center px-4 pt-4">
                         <img src={data.image} className='mr-4 w-[65px] h-[65px] rounded-lg shadow-sm' alt={data.title} />
                         <div className="space-y-2">
                             <h1 className='text-2xl text-black font-bold'>{data.title}</h1>
@@ -55,7 +56,7 @@ export const Chatbot = ({ data, className, params, classements }) => {
                                 key={index}
                                 className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'
                             >
-                                {item}
+                                {item.title}
                             </Link>
                         ))}
                     </div>

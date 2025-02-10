@@ -39,7 +39,7 @@ export default async function Layout({ children }) {
 
         return (
             <>
-                <HeaderAdmin userdata={user[0]} />
+                <HeaderAdmin userdata={user[0]} userType={out} />
                 <MenuAdmin className={'sm:block hidden'} userType={out} />
                 <div className="sm:ml-40 text-white text-sm sm:text-md h-screen pt-10">
                     <div className="w-full p-6 shadow-md rounded-lg md:flex justify-center">

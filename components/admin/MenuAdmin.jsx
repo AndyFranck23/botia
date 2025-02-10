@@ -96,6 +96,7 @@ export const MenuAdmin = ({ className, userType, active }) => {
                 {/* Menu Blog */}
                 <li>
                     <MyButton
+                        disabled={true}
                         text={'Blog'}
                         icon={'fa-solid fa-newspaper'}
                         onClick={() => toggleMenu('blog')}

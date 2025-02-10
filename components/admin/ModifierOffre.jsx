@@ -1,9 +1,9 @@
 'use client'
 import { useEffect, useState } from "react"
 import axios from "axios"
-import { getData } from "../Header"
 import { MyInput } from "@/app/signup/page"
 import { NOM_DE_DOMAIN } from "../env"
+import { slugify } from "../Slug"
 
 export default function ModifierOffre({ id, classements }) {
     const [descCourt, setDescCourt] = useState('')
@@ -11,6 +11,7 @@ export default function ModifierOffre({ id, classements }) {
     const [produit, setProduit] = useState([])
     const [form, setForm] = useState({
         title: '',
+        slug: '',
         classement: [],
         descriptionOC: [],
         image: '',
@@ -54,6 +55,7 @@ export default function ModifierOffre({ id, classements }) {
             let desc = description.split("|")
             setForm({
                 title: offre[0].title,
+                slug: offre[0].slug,
                 classement: JSON.parse(offre[0].classement),
                 descriptionOC: desc,
                 image: offre[0].image,
@@ -93,15 +95,16 @@ export default function ModifierOffre({ id, classements }) {
 
     // Fonction pour gérer les changements
     const handleCheckboxChange = (event) => {
-        const value = event.target.value;
+        const value = JSON.parse(event.target.value); // On parse la valeur en objet avec title et slug
 
         setForm((prevForm) => {
-            const alreadySelected = prevForm.classement.includes(value);
+            // Vérifie si l'élément avec ce slug est déjà dans le classement
+            const alreadySelected = prevForm.classement.some(item => item.slug === value.slug);
 
             return {
                 ...prevForm,
                 classement: alreadySelected
-                    ? prevForm.classement.filter((item) => item !== value) // Supprime si déjà présent
+                    ? prevForm.classement.filter((item) => item.slug !== value.slug) // Supprime si déjà présent
                     : [...prevForm.classement, value], // Ajoute sinon
             };
         });
@@ -122,7 +125,7 @@ export default function ModifierOffre({ id, classements }) {
                     ))}
                 </select>
             </div>
-            <MyInput type={'text'} label={'Titre'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+            <MyInput type={'text'} label={'Titre'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value, slug: slugify(e.target.value) })} />
 
             <MyInput type={'text'} label={'Description court'} value={descCourt} onChange={(e) => descCourtControle(e.target.value)} />
 
@@ -160,9 +163,9 @@ export default function ModifierOffre({ id, classements }) {
                                             <div key={i} className="flex items-center   ">
                                                 <input
                                                     type="checkbox"
-                                                    value={elt.title}
+                                                    value={JSON.stringify({ title: elt.title, slug: slugify(elt.title) })}
                                                     className="mr-2"
-                                                    checked={form.classement.includes(elt.title)}
+                                                    checked={form.classement.some((item) => item.slug === slugify(elt.title))}
                                                     onChange={handleCheckboxChange}
                                                 />
                                                 <p>{elt.title}</p>

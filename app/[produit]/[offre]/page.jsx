@@ -8,7 +8,7 @@ const page = async ({ params }) => {
     const { offre, produit } = await params
     const nbreOffre = 10
     const [offresRes, alternativeRes, typesRes, classementsRes] = await Promise.all([
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?title=${offre}`),
+        fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?slug=${offre}`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?produit=${produit}&limit=${nbreOffre}`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/types`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`)
@@ -56,14 +56,14 @@ const page = async ({ params }) => {
                                 <img src={data.image} alt={data.title} className='mr-3 w-16 h-16 rounded-xl' />
                                 <div>
                                     <h1 className='text-2xl text-gray-900 font-bold m-2'>{data.title}</h1>
-                                    <p className='font-medium text-sm sm:text-md border border-gray-200 px-2 py-1 rounded-full m-2'>
-                                        Screen recording
+                                    <p className='font-medium text-sm bg-gray-100 max-w-[200px] text-gray-700 px-3 py-1 rounded-full inline-block'>
+                                        {data.descriptionOC}
                                     </p>
                                 </div>
                             </div>
                             <div className="px-3 py-1 flex flex-wrap gap-2 mt-2">
                                 <a
-                                    href='https://andy23portfolio.netlify.app/'
+                                    href={data.lien}
                                     className='bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-white'
                                 >
                                     Voir le prestataire

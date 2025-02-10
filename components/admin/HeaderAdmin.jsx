@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { MenuAdmin } from "./MenuAdmin";
 import { NOM_DE_DOMAIN } from "../env";
 
-export default function HeaderAdmin({ userdata }) {
+export default function HeaderAdmin({ userdata, userType }) {
     const router = useRouter();
     const [isActive, setIsActive] = useState(false);
     const [toggleUser, setToggleUser] = useState(false);
@@ -64,7 +64,7 @@ export default function HeaderAdmin({ userdata }) {
                 ></div>
             )}
             <MenuAdmin
-                userType={userdata?.admin}
+                userType={userType}
                 className={`sm:hidden block transform ease-in-out duration-500 z-50 ${isActive ? "translate-x-[0%]" : "translate-x-[-100%]"
                     }`}
             />

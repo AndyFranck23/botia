@@ -1,5 +1,7 @@
 'use client'
 
+import { navigation } from "../Offre";
+
 const Caracteristiques = ({ data, params, classements }) => {
 
     return (
@@ -17,7 +19,7 @@ const Caracteristiques = ({ data, params, classements }) => {
             <div className='flex flex-wrap m-3 gap-4 items-center'>
                 {
                     data.classement.map((item, index) =>
-                        <a href={navigation(item, classements, params)} key={index} className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'>{item} </a>
+                        <a href={navigation(item, classements, params)} key={index} className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'>{item.title} </a>
                     )
                 }
                 <p className='bg-yellow-400 text-red-400 font-bold text-3xl p-1'>from ${data.prix}/mois</p>
@@ -41,16 +43,4 @@ export const scrollToSection = (id) => {
     if (element) {
         element.scrollIntoView({ behavior: "smooth" });
     }
-};
-
-const navigation = (pageName, classements, params) => {
-    let out = '';
-    classements.forEach((element) => {
-        element.classement.forEach((ele) => {
-            if (ele.title === pageName) {
-                out = element.title;
-            }
-        });
-    });
-    return "/" + params + "/" + out.toLowerCase() + "/" + pageName.toLowerCase();
 };

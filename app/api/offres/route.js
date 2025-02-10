@@ -6,16 +6,16 @@ export async function GET(request) {
         const { searchParams } = new URL(request.url);
         const produit = searchParams.get('produit');
         const limit = searchParams.get('limit');
-        const title = searchParams.get('title');
+        const slug = searchParams.get('slug');
         const classement = searchParams.get('classement');
 
-        if (!title) {
+        if (!slug) {
             let sqlQuery = '';
             let params = [];
 
             if (classement) {
                 sqlQuery = `SELECT * FROM offres WHERE id_produit = ? AND JSON_CONTAINS(classement, ?, '$') ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
-                params = [produit, JSON.stringify(classement)];
+                params = [produit, JSON.stringify({ slug: classement })];
             } else {
                 sqlQuery = `SELECT * FROM offres ${produit ? "WHERE id_produit = ? " : ""} ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
                 params = produit ? [produit] : [];
@@ -25,7 +25,7 @@ export async function GET(request) {
 
             return NextResponse.json(offres || []); // ⚠️ Évite de renvoyer `undefined`
         } else {
-            const offre = await queryDB(`SELECT * FROM offres WHERE title = ?`, [title]);
+            const offre = await queryDB(`SELECT * FROM offres WHERE slug = ?`, [slug]);
             return NextResponse.json(offre?.[0] || { message: "Aucune offre trouvée" });
         }
     } catch (error) {
@@ -63,12 +63,13 @@ export async function POST(request) {
 
         const sql = `
             INSERT INTO offres 
-            (title, classement, descriptionOC, image, prix, reduction, lien, descriptionOD, id_produit)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (title, slug, classement, descriptionOC, image, prix, reduction, lien, descriptionOD, id_produit)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const values = [
             form.title,
+            form.slug,
             classementStr,
             descriptionOCStr,
             form.image,
