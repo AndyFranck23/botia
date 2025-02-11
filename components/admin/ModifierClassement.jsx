@@ -10,6 +10,7 @@ const ModifierClassement = ({ id, userdata }) => {
     const [types, setTypes] = useState([]);
     const [form, setForm] = useState({
         title: '',
+        description: '',
         type: '',
         logo: '',
         responsable: userdata.identite,
@@ -38,6 +39,7 @@ const ModifierClassement = ({ id, userdata }) => {
             const classement = await response.json()
             setForm({
                 title: classement[0].title,
+                description: classement[0].description,
                 type: classement[0].type,
                 logo: classement[0].logo,
                 responsable: classement[0].responsable,
@@ -76,6 +78,7 @@ const ModifierClassement = ({ id, userdata }) => {
             <h1 className='text-center text-2xl font-medium mb-10'>Modifier un classement</h1>
             <div className="space-y-2 text-md text-gray-700 font-medium">
                 <MyInput label={"Title"} type={'text'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                <MyInput label={"Description"} type={'text'} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
                 <MyInput label={"URL du logo"} type={'text'} value={form.logo} onChange={(e) => setForm({ ...form, logo: e.target.value })} />
                 <div className="sm:mb-5 mb-2">
                     <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Type</label>

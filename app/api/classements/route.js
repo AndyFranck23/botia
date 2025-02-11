@@ -29,8 +29,8 @@ export async function POST(req) {
 
         // Insérer le classement
         await queryDB(
-            'INSERT INTO classements (title, type, logo, faq, responsable) VALUES (?, ?, ?, ?, ?)',
-            [form.title, form.type, form.logo, JSON.stringify(form.faqListe), form.responsable]
+            'INSERT INTO classements (title, description, type, logo, faq, responsable) VALUES (?, ?, ?, ?, ?, ?)',
+            [form.title, form.description, form.type, form.logo, JSON.stringify(form.faqListe), form.responsable]
         );
 
         return NextResponse.json({ message: 'Classement ajouté avec succès' }, { status: 201 });

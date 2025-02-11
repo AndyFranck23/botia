@@ -63,8 +63,8 @@ export async function POST(request) {
 
         const sql = `
             INSERT INTO offres 
-            (title, slug, classement, descriptionOC, image, prix, reduction, lien, descriptionOD, id_produit)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (title, slug, classement, descriptionOC, image, prix, reduction, lien, descriptionOD, id_produit, indexation)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         const values = [
@@ -77,7 +77,8 @@ export async function POST(request) {
             form.reduction || 0,
             form.lien,
             form.descriptionOD || '',
-            form.produit || null
+            form.produit || null,
+            form.indexation
         ];
 
         await queryDB(sql, values);

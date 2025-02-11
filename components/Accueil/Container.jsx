@@ -18,7 +18,7 @@ const Container = () => {
             <div
                 className="min-h-screen bg-cover bg-center p-10 pb-[100px] bg-gradient-to-r from-blue-400 via-blue-300 to-blue-500"
             >
-                <h1 className="sm:text-4xl text-2xl font-extrabold mb-8 sm:w-[800px] sd:w-[400px] mx-auto text-center text-white p-6">
+                <h1 className="sm:text-4xl text-xl font-extrabold mb-8 w-full mx-auto text-center text-white p-6">
                     Botia compare les meilleures solutions de chatbots, callbots, IA vocale et plus, pour tous les secteurs."
                 </h1>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -30,14 +30,14 @@ const Container = () => {
                             <div className="flex justify-center sm:p-8 p-4">
                                 <FontAwesomeIcon icon={item.icon} className={`w-8 h-8 p-4 ${item.colorClass}`} />
                             </div>
-                            <h2 className="text-3xl font-extrabold text-center mb-2 pb-2">{item.title}</h2>
+                            <h2 className="sm:text-3xl text-xs font-extrabold text-center mb-2 pb-2">{item.title}</h2>
                         </div>
                     ))}
                 </div>
             </div>
 
             <div className="">
-                <h1 className="text-2xl sm:text-3xl sd:3xl font-extrabold mb-8 sm:w-[800px] sd:w-[400px]  mx-auto text-center pt-6">
+                <h1 className="text-2xl sm:text-3xl sd:3xl font-extrabold mb-8 w-full mx-auto text-center pt-6">
                     Accédez à toutes les solutions de chatbots callbots et MailBot
                     disponibles sur les principales plateformes, directement sur Botia."
                 </h1>
@@ -51,8 +51,8 @@ const Container = () => {
                             chaque technologie, et chaque fonctionnalité dont vous avez besoin."
                         </p>
                     </div>
-                    <div className="">
-                        <img src="/SOCIAL.png" alt="" srcSet="" />
+                    <div className="flex items-center">
+                        <img src="/arbres.jpeg" alt="" srcSet="" />
                     </div>
                 </div>
             </div>

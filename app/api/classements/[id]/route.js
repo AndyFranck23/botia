@@ -42,8 +42,8 @@ export async function PUT(request, { params }) {
 
         // Insérer le classement
         await queryDB(
-            'UPDATE classements SET title = ?, type = ?, logo=?, faq=?, responsable=? WHERE id = ?',
-            [form.title, form.type, form.logo, JSON.stringify(form.faqListe), form.responsable, params.id]
+            'UPDATE classements SET title = ?, description = ?, type = ?, logo=?, faq=?, responsable=? WHERE id = ?',
+            [form.title, form.description, form.type, form.logo, JSON.stringify(form.faqListe), form.responsable, params.id]
         );
 
         return NextResponse.json({ message: 'Classement modifié avec succès' }, { status: 201 });

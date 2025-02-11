@@ -19,7 +19,8 @@ export default function ModifierOffre({ id, classements }) {
         reduction: 0,
         lien: '',
         descriptionOD: '',
-        produit: ''
+        produit: '',
+        indexation: true
     })
     const [odActive, setOdActive] = useState(form.descriptionOD == '' ? false : true)
 
@@ -62,7 +63,8 @@ export default function ModifierOffre({ id, classements }) {
                 prix: offre[0].prix,
                 reduction: offre[0].reduction,
                 lien: offre[0].lien,
-                produit: offre[0].id_produit
+                produit: offre[0].id_produit,
+                indexation: offre[0].indexation
             })
             console.log(offre[0].id_produit)
             if (offre[0].descriptionOD != '')
@@ -149,6 +151,17 @@ export default function ModifierOffre({ id, classements }) {
                     <textarea onChange={(e) => setForm({ ...form, descriptionOD: e.target.value })} value={form.descriptionOD} className="mb-5 w-full outline-none border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500 text-gray-700 h-[100px] sm:h-[200px] p-2  " />
                 </div>
             }
+            <div className="items-center flex justify-between p-3">
+                <label className=" mb-2 font-medium text-gray-700 ">Indexation de la page (coché si vous voulez indexé la page)</label>
+                <input
+                    type="checkbox"
+                    className="border"
+                    checked={form.indexation}
+                    onChange={(e) => {
+                        setForm({ ...form, indexation: e.target.checked ? 1 : 0 })
+                    }}
+                />
+            </div>
             <label className="block text-gray-700 font-medium mb-2 text-md border-t-2 border-gray-200">Classements: </label>
             {/* selection de classement */}
             <div className='text-black flex flex-wrap justify-center'>

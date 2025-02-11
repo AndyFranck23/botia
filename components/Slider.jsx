@@ -58,7 +58,7 @@ export const Slider = ({ className, types }) => {
                     {types.map((slide) => (
                         <div key={slide.id} className="flex-shrink-0 h-[300px] md:h-[600px] w-full">
                             <div className="absolute w-full text-center h-[300px] md:h-[600px] items-center flex justify-center ">
-                                <h1 className='text-white text-[30px] font-bold ' >{slide.title} </h1>
+                                <h2 className='text-white text-[30px] font-bold ' >{slide.title} </h2>
                             </div>
                             <img src={slide.image} className={`h-[300px] md:h-[600px] w-full`} />
                         </div>

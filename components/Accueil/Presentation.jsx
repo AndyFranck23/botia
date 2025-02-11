@@ -38,7 +38,7 @@ const Presentation = () => {
                 </div>
             </div>
             {/* ANIMATION */}
-            <div className="h-[300px] w-[300px] bg-gradient-to-r from-primary to-secondary rounded-full absolute top-0 left-0 blur-3xl animate-move-wrapper"></div>
+            <div className="h-[300px] w-[15vw] bg-gradient-to-r from-primary to-secondary rounded-full absolute top-0 left-0 blur-3xl animate-move-wrapper"></div>
 
             <div className="py-8 sm:p-10">
                 <h1 className="text-2xl sm:text-3xl max-w-full text-center font-cursive">

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { slugify } from "./Slug";
 
 export const Offre = ({ data, params, className, classements }) => {
     return (
@@ -43,7 +42,7 @@ export const Chatbot = ({ data, className, params, classements }) => {
                     <Link href={"/" + params + "/" + data.slug} className="flex items-center px-4 pt-4">
                         <img src={data.image} className='mr-4 w-[65px] h-[65px] rounded-lg shadow-sm' alt={data.title} />
                         <div className="space-y-2">
-                            <h1 className='text-2xl text-black font-bold'>{data.title}</h1>
+                            <h2 className='text-2xl text-black font-bold'>{data.title}</h2>
                             <p className='font-medium text-sm bg-gray-100 max-w-[200px] text-gray-700 px-3 py-1 rounded-full inline-block'>
                                 {data.descriptionOC}
                             </p>

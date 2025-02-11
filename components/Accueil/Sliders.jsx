@@ -62,8 +62,8 @@ const Sliders = () => {
   }, [isPaused]);
 
   return (
-    <div className="relative w-full overflow-hidden py-6 bg-gray-100">
-      <div className="flex w-full max-w-screen-lg mx-auto items-center">
+    <div className="w-full overflow-hidden py-6 bg-gray-100">
+      <div className="flex w-full items-center">
         <div
           ref={sliderRef}
           className="flex space-x-4"

@@ -61,7 +61,8 @@ export async function PUT(request, { params }) {
         reduction = ?,
         lien = ?,
         descriptionOD = ?,
-        id_produit = ?
+        id_produit = ?,
+        indexation = ?
       WHERE id = ?
     `
 
@@ -76,6 +77,7 @@ export async function PUT(request, { params }) {
             form.lien,
             form.descriptionOD || '',
             form.produit, // correspond à l'id ou identifiant du produit associé à l'offre
+            form.indexation,
             params.id   // identifiant de l'offre passé en paramètre d'URL
         ]
 

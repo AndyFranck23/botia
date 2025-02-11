@@ -21,7 +21,8 @@ export default function AddOffre({ classements }) {
         reduction: 0,
         lien: '',
         descriptionOD: '',
-        produit: ''
+        produit: '',
+        indexation: 1
     })
 
     const descCourtControle = (e) => {
@@ -136,6 +137,18 @@ export default function AddOffre({ classements }) {
                     <textarea onChange={(e) => setForm({ ...form, descriptionOD: e.target.value })} value={form.descriptionOD} className="mb-5 w-full outline-none border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500 text-gray-700 h-[100px] sm:h-[200px] p-2  " />
                 </div>
             }
+            <div className="items-center flex justify-between p-3">
+                <label className=" mb-2 font-medium text-gray-700 ">Indexation de la page (coché si vous voulez indexé la page)</label>
+                <input
+                    type="checkbox"
+                    className="border"
+                    checked={form.indexation}
+                    onChange={(e) => {
+                        console.log(e.target.checked)
+                        setForm({ ...form, indexation: e.target.checked ? 1 : 0 })
+                    }}
+                />
+            </div>
             <label className="block text-gray-700 font-medium mb-2 text-md border-t-2 border-gray-200">Classements: </label>
             {/* selection de classement */}
             <div className='text-black flex flex-wrap justify-center'>
@@ -166,7 +179,7 @@ export default function AddOffre({ classements }) {
                 }
             </div>
             <button onClick={submit}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 mt-10">
                 Ajouter
             </button>
             <p className='mt-5 flex justify-center text-red-400'>{message}</p>

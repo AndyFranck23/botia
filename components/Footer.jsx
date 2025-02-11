@@ -24,7 +24,7 @@ export function Footer() {
             <footer className="bg-gray-800">
                 <div className=" grid grid-cols-1 md:grid-cols-3 gap-4  bg-footer p-5 text-[15px] sm:text-[18px] ">
                     <div className="...">
-                        <h1 className="text-white pb-[30px] font-bold">TRUCS & ASTUCES DE VOYAGE</h1>
+                        <h2 className="text-white pb-[30px] font-bold">TRUCS & ASTUCES DE VOYAGE</h2>
 
                         <ul className=" list-[circle] pl-5 text-gray-200 space-y-2 ">
                             {data1.map((item, index) => (
@@ -38,7 +38,7 @@ export function Footer() {
                     </div>
 
                     <div className="...">
-                        <h1 className="text-white font-bold">DESTINATIONS</h1>
+                        <h2 className="text-white font-bold">DESTINATIONS</h2>
                         <ul className=" list-[circle] pl-5 text-gray-200 space-y-2 ">
                             {data2.map((item, index) => (
                                 <li key={index} className="">
@@ -51,7 +51,7 @@ export function Footer() {
                     </div>
 
                     <div className="...">
-                        <h1 className="text-white font-bold">TOP BONS PLANS</h1>
+                        <h2 className="text-white font-bold">TOP BONS PLANS</h2>
                         <ul className=" list-[circle] pl-5 text-gray-200 space-y-2  ">
                             {data3.map((item, index) => (
                                 <li key={index} className="">
@@ -64,7 +64,7 @@ export function Footer() {
                     </div>
 
                     {/* <div className="...">
-                        <h1 className="text-white font-bold">CATEGORIES DE VOYAGE</h1>
+                        <h2 className="text-white font-bold">CATEGORIES DE VOYAGE</h2>
                         <ul className=" list-[circle] pl-5 text-gray-200 space-y-2 ">
                             {data.map((item, index) => (
                                 <li key={index} className="">

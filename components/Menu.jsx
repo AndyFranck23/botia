@@ -2,18 +2,15 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { slugify } from './Slug';
 
-export const Menu = ({ className, classement }) => {
+export const Menu = ({ className, classement, page, produits, params }) => {
     const [isActive, setIsActive] = useState(null);
 
     const showOptions = (index) => {
         setIsActive(prev => prev === index ? null : index);
     }
 
-    if (!classement) {
-        // Afficher un message de chargement ou ne rien afficher tant que les données ne sont pas disponibles
-        return <div>Chargement...</div>;
-    }
     return (
         <div className="flex w-screen justify-end">
             <div className={`fixed bg-white w-[250px] h-screen z-40 px-2 pr-5 border-l-2 border-gray-100 mt-[65px] ${className}`}>
@@ -21,23 +18,15 @@ export const Menu = ({ className, classement }) => {
                     Accueil
                 </Link>
                 <div className="md:hidden">
-                    <Link href='/chatbot' className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
-                        Chatbot
-                    </Link>
-                    <Link href='/callbot' className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
-                        Callbot
-                    </Link>
-                    <Link href='/mailbot' className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
-                        Mailbot
-                    </Link>
-                    <Link href='/chatbot' className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
-                        Chatbot
-                    </Link>
-                    <Link href='/agent-ai' className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
-                        Agent-AI
-                    </Link>
+                    {
+                        produits.map(item =>
+                            <Link key={item.id} href={`/${slugify(item.title)}`} className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
+                                {item.title}
+                            </Link>
+                        )
+                    }
                 </div>
-                {classement.map((option, index) => (
+                {page && classement.map((option, index) => (
                     <li key={index} className='list-none'>
                         <button
                             onClick={() => showOptions(index)}
@@ -48,7 +37,7 @@ export const Menu = ({ className, classement }) => {
                                 <i className="fa-solid fa-chevron-down" /> :
                                 <i className="fa-solid fa-chevron-right" />}
                         </button>
-                        {isActive === index && <OptionSelect options={classement} index={index} />}
+                        {isActive === index && <OptionSelect params={params} options={classement} index={index} />}
                     </li>
                 ))}
             </div>
@@ -56,7 +45,7 @@ export const Menu = ({ className, classement }) => {
     )
 }
 
-const OptionSelect = ({ index, options }) => {
+const OptionSelect = ({ index, options, params }) => {
     return (
         <div className="p-2 space-y-2 bg-gray-100 rounded-lg">
             {
@@ -64,7 +53,7 @@ const OptionSelect = ({ index, options }) => {
                     <ul key={i}>
                         <li>
                             <a
-                                href={`/${options[index].title + '/' + option.title}`}
+                                href={`/${params}/${slugify(options[index].title) + '/' + slugify(option.title)}`}
                                 // onClick={() => navigation(option.title)}
                                 className='flex items-center w-full hover:bg-gray-200 p-2 rounded-xl p-1'
                             >
