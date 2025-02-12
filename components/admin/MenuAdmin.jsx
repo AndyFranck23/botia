@@ -107,7 +107,19 @@ export const MenuAdmin = ({ className, userType, active }) => {
                         <MySubButton text={'Tous les articles'} href={'/admin/ToutBlog'} />
                     </div>
                 </li>
-
+                <li>
+                    <MyButton
+                        disabled={false}
+                        text={'Titre accueil'}
+                        icon={'fa-solid fa-newspaper'}
+                        onClick={() => toggleMenu('titre')}
+                        isActive={activeId === 'titre'}
+                    />
+                    <div className={`overflow-hidden transition-all duration-300 ${activeId === 'titre' ? 'max-h-40' : 'max-h-0'}`}>
+                        <MySubButton text={'Produits'} href={'/admin/titre-accueil/produits'} />
+                        <MySubButton text={'Classements'} href={'/admin/titre-accueil/classements'} />
+                    </div>
+                </li>
             </ul>
         </div>
     )

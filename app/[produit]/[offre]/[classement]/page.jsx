@@ -33,14 +33,15 @@ export async function generateMetadata({ params }) {
 
 const page = async ({ params }) => {
     const { produit, classement, offre } = await params
-    const [typesRes, offresRes, classementsRes, produitsRes] = await Promise.all([
+    const [typesRes, offresRes, classementsRes, produitsRes, titreRes] = await Promise.all([
         fetch(`${process.env.NOM_DE_DOMAIN}/api/types`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?produit=${produit}&classement=${classement}`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/produit`),
+        fetch(`${process.env.NOM_DE_DOMAIN}/api/titre?produit=${produit}&classement=${classement}`),
     ])
 
-    const [types, offres, classes, produits] = await Promise.all([typesRes.json(), offresRes.json(), classementsRes.json(), produitsRes.json()])
+    const [types, offres, classes, produits, titres] = await Promise.all([typesRes.json(), offresRes.json(), classementsRes.json(), produitsRes.json(), titreRes.json()])
 
     const data = offres.map((item) => ({
         ...item,
@@ -71,7 +72,7 @@ const page = async ({ params }) => {
                     <div className="flex justify-center mt-10">
                         <h1 className='md:text-2xl text-xl font-medium text-gray-500'>{titleProduit} - {titleType} - {titleClass} </h1>
                     </div>
-                    <Title />
+                    <Title params={titres[0]} />
                     <Pagination data={data} params={produit} classements={classements} />
                     <Faq classements={classes} />
                 </div>

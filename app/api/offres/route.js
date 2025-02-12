@@ -34,10 +34,11 @@ export async function GET(request) {
     }
 }
 
+
 export async function POST(request) {
     try {
-        const body = await request.json();
-        const form = body.form || {}; // ⚠️ Vérification que `form` existe
+        const formData = await request.formData(); // Utilise formData() pour récupérer les données du formulaire
+        const form = Object.fromEntries(formData); // Convertit formData en objet pour un accès facile
 
         // Validation des champs obligatoires
         const requiredFields = ["title", "classement", "descriptionOC", "image", "lien"];
@@ -50,16 +51,17 @@ export async function POST(request) {
             }
         }
 
-        if (form.odActive && !form.descriptionOD) {
+        // Validation du champ descriptionOD si odActive est activé
+        if (form.odActive === 'true' && !form.descriptionOD) {
             return NextResponse.json(
                 { message: "Veuillez remplir le champ descriptionOD" },
                 { status: 400 }
             );
         }
 
-        // Conversion des objets en JSON si nécessaire
-        const classementStr = JSON.stringify(form.classement);
-        const descriptionOCStr = JSON.stringify(form.descriptionOC);
+        // Conversion des objets en JSON si nécessaire (classement et descriptionOC)
+        const classementStr = form.classement ? JSON.stringify(JSON.parse(form.classement)) : null;
+        const descriptionOCStr = form.descriptionOC ? JSON.stringify(JSON.parse(form.descriptionOC)) : null;
 
         const sql = `
             INSERT INTO offres 
@@ -68,17 +70,17 @@ export async function POST(request) {
         `;
 
         const values = [
-            form.title,
-            form.slug,
+            JSON.parse(form.title),
+            JSON.parse(form.slug),
             classementStr,
             descriptionOCStr,
-            form.image,
-            form.prix || 0,
-            form.reduction || 0,
-            form.lien,
-            form.descriptionOD || '',
-            form.produit || null,
-            form.indexation
+            JSON.parse(form.image),
+            JSON.parse(form.prix) || 0,
+            JSON.parse(form.reduction) || 0,
+            JSON.parse(form.lien),
+            JSON.parse(form.descriptionOD) || '',
+            JSON.parse(form.produit) || null,
+            JSON.parse(form.indexation) == true ? 1 : 0 // Si indexation est coché, il doit être 1
         ];
 
         await queryDB(sql, values);

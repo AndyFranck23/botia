@@ -32,7 +32,8 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
     try {
         // Récupère le corps de la requête qui doit contenir l'objet "form"
-        const { form } = await request.json()
+        const formData = await request.formData(); // Utilise formData() pour récupérer les données du formulaire
+        const form = Object.fromEntries(formData); // Convertit formData en objet pour un accès facile
 
         // Validation des champs obligatoires
         if (!form.title || !form.classement || !form.descriptionOC || !form.image || !form.lien) {
@@ -43,8 +44,8 @@ export async function PUT(request, { params }) {
         }
 
         // Convertir les tableaux en chaînes JSON pour stockage en BDD (si nécessaire)
-        const classementStr = JSON.stringify(form.classement)
-        const descriptionOCStr = JSON.stringify(form.descriptionOC)
+        // const classementStr = JSON.stringify(form.classement)
+        // const descriptionOCStr = JSON.stringify(form.descriptionOC)
 
         // Préparation de la requête SQL pour mettre à jour l'offre
         // On suppose que votre table "offres" contient les colonnes :
@@ -67,16 +68,16 @@ export async function PUT(request, { params }) {
     `
 
         const values = [
-            form.title,
-            form.slug,
-            classementStr,
-            descriptionOCStr,
-            form.image,
-            form.prix,
-            form.reduction,
-            form.lien,
-            form.descriptionOD || '',
-            form.produit, // correspond à l'id ou identifiant du produit associé à l'offre
+            JSON.parse(form.title),
+            JSON.parse(form.slug),
+            form.classement,
+            form.descriptionOC,
+            JSON.parse(form.image),
+            JSON.parse(form.prix),
+            JSON.parse(form.reduction),
+            JSON.parse(form.lien),
+            JSON.parse(form.descriptionOD),
+            JSON.parse(form.produit), // correspond à l'id ou identifiant du produit associé à l'offre
             form.indexation,
             params.id   // identifiant de l'offre passé en paramètre d'URL
         ]

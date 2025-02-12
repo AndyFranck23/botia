@@ -9,6 +9,8 @@ export default function ModifierOffre({ id, classements }) {
     const [descCourt, setDescCourt] = useState('')
     const [message, setMessage] = useState('')
     const [produit, setProduit] = useState([])
+    const [imageType, setImageType] = useState('url') // 'url' ou 'upload'
+    const [imageFile, setImageFile] = useState(null) // Pour stocker le fichier uploadé
     const [form, setForm] = useState({
         title: '',
         slug: '',
@@ -63,6 +65,7 @@ export default function ModifierOffre({ id, classements }) {
                 prix: offre[0].prix,
                 reduction: offre[0].reduction,
                 lien: offre[0].lien,
+                descriptionOD: offre[0].descriptionOD,
                 produit: offre[0].id_produit,
                 indexation: offre[0].indexation
             })
@@ -84,7 +87,20 @@ export default function ModifierOffre({ id, classements }) {
     const submit = async () => {
         if ((form.title && form.classement && form.descriptionOC && form.image && form.lien) !== '') {
             try {
-                const response = await axios.put(`${NOM_DE_DOMAIN}/api/offres/${id}`, { form })
+                const formData = new FormData();
+                Object.keys(form).forEach(key => {
+                    key == 'classement' || 'descriptionOC' ? formData.append(key, JSON.stringify(form[key])) :
+                        formData.append(key, form[key]);
+                });
+                if (imageType === 'upload' && imageFile) {
+                    formData.append('file', imageFile);
+                }
+
+                const response = await axios.put(`${NOM_DE_DOMAIN}/api/offres/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
                 // console.log(response.data.message)
                 setMessage(response.data.message)
             } catch (err) {
@@ -112,6 +128,24 @@ export default function ModifierOffre({ id, classements }) {
         });
     };
 
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setForm({ ...form, image: reader.result });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const test = (e) => {
+        console.log(e.target.checked)
+        setOdActive(e.target.checked)
+    }
+
+
     return (
         <div className="text-black">
             <h1 className='flex justify-center text-xl font-medium mb-5'>Modifier un offre</h1>
@@ -121,7 +155,7 @@ export default function ModifierOffre({ id, classements }) {
                     value={form.produit}
                     onChange={(e) => setForm({ ...form, produit: e.target.value })}
                     className={`${form.type === '' ? 'text-gray-400' : 'text-gray-700'} block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500`}>
-                    {/* <option className='hidden' value="">Produit ou l'offre appartient</option> */}
+                    <option className='hidden' value="">Produit ou l'offre appartient</option>
                     {produit.map((type, index) => (
                         <option key={index} className='text-gray-700' value={type.title}>{type.title}</option>
                     ))}
@@ -131,7 +165,30 @@ export default function ModifierOffre({ id, classements }) {
 
             <MyInput type={'text'} label={'Description court'} value={descCourt} onChange={(e) => descCourtControle(e.target.value)} />
 
-            <MyInput type={'text'} label={"URL de l'image"} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
+            <div className="mb-5">
+                <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Type d'image</label>
+                <select
+                    value={imageType}
+                    onChange={(e) => setImageType(e.target.value)}
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                    <option value="url">URL</option>
+                    <option value="upload">Upload</option>
+                </select>
+            </div>
+
+            {imageType === 'url' ? (
+                <MyInput type={'text'} label={"URL de l'image"} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
+            ) : (
+                <div className="mb-5">
+                    <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Upload d'image</label>
+                    <input
+                        type="file"
+                        onChange={handleFileChange}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
+                    />
+                </div>
+            )}
+
             <MyInput type={'number'} label={'Prix'} value={form.prix} onChange={(e) => setForm({ ...form, prix: e.target.value })} />
 
             <MyInput type={'number'} label={'Reduction'} value={form.reduction} onChange={(e) => setForm({ ...form, reduction: e.target.value })} />
@@ -142,7 +199,7 @@ export default function ModifierOffre({ id, classements }) {
                     type="checkbox"
                     className="border"
                     checked={odActive}
-                    onChange={(e) => setOdActive(!odActive)}
+                    onChange={(e) => test(e)}
                 />
             </div>
             {
@@ -158,12 +215,12 @@ export default function ModifierOffre({ id, classements }) {
                     className="border"
                     checked={form.indexation}
                     onChange={(e) => {
+                        console.log(e.target.checked)
                         setForm({ ...form, indexation: e.target.checked ? 1 : 0 })
                     }}
                 />
             </div>
             <label className="block text-gray-700 font-medium mb-2 text-md border-t-2 border-gray-200">Classements: </label>
-            {/* selection de classement */}
             <div className='text-black flex flex-wrap justify-center'>
                 {
                     classements.map((item, index) =>
@@ -192,7 +249,7 @@ export default function ModifierOffre({ id, classements }) {
                 }
             </div>
             <button onClick={submit}
-                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200">
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition duration-200 mt-10">
                 Modifier
             </button>
             <p className='mt-5 flex justify-center text-red-400'>{message}</p>

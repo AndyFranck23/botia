@@ -29,7 +29,7 @@ const page = async ({ params }) => {
     }));
 
     const titleSelect = produits.filter(item => slugify(item.title) == produit)
-    const title = titleSelect[0].title
+    const caractProduits = titleSelect[0]
 
     return (
         <div>
@@ -38,9 +38,9 @@ const page = async ({ params }) => {
                 <Slider types={types} />
                 <div className="space-y-20">
                     <div className="flex justify-center mt-10">
-                        <h1 className='md:text-2xl text-xl font-medium text-gray-500'>{title} </h1>
+                        <h1 className='md:text-2xl text-xl font-medium text-gray-500'>{caractProduits.title} </h1>
                     </div>
-                    <Title />
+                    <Title params={caractProduits} />
                     <Pagination data={data} params={produit} classements={classement} />
                 </div>
             </div>

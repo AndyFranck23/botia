@@ -9,8 +9,10 @@ export default function AddOffre({ classements }) {
     const [descCourt, setDescCourt] = useState('')
     const [odActive, setOdActive] = useState(false)
     const [produit, setProduit] = useState([])
-
     const [message, setMessage] = useState('')
+    const [imageType, setImageType] = useState('url') // 'url' ou 'upload'
+    const [imageFile, setImageFile] = useState(null) // Pour stocker le fichier uploadé
+
     const [form, setForm] = useState({
         title: '',
         slug: '',
@@ -44,7 +46,6 @@ export default function AddOffre({ classements }) {
         fetchProduit()
     }, [])
 
-    // Fonction pour gérer les changements
     const handleCheckboxChange = (event) => {
         const value = JSON.parse(event.target.value); // On parse la valeur en objet avec title et slug
 
@@ -60,19 +61,18 @@ export default function AddOffre({ classements }) {
             };
         });
     };
-    // const handleFileChange = (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         // Lire l'image en Base64
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             setForm({ ...form, image: reader.result }); // Supprimer le préfixe Base64
-    //             console.log(reader.result)
-    //             setMessage(reader.result)
-    //         };
-    //         reader.readAsDataURL(file);
-    //     }
-    // };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImageFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setForm({ ...form, image: reader.result });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
 
     const submit = async () => {
         if ((form.title && form.classement && form.descriptionOC && form.image && form.lien) !== '') {
@@ -80,7 +80,20 @@ export default function AddOffre({ classements }) {
                 setMessage("Veuillez remplir le OD")
             } else {
                 try {
-                    const response = await axios.post(`${NOM_DE_DOMAIN}/api/offres`, { form })
+                    const formData = new FormData();
+                    Object.keys(form).forEach(key => {
+                        key == 'classement' || 'descriptionOC' ? formData.append(key, JSON.stringify(form[key])) :
+                            formData.append(key, form[key]);
+                    });
+                    if (imageType === 'upload' && imageFile) {
+                        formData.append('file', imageFile);
+                    }
+
+                    const response = await axios.post(`${NOM_DE_DOMAIN}/api/offres`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
                     setMessage(response.data.message)
                     console.log(response.data.message)
                 } catch (e) {
@@ -117,7 +130,30 @@ export default function AddOffre({ classements }) {
 
             <MyInput type={'text'} label={'Description court'} value={descCourt} onChange={(e) => descCourtControle(e.target.value)} />
 
-            <MyInput type={'text'} label={"URL de l'image"} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
+            <div className="mb-5">
+                <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Type d'image</label>
+                <select
+                    value={imageType}
+                    onChange={(e) => setImageType(e.target.value)}
+                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                    <option value="url">URL</option>
+                    <option value="upload">Upload</option>
+                </select>
+            </div>
+
+            {imageType === 'url' ? (
+                <MyInput type={'text'} label={"URL de l'image"} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
+            ) : (
+                <div className="mb-5">
+                    <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Upload d'image</label>
+                    <input
+                        type="file"
+                        onChange={handleFileChange}
+                        className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
+                    />
+                </div>
+            )}
+
             <MyInput type={'number'} label={'Prix'} value={form.prix} onChange={(e) => setForm({ ...form, prix: e.target.value })} />
 
             <MyInput type={'number'} label={'Reduction'} value={form.reduction} onChange={(e) => setForm({ ...form, reduction: e.target.value })} />
@@ -150,7 +186,6 @@ export default function AddOffre({ classements }) {
                 />
             </div>
             <label className="block text-gray-700 font-medium mb-2 text-md border-t-2 border-gray-200">Classements: </label>
-            {/* selection de classement */}
             <div className='text-black flex flex-wrap justify-center'>
                 {
                     classements.map((item, index) =>

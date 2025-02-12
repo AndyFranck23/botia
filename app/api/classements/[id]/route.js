@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server'
 
 export async function GET(request, { params }) {
     try {
-        const classement = await queryDB('SELECT * FROM classements WHERE id = ?', [params.id]);
+        const { id } = params
+        const classement = await queryDB('SELECT * FROM classements WHERE id = ?', [id]);
         return NextResponse.json(classement);
     } catch (error) {
         return NextResponse.json(

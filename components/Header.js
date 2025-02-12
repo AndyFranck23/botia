@@ -18,7 +18,7 @@ export const Header = ({ classement, home, produits, params }) => {
             {isActive && <div onClick={() => setIsActive(!isActive)} className="h-screen bg-black/20 backdrop-blur-sm blakdrop-opacity-20 w-screen fixed z-30"></div>}
             <div className="fixed w-full z-50 bg-white flex items-center h-[65px] md:justify-between justify-between px-5 ">
                 <div className="flex justify-around w-full">
-                    <a href='/' className='font-bold text-4xl bg-gradient-to-r from-secondary to-primary text-transparent bg-clip-text'>BOTIA.AI</a>
+                    <a href='/' className='font-bold text-4xl text-blue-500'> Bot<span className='text-black'>IA</span><span className='text-gray-400'>.ai</span></a>
                     <Category produits={produits} className={'hidden md:flex '} />
                 </div>
                 <button className='text-black text-2xl' onClick={toggleMenu}>

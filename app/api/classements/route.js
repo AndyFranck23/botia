@@ -15,6 +15,8 @@ export async function POST(req) {
     try {
         const body = await req.json(); // Récupérer le corps de la requête
         const { form } = body;
+        console.log(form.faqListe)
+        console.log(form.title)
 
         if (!form?.title || !form?.type) {
             return NextResponse.json({ message: 'Veuillez remplir tous les champs requis' }, { status: 400 });
