@@ -114,23 +114,7 @@ const page = async ({ params }) => {
                         </div>
 
                         <p>
-                            DeepSeek est une entreprise chinoise d'intelligence artificielle,
-                            fondée en 2023 par Liang Wenfeng, spécialisée dans le développement de modèles de langage open-source.
-                            asée à Hangzhou, dans la province du Zhejiang, elle est financée par le fonds spéculatif High-Flyer.
-                            cite turn0search26
-
-                            'un de ses modèles phares, DeepSeek-R1, offre des performances comparables à celles de modèles contemporains tels que GPT-4 d'OpenAI,
-                            mais avec des coûts de formation significativement réduits.ar exemple,
-                            le coût de formation de DeepSeek-R1 est estimé à 6 millions de dollars,
-                            contre 100 millions de dollars pour GPT-4 en 2023.cite turn0search26
-                            e 10 janvier 2025, DeepSeek a lancé une application de chatbot gratuite basée sur le modèle DeepSeek-R1 pour iOS et Android.n
-                            moins de trois semaines, cette application a surpassé ChatGPT en tant qu'application gratuite la plus téléchargée sur l'App Store d'Apple aux États-Unis,
-                            provoquant une baisse de 18 % du cours de l'action Nvidia.cite turn0search26
-                            algré son succès, DeepSeek a suscité des préoccupations concernant sa conformité aux politiques de censure du gouvernement chinois et ses pratiques de collecte de données,
-                            entraînant une surveillance réglementaire dans plusieurs pays.cite turn0search26
-                            n résumé, DeepSeek se distingue par ses modèles de langage open-source performants et économes,
-                            ainsi que par sa capacité à rivaliser avec des géants technologiques établis, tout en soulevant des questions sur la gouvernance des données et la conformité réglementaire.
-                            navlistDeepSeek : Avancées et Controverses dans l'IA Chinoiseturn0news9,turn0news11,turn0news13
+                            {data.descriptionOD}
                         </p>
 
                     </div>

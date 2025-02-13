@@ -8,10 +8,10 @@ const Title = ({ id, params }) => {
             <div className='mt-10 space-y-10 px-5'>
                 <div className="flex justify-center text-center">
                     {/* <h2 className="w-[600px] md:text-[50px] sm:text-[40px] text-[30px] font-bold">Generate Original AI Content, <span className='bg-blue-700 text-white rounded-md px-3 py-1'>Fast!</span></h2> */}
-                    <h2 className="w-[600px] md:text-[50px] sm:text-[40px] text-[30px] font-bold">{params.sous_titre} </h2>
+                    <h2 className="w-[600px] md:text-[50px] sm:text-[40px] text-[30px] font-bold">{params?.sous_titre} </h2>
                 </div>
                 <div className="flex justify-center text-center">
-                    <p className='w-[600px] text-xl'>{params.text} </p>
+                    <p className='w-[600px] text-xl'>{params?.text} </p>
                 </div>
                 {/* <div className="flex justify-around text-center md:text-xl text-md">
                     <div id={id} className="w-[500px] flex justify-around">
