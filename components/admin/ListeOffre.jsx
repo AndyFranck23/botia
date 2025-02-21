@@ -3,6 +3,7 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { NOM_DE_DOMAIN } from '../env'
+import { useUser } from './context/UserContext'
 
 const ListeOffre = ({ produit }) => {
     const [loading, setLoading] = useState(true)
@@ -28,8 +29,9 @@ const ListeOffre = ({ produit }) => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${NOM_DE_DOMAIN}/api/offres/${id}`)
+            const response = await axios.delete(`${NOM_DE_DOMAIN}/api/offres/${id}`)
             fetchOffre()
+            alert(response.data.message)
             // window.location.reload()
         } catch (error) {
             console.error("Erreur de suppression:", error)
@@ -82,12 +84,7 @@ const Offre = ({ data, onClickUpdate, onClickDel }) => {
                 <div className="flex space-x-1 w-[200px]">
                     <p className='text-gray-700 font-medium mb-2 text-sm sm:text-md'>Description: </p>
                     {
-                        JSON.parse(data.descriptionOC).map((elt, index) =>
-                            index <= 1 ? <p key={index}>{elt}</p> : ''
-                        )
-                    }
-                    {
-                        JSON.parse(data.descriptionOC).length > 2 && <p>...</p>
+                        data.descriptionOC
                     }
                 </div>
                 <div className="flex space-x-1 w-[200px]">
@@ -101,16 +98,19 @@ const Offre = ({ data, onClickUpdate, onClickDel }) => {
                         JSON.parse(data.classement).length > 2 && <p>...</p>
                     }
                 </div>
+                <p>{data.date}</p>
             </div>
             <div className="">
                 <div className="flex space-x-1">
                     <a href={onClickUpdate} className='text-blue-500'>Modifier</a>
                     <button onClick={onClickDel} className='text-red-500'>Supprimer</button>
+                    {/* <a href={`/admin/offre/voiroffre/${data.id}`} className='text-blue-500'>voir</a> */}
                 </div>
                 <div className="">
                     <p className='mb-2 text-sm sm:text-md'><span className='text-gray-700 font-medium '>Prix:</span>  {data.prix} $</p>
                     <p className='mb-2 text-sm sm:text-md'><span className='text-gray-700 font-medium '>Réduction:</span>  {data.reduction} %</p>
                 </div>
+                <p>{data.responsable}</p>
             </div>
         </div>
     )

@@ -60,7 +60,10 @@ export const Slider = ({ className, types }) => {
                             <div className="absolute w-full text-center h-[300px] md:h-[600px] items-center flex justify-center ">
                                 <h2 className='text-white text-[30px] font-bold ' >{slide.title} </h2>
                             </div>
-                            <img src={slide.image} className={`h-[300px] md:h-[600px] w-full`} />
+                            {
+                                slide.image != '' ?
+                                    <img src={slide.image} className={`h-[300px] md:h-[600px] w-full object-cover`} /> : ""
+                            }
                         </div>
                     ))}
                 </div>

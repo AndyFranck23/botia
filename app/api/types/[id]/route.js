@@ -1,5 +1,7 @@
 import { queryDB } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import fs from "fs";
+import path from "path";
 
 export async function GET(request, { params }) {
     try {
@@ -16,7 +18,8 @@ export async function GET(request, { params }) {
 
 export async function DELETE(request, { params }) {
     try {
-        await queryDB('DELETE FROM type WHERE id = ?', [params.id])
+        const { id } = await params
+        await queryDB('DELETE FROM type WHERE id = ?', [id])
         return NextResponse.json(
             { message: "Type supprimé avec succès" },
             { status: 200 }
@@ -32,16 +35,47 @@ export async function DELETE(request, { params }) {
 
 export async function PUT(request, { params }) {
     try {
-        const body = await request.json()
+        const { id } = await params
+        const formData = await request.formData(); // Utilise formData() pour récupérer les données du formulaire
+        const form = Object.fromEntries(formData);
 
-        if (!body.title && !body.image) {
+        if (!form.title && !form.image) {
             return NextResponse.json(
                 { error: "Le champ 'title' est requis" },
                 { status: 400 }
             )
         }
 
-        await queryDB('UPDATE type SET title = ?, image = ? WHERE id = ?', [body.title, body.image, params.id])
+        let imagePublicPath = ''
+        if (form.file) {
+            // Définition du dossier d'upload (public/uploads)
+            const uploadDir = path.join(process.cwd(), "public/uploads");
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            // Génération d'un nom unique pour l'image
+            const imageName = `${Date.now()}-${form.file.name}`;
+            const filePath = path.join(uploadDir, imageName);
+
+            // Récupération du contenu du fichier sous forme de buffer
+            const buffer = Buffer.from(await form.file.arrayBuffer());
+
+            // Sauvegarde du fichier sur le disque
+            fs.writeFileSync(filePath, buffer);
+
+            // Construction du chemin public de l'image
+            imagePublicPath = `/uploads/${imageName}`;
+
+            // Validation du champ descriptionOD si odActive est activé
+            if (form.content == '') {
+                return NextResponse.json(
+                    { message: "Veuillez remplir le champ descriptionOD" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        await queryDB('UPDATE type SET title = ?, image = ? WHERE id = ?', [form.title, imagePublicPath == '' ? form.image : imagePublicPath, id])
 
         return NextResponse.json(
             { message: "Type modifié avec succès" },

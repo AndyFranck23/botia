@@ -7,10 +7,12 @@ const ListeType = ({ classements }) => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${NOM_DE_DOMAIN}/api/types/${id}`)
-            // window.location.reload()
+            const response = await axios.delete(`${NOM_DE_DOMAIN}/api/types/${id}`)
+            alert(response.data.message)
         } catch (error) {
             console.error("Erreur de suppression:", error)
+        } finally {
+            window.location.reload()
         }
     }
 

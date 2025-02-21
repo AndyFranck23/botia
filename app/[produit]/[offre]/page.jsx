@@ -1,42 +1,45 @@
-import Caracteristiques from '@/components/detail/Caracteristique'
-import Description from '@/components/detail/Description'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
+import { ButtonClick } from '@/components/LogoutButton'
 import { Chatbot } from '@/components/Offre'
+import Link from 'next/link'
 import React from 'react'
 
 export async function generateMetadata({ params }) {
     const { offre } = await params
     const response = await fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?slug=${offre}`)
     const data = await response.json()
+    // data.descriptionOC = JSON.stringify(data.descriptionOC)
     return {
-        title: data.title,
-        description: JSON.parse(data.descriptionOC),
-        robots: data.indexation == 0 ? "noindex, nofollow" : "index, follow",
+        title: data?.meta_title?.trim() ? data.meta_title : data?.title,
+        description: data?.meta_description?.trim() ? data.meta_description : data?.descriptionOC,
+        // robots: data.indexation == 0 ? "noindex, nofollow" : "index, follow",
     }
 }
 
 const page = async ({ params }) => {
     const { offre, produit } = await params
-    const nbreOffre = 10
-    const [offresRes, alternativeRes, typesRes, classementsRes, produitsRes] = await Promise.all([
+    const nbreOffre = 10 // nombre d'offres dans les alternatives
+    const [offresRes, alternativeRes, typesRes, classementsRes, produitsRes, articlesRes] = await Promise.all([
         fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?slug=${offre}`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?produit=${produit}&limit=${nbreOffre}`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/types`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/produit`),
+        fetch(`${process.env.NOM_DE_DOMAIN}/api/blog`)
     ])
 
-    const [data, offres, types, classe, produits] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json()])
+    const [data, offres, types, classe, produits, articles] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json()])
 
     data.classement = data.classement ? JSON.parse(data.classement) : [];
-    data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];
+    // data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];
 
-    const alternative = offres.map((item) => ({
+    const alternative = (offres || []).map((item) => ({
         ...item,
-        classement: JSON.parse(item.classement),
-        descriptionOC: JSON.parse(item.descriptionOC),
+        classement: item.classement ? JSON.parse(item.classement) : [],
+        // descriptionOC: JSON.parse(item.descriptionOC),
     }));
+
 
     const classements = types.map(category => ({
         ...category,
@@ -44,13 +47,6 @@ const page = async ({ params }) => {
     }));
 
     const filters = data.classement
-
-    // const filterData = (data, terms) => {
-    //     const matchingItems = data.filter((item) =>
-    //         item.classement.some((term) => terms.includes(term))
-    //     );
-    //     return matchingItems
-    // };
 
     const filterData = (data, terms) => {
         return data.filter((item) =>
@@ -60,83 +56,74 @@ const page = async ({ params }) => {
         );
     };
 
-
     const filteredData = filterData(alternative, filters);
-
-    // console.log(filteredData)
 
     return (
         <>
-            <Header params={produit} classement={classements} home={true} produits={produits} />
+            <Header classement={classements} produits={produits} />
             <div className="pt-10">
-                <div id='head' className=""></div>
-                {/* Conteneur principal avec deux colonnes sur md et plus */}
-                <div className="w-full md:flex mt-5 bg-white">
-                    {/* Colonne de gauche pour les détails */}
-                    <div className="w-full md:w-2/3 border-r border-gray-200 p-5">
-                        <div className="border-b border-gray-200 pb-5">
-                            <div className="w-full">
-                                <div className="flex items-center px-3 pt-3">
-                                    <img src={data.image} alt={data.title} className='mr-3 w-16 h-16 rounded-xl' />
-                                    <div>
-                                        <h1 className='text-2xl text-gray-900 font-bold m-2'>{data.title}</h1>
-                                        <p className='font-medium text-sm bg-gray-100 max-w-[200px] text-gray-700 px-3 py-1 rounded-full inline-block'>
-                                            {data.descriptionOC}
-                                        </p>
-                                    </div>
-                                </div>
-                                <div className="px-3 py-1 flex flex-wrap gap-2 mt-2">
-                                    <a
-                                        href={data.lien}
-                                        className='bg-blue-600 hover:bg-blue-700 px-5 py-2 rounded-lg text-white'
-                                    >
-                                        Voir le prestataire
-                                    </a>
+                <div className="w-full lg:flex mt-10 bg-white shadow-lg rounded-lg ">
+                    <div className="w-full lg:w-2/3 border-r border-gray-200 p-6">
+                        <div className="border-b border-gray-200 pb-6">
+                            <div className="flex items-center px-3 pt-3">
+                                <img src={data.image} alt={data?.title} className='mr-4 w-20 h-20 rounded-xl shadow-md object-cover' />
+                                <div>
+                                    <h1 className='text-3xl sm:text-4xl text-gray-900 font-extrabold m-2'>{data?.title}</h1>
+                                    <p className='font-medium text-lg bg-gray-100 text-gray-700 px-4 py-2 rounded-md inline-block'>
+                                        {data?.descriptionOC}
+                                    </p>
                                 </div>
                             </div>
+                            <ButtonClick href={data?.lien} data={data} />
+                            <div className='flex flex-wrap m-3 gap-4'>
+                                {
+                                    data?.classement.map((item, index) =>
+                                        <a key={index} href={navigation(item, classements)} className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'>{item.title} </a>
+                                    )}
+                            </div>
+                            <p className=' text-red-600 font-bold text-4xl p-1'>Prix:{data?.prix} $</p>
                         </div>
-
-                        <div className='pt-4'>
-                            <img src={data.image} alt="Illustration" className="w-full rounded-md h-[400px] sm:h-[500px]  sm:w-full " />
+                        <div className='pt-6'>
+                            <img src={data?.image} alt="Illustration" className="w-full rounded-md h-[400px] sm:h-[500px] object-cover shadow-md" />
                         </div>
-                        <Caracteristiques data={data} params={produit} classements={classements} />
-                        <Description />
-                        <div className='p-5 space-y-3'>
-                            <button className='bg-blue-800 hover:bg-blue-900 rounded-lg text-white py-3 w-full'>
-                                Use tools
-                            </button>
-                            <button className='bg-white border border-blue-600 hover:bg-blue-50 rounded-lg text-blue-600 py-3 w-full'>
-                                Save
-                            </button>
-                            <button className='bg-blue-500 hover:bg-blue-600 rounded-lg text-white py-3 w-full'>
-                                Vote Best AI Tool of 2024
-                            </button>
+                        <div className=' p-6 rounded-md mt-6 '>
+                            <h2 className="text-xl font-semibold mb-4">{data?.title}</h2>
+                            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data?.content }} />
                         </div>
-
-                        <p>
-                            {data.descriptionOD}
-                        </p>
-
                     </div>
-
-                    {/* Colonne de droite pour les alternatives et Chatbot, centrée */}
-                    <div className="w-full md:w-1/3 flex flex-col items-center p-5 bg-white">
-                        <h2 id='alternative' className='text-blue-700 text-3xl text-center font-bold my-5'>
+                    <div className="w-full lg:w-1/3 flex flex-col items-center mx-auto p-6 bg-gray-50">
+                        {/* Section Titre */}
+                        <h2 id="alternative" className="text-blue-700 text-3xl font-bold text-center mb-4">
                             Alternative
                         </h2>
-                        <div className="w-full space-y-4">
-                            {filteredData.map((item, index) =>
-                                <Chatbot key={index} data={item} params={produit} classements={classements} />
-                            )}
-                            {/* <Offre data={filteredData} params={produit} className={true} /> */}
+
+                        {/* Section des chatbots */}
+                        <div className="w-full flex flex-col items-center gap-y-4">
+                            {filteredData.map((item, index) => (
+                                <div key={index} className="">
+                                    <Chatbot data={item} params={produit} classements={classements} />
+                                </div>
+                            ))}
                         </div>
                     </div>
+
                 </div>
             </div>
-            <Footer />
+            <Footer articles={articles} />
         </>
     )
 }
 
 export default page
 
+const navigation = (pageName, classements) => {
+    let out = '';
+    classements.forEach((element) => {
+        element.classement.forEach((ele) => {
+            if (ele.title === pageName.title) {
+                out = element.title;
+            }
+        });
+    });
+    return "/class" + "/" + out.toLowerCase() + "/" + pageName.slug;
+};

@@ -40,6 +40,12 @@ export const MenuAdmin = ({ className, userType, active }) => {
 
                 {/* Menu Comptes */}
                 <li>
+                    <a href="/admin" className='hover:bg-blue-600 hover:text-white hover:shadow-md flex items-center justify-start px-4 py-3 w-full font-medium text-left transition-all duration-300'>
+                        <i className='fa-solid fa-chart-line mr-3'></i>Tableau de bord
+                    </a>
+                </li>
+                {/* Menu Comptes */}
+                <li>
                     <MyButton
                         disabled={!userType}
                         text={'Comptes'}
@@ -96,20 +102,20 @@ export const MenuAdmin = ({ className, userType, active }) => {
                 {/* Menu Blog */}
                 <li>
                     <MyButton
-                        disabled={true}
+                        disabled={false}
                         text={'Blog'}
                         icon={'fa-solid fa-newspaper'}
                         onClick={() => toggleMenu('blog')}
                         isActive={activeId === 'blog'}
                     />
                     <div className={`overflow-hidden transition-all duration-300 ${activeId === 'blog' ? 'max-h-40' : 'max-h-0'}`}>
-                        <MySubButton text={'Ajouter un article'} href={'/admin/ajoutBlog'} />
-                        <MySubButton text={'Tous les articles'} href={'/admin/ToutBlog'} />
+                        <MySubButton text={'Ajouter un article'} href={'/admin/blog/add-article'} />
+                        <MySubButton text={'Tous les articles'} href={'/admin/blog/liste-article'} />
                     </div>
                 </li>
                 <li>
                     <MyButton
-                        disabled={false}
+                        disabled={true}
                         text={'Titre accueil'}
                         icon={'fa-solid fa-newspaper'}
                         onClick={() => toggleMenu('titre')}
@@ -119,6 +125,11 @@ export const MenuAdmin = ({ className, userType, active }) => {
                         <MySubButton text={'Produits'} href={'/admin/titre-accueil/produits'} />
                         <MySubButton text={'Classements'} href={'/admin/titre-accueil/classements'} />
                     </div>
+                </li>
+                <li>
+                    <a href="/admin/mention" className='hover:bg-blue-600 hover:text-white hover:shadow-md flex items-center justify-start px-4 py-3 w-full font-medium text-left transition-all duration-300'>
+                        Mention légal
+                    </a>
                 </li>
             </ul>
         </div>

@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import mysql from 'mysql2/promise'
 import HeaderAdmin from '@/components/admin/HeaderAdmin'
 import { MenuAdmin } from '@/components/admin/MenuAdmin'
+import { UserProvider } from './context/UserContext'
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -38,7 +39,7 @@ export default async function Layout({ children }) {
         // const isAdmin = decoded.email === process.env.LOGIN_ADMIN
 
         return (
-            <>
+            <UserProvider user={user[0]}>
                 <HeaderAdmin userdata={user[0]} userType={out} />
                 <MenuAdmin className={'sm:block hidden'} userType={out} />
                 <div className="sm:ml-40 text-white text-sm sm:text-md h-screen pt-10">
@@ -48,7 +49,7 @@ export default async function Layout({ children }) {
                         </div>
                     </div>
                 </div>
-            </>
+            </UserProvider>
         )
 
     } catch (error) {

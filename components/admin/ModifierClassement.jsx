@@ -3,18 +3,22 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { MyInput } from '@/app/signup/page'
 import { NOM_DE_DOMAIN } from '../env'
+import { handleImageSelect } from '../LogoutButton'
 
 const ModifierClassement = ({ id, userdata }) => {
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState('')
     const [types, setTypes] = useState([]);
+    const [imageType, setImageType] = useState('url') // 'url' ou 'upload'
+    const [imageFile, setImageFile] = useState(null) // Pour stocker le fichier uploadé
     const [form, setForm] = useState({
         title: '',
-        description: '',
         type: '',
-        logo: '',
+        image: '',
+        faqListe: [],
         responsable: userdata.identite,
-        faqListe: []
+        meta_title: '',
+        meta_description: '',
     });
 
     useEffect(() => {
@@ -38,12 +42,13 @@ const ModifierClassement = ({ id, userdata }) => {
             const response = await fetch(`${NOM_DE_DOMAIN}/api/classements/${id}`)
             const classement = await response.json()
             setForm({
-                title: classement[0].title,
-                description: classement[0].description,
-                type: classement[0].type,
-                logo: classement[0].logo,
-                responsable: classement[0].responsable,
-                faqListe: JSON.parse(classement[0].faq)
+                title: classement[0].title || '',
+                type: classement[0].type || '',
+                image: classement[0].logo || '',
+                faqListe: JSON.parse(classement[0].faq) || '',
+                responsable: classement[0].responsable || '',
+                meta_title: classement[0].meta_title || '',
+                meta_description: classement[0].meta_description || '',
             })
         } catch (e) {
             setMessage(e.response.message.json())
@@ -55,9 +60,21 @@ const ModifierClassement = ({ id, userdata }) => {
     const submit = async () => {
         if (form.title !== '') {
             try {
-                const response = await axios.put(`${NOM_DE_DOMAIN}/api/classements/${id}`, { form })
+                const formData = new FormData();
+                Object.keys(form).forEach(key => {
+                    key == 'faqListe' ? formData.append(key, JSON.stringify(form[key])) :
+                        formData.append(key, form[key]);
+                });
+                if (imageType === 'upload' && imageFile) {
+                    formData.append('file', imageFile);
+                }
+                const response = await axios.put(`${NOM_DE_DOMAIN}/api/classements/${id}`, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                alert(response.data.message)
                 setMessage(response.data.message)
-                console.log(response.data)
             } catch (e) {
                 setMessage(e.response.data.error)
             }
@@ -75,11 +92,8 @@ const ModifierClassement = ({ id, userdata }) => {
 
     return (
         <div className='text-black'>
-            <h1 className='text-center text-2xl font-medium mb-10'>Modifier un classement</h1>
+            <h1 className='text-center text-2xl font-medium mb-10'>Ajouter un classement</h1>
             <div className="space-y-2 text-md text-gray-700 font-medium">
-                <MyInput label={"Title"} type={'text'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-                <MyInput label={"Description"} type={'text'} value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-                <MyInput label={"URL du logo"} type={'text'} value={form.logo} onChange={(e) => setForm({ ...form, logo: e.target.value })} />
                 <div className="sm:mb-5 mb-2">
                     <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Type</label>
                     <select
@@ -92,13 +106,72 @@ const ModifierClassement = ({ id, userdata }) => {
                         ))}
                     </select>
                 </div>
+                <MyInput label={"Title"} type={'text'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                <div className="">
+                    <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">
+                        Image
+                    </label>
+                    <div className="mb-1">
+                        <select
+                            value={imageType}
+                            onChange={(e) => setImageType(e.target.value)}
+                            className="block px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                            <option value="url">URL</option>
+                            <option value="upload">Upload</option>
+                            <option value="select">Select</option>
+                        </select>
+                    </div>
+                    <div className="">
+                        {imageType === 'url' && (
+                            <MyInput type={'text'} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
+                        )}
+                        {imageType === 'upload' && (
+                            <div className="mb-5">
+                                {/* <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Upload d'image</label> */}
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setImageFile(e.target.files[0])}
+                                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500"
+                                />
+                            </div>
+                        )}
+
+                        {imageType === 'select' && (
+                            <div className="mb-5">
+                                {/* <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Sélectionner une image depuis 'uploads'</label> */}
+                                {
+                                    form.image == '' ?
+                                        <button
+                                            type="button"
+                                            onClick={() => handleImageSelect(setForm, form)} // Fonction pour afficher la galerie d'images
+                                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                                            Choisir une image
+                                        </button> :
+                                        <MyInput type={'text'} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
+                                }
+                            </div>
+                        )}
+                    </div>
+                </div>
                 <AddFaq form={form} setForm={setForm} />
+                <label className="block text-gray-700 font-medium mb-2 pt-2 text-md border-t-2 border-gray-200">Référencement SEO:</label>
+                <div className="flex flex-wrap">
+                    <div className="flex items-center">
+                        <label className="block text-gray-700 font-medium mb-2 pt-2 text-md">Titre:</label>
+                        <MyInput type={'text'} value={form.meta_title} onChange={(e) => setForm({ ...form, meta_title: e.target.value })} />
+                    </div>
+                    <div className="flex items-center">
+                        <label className="block text-gray-700 font-medium mb-2 pt-2 text-md">Description:</label>
+                        <MyInput type={'text'} value={form.meta_description} onChange={(e) => setForm({ ...form, meta_description: e.target.value })} />
+                    </div>
+                </div>
                 <button
                     type="submit"
                     onClick={submit}
                     className='w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors'
                 >
-                    Modifier le classement
+                    Créer le classement
                 </button>
             </div>
             <p className='flex justify-center text-red-400'>{message}</p>
@@ -175,9 +248,9 @@ const AddFaq = ({ form, setForm }) => {
 
             <div className="mt-5 sm:mt-0">
                 <h2 className="text-xl font-bold mb-4">Liste des FAQ</h2>
-                {form.faqListe.length > 0 ? (
+                {form.faqListe?.length > 0 ? (
                     <ul className="space-y-2 bg-white p-5">
-                        {form.faqListe.map((item, index) => (
+                        {form.faqListe?.map((item, index) => (
                             <div key={index} className="flex space-x-2 w-full sm:w-[250px]">
                                 <li className="border py-1 px-2 rounded shadow bg-gray-100">
                                     <p className="font-semibold">Q: {item.question}</p>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { slugify } from './Slug';
 
-export const Menu = ({ className, classement, page, produits, params }) => {
+export const Menu = ({ className, classement, produits }) => {
     const [isActive, setIsActive] = useState(null);
 
     const showOptions = (index) => {
@@ -26,7 +26,7 @@ export const Menu = ({ className, classement, page, produits, params }) => {
                         )
                     }
                 </div>
-                {page && classement.map((option, index) => (
+                {classement.map((option, index) => (
                     <li key={index} className='list-none'>
                         <button
                             onClick={() => showOptions(index)}
@@ -37,7 +37,7 @@ export const Menu = ({ className, classement, page, produits, params }) => {
                                 <i className="fa-solid fa-chevron-down" /> :
                                 <i className="fa-solid fa-chevron-right" />}
                         </button>
-                        {isActive === index && <OptionSelect params={params} options={classement} index={index} />}
+                        {isActive === index && <OptionSelect options={classement} index={index} />}
                     </li>
                 ))}
             </div>
@@ -45,7 +45,7 @@ export const Menu = ({ className, classement, page, produits, params }) => {
     )
 }
 
-const OptionSelect = ({ index, options, params }) => {
+const OptionSelect = ({ index, options }) => {
     return (
         <div className="p-2 space-y-2 bg-gray-100 rounded-lg">
             {
@@ -53,11 +53,14 @@ const OptionSelect = ({ index, options, params }) => {
                     <ul key={i}>
                         <li>
                             <a
-                                href={`/${params}/${slugify(options[index].title) + '/' + slugify(option.title)}`}
+                                href={`/class/${slugify(options[index].title) + '/' + slugify(option.title)}`}
                                 // onClick={() => navigation(option.title)}
                                 className='flex items-center w-full hover:bg-gray-200 p-2 rounded-xl p-1'
                             >
-                                <img src={option.logo} className='rounded-md object-cover w-[25px] h-[25px] mr-5' />
+                                {
+                                    option.logo != '' ?
+                                        <img src={option.logo} className='rounded-md object-cover w-[25px] h-[25px] mr-5' /> : ''
+                                }
                                 <p>{option.title}</p>
                             </a>
                         </li>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { slugify } from './Slug';
 
 // Composant principal Header
-export const Header = ({ classement, home, produits, params }) => {
+export const Header = ({ classement, produits }) => {
     const [isActive, setIsActive] = useState(false);
 
     const toggleMenu = () => {
@@ -25,7 +25,7 @@ export const Header = ({ classement, home, produits, params }) => {
                     {isActive ? (<i className="fa-solid fa-xmark"></i>) : (<i className="fa-solid fa-bars"></i>)}
                 </button>
             </div>
-            <Menu params={params} produits={produits} page={home} classement={classement} className={`transform ease-in-out duration-500 ${isActive ? 'translate-x-[0%]' : ' translate-x-[100%]'}`} />
+            <Menu produits={produits} classement={classement} className={`transform ease-in-out duration-500 ${isActive ? 'translate-x-[0%]' : ' translate-x-[100%]'}`} />
         </>
     );
 };

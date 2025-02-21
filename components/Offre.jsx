@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-export const Offre = ({ data, params, className, classements }) => {
+export const Offre = ({ data, className, classements }) => {
     return (
         <>
             <div className={`${className ? "" : "flex justify-center w-full"}`}>
@@ -12,7 +12,7 @@ export const Offre = ({ data, params, className, classements }) => {
                     {/* {path ? <h1 className='text-gray-600 text-3xl text-center font-bold my-10 '>{type + ': ' + path} </h1> : <h1 className='text-gray-600 text-3xl text-center font-bold my-10 '>Acceuil </h1>} */}
                     <div className={`${className ? "" : " flex flex-wrap gap-8 justify-around mx-5"}`}>
                         {data.map((item, index) =>
-                            <Chatbot key={index} data={item} classements={classements} params={params} />
+                            <Chatbot key={index} data={item} classements={classements} />
                         )}
                     </div>
                 </div>
@@ -21,7 +21,7 @@ export const Offre = ({ data, params, className, classements }) => {
     )
 }
 
-export const navigation = (pageName, classements, params) => {
+export const navigation = (pageName, classements) => {
     let out = '';
     classements.forEach((element) => {
         element.classement.forEach((ele) => {
@@ -30,17 +30,24 @@ export const navigation = (pageName, classements, params) => {
             }
         });
     });
-    return "/" + params + "/" + out.toLowerCase() + "/" + pageName.slug;
+    return "/class" + "/" + out.toLowerCase() + "/" + pageName.slug;
 };
 
-export const Chatbot = ({ data, className, params, classements }) => {
+export const Chatbot = ({ data, className, classements }) => {
 
     return (
         <>
-            <div className={`hover:bg-gray-100 transition-all duration-300 bg-white backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg my-3 w-full xs:w-[400px] ${className}`}>
+            <div className={`hover:scale-105 transition-transform hover:bg-gray-100 transition-all duration-300 bg-white backdrop-blur-sm border border-gray-200 rounded-xl shadow-lg my-3 w-full xs:w-[400px] ${className}`}>
                 <div className="z-40">
-                    <Link href={"/" + params + "/" + data.slug} className="flex items-center px-4 pt-4">
-                        <img src={data.image} className='mr-4 w-[65px] h-[65px] rounded-lg shadow-sm' alt={data.title} />
+                    <Link href={"/" + data.id_produit + "/" + data.slug} className="flex items-center px-4 pt-4">
+                        <div className="mr-4 w-[65px] h-[65px] rounded-lg shadow-sm overflow-hidden">
+                            <img
+                                src={data.image}
+                                alt={data.title}
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+
                         <div className="space-y-2">
                             <h2 className='text-2xl text-black font-bold'>{data.title}</h2>
                             <p className='font-medium text-sm bg-gray-100 max-w-[200px] text-gray-700 px-3 py-1 rounded-full inline-block'>
@@ -51,7 +58,7 @@ export const Chatbot = ({ data, className, params, classements }) => {
                     <div className="px-4 py-3 flex flex-wrap gap-2 list-none sm:w-[350px] w-full text-white text-xs sm:text-sm">
                         {data.classement.map((item, index) => (
                             <Link
-                                href={navigation(item, classements, params)}
+                                href={navigation(item, classements)}
                                 key={index}
                                 className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'
                             >
@@ -69,7 +76,7 @@ export const Chatbot = ({ data, className, params, classements }) => {
 };
 
 
-export const Pagination = ({ data = [], params, classements }) => {
+export const Pagination = ({ data = [], classements }) => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -137,7 +144,7 @@ export const Pagination = ({ data = [], params, classements }) => {
 
     return (
         <div>
-            <Offre data={currentItems} params={params} classements={classements} />
+            <Offre data={currentItems} classements={classements} />
 
             {totalPages > 1 && (
                 <div className="flex my-10 justify-center">{renderPageNumbers()}</div>

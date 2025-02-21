@@ -11,7 +11,7 @@ export async function POST(request) {
 
         // Insérer le classement
         await queryDB(
-            'INSERT INTO titre (produit, classement, titre, description) VALUES (?, ?, ?, ?)',
+            'INSERT INTO titre (produit, classement, sous_titre, text) VALUES (?, ?, ?, ?)',
             [body.produit, body.classement, body.title, body.description]
         );
 
@@ -30,7 +30,13 @@ export async function GET(request) {
         const { searchParams } = new URL(request.url);
         const produit = searchParams.get('produit');
         const classement = searchParams.get('classement');
-        const titre = await queryDB('SELECT * FROM titre WHERE produit = ? AND classement = ?', [produit, classement]);
+        let sql = ''
+        if (produit)
+            sql = 'SELECT * FROM titre WHERE produit = ?';
+        if (classement)
+            sql = 'SELECT * FROM titre WHERE classement = ?';
+
+        const titre = await queryDB(sql, [produit ? produit : classement])
         return NextResponse.json(titre);
     } catch (error) {
         return NextResponse.json(

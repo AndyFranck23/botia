@@ -1,9 +1,11 @@
+import Dashboard from "@/components/admin/Dashboard";
 import Layout from "@/components/admin/Layout";
 
 export default function page() {
+
     return (
         <Layout>
-            <p className="text-black">dfddfd</p>
+            <Dashboard />
         </Layout>
-    )
+    );
 }

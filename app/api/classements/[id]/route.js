@@ -1,10 +1,12 @@
 import { queryDB } from '@/lib/db'
 import { NextResponse } from 'next/server'
+import fs from "fs";
+import path from "path";
 
 
 export async function GET(request, { params }) {
     try {
-        const { id } = params
+        const { id } = await params
         const classement = await queryDB('SELECT * FROM classements WHERE id = ?', [id]);
         return NextResponse.json(classement);
     } catch (error) {
@@ -18,7 +20,8 @@ export async function GET(request, { params }) {
 
 export async function DELETE(request, { params }) {
     try {
-        await queryDB('DELETE FROM classements WHERE id = ?', [params.id])
+        const { id } = await params
+        await queryDB('DELETE FROM classements WHERE id = ?', [id])
         return NextResponse.json(
             { message: "Classement supprimé avec succès" },
             { status: 200 }
@@ -34,25 +37,67 @@ export async function DELETE(request, { params }) {
 
 export async function PUT(request, { params }) {
     try {
-        const body = await request.json(); // Récupérer le corps de la requête
-        const { form } = body;
+        // Attendre params avant de déstructurer
+        const { id } = await params;
+        const formData = await request.formData(); // Utilise formData() pour récupérer les données du formulaire
+        const form = Object.fromEntries(formData);
 
-        if (!form?.title || !form?.type) {
-            return NextResponse.json({ message: 'Veuillez remplir tous les champs requis' }, { status: 400 });
+        if (!form || !form.title || !form.type) {
+            return NextResponse.json(
+                { message: 'Veuillez remplir tous les champs requis' },
+                { status: 400 }
+            );
         }
 
-        // Insérer le classement
+        let imagePublicPath = ''
+        if (form.file) {
+            // Définition du dossier d'upload (public/uploads)
+            const uploadDir = path.join(process.cwd(), "public/uploads");
+            if (!fs.existsSync(uploadDir)) {
+                fs.mkdirSync(uploadDir, { recursive: true });
+            }
+            // Génération d'un nom unique pour l'image
+            const imageName = `${Date.now()}-${form.file.name}`;
+            const filePath = path.join(uploadDir, imageName);
+
+            // Récupération du contenu du fichier sous forme de buffer
+            const buffer = Buffer.from(await form.file.arrayBuffer());
+
+            // Sauvegarde du fichier sur le disque
+            fs.writeFileSync(filePath, buffer);
+
+            // Construction du chemin public de l'image
+            imagePublicPath = `/uploads/${imageName}`;
+
+            // Validation du champ descriptionOD si odActive est activé
+            if (form.content == '') {
+                return NextResponse.json(
+                    { message: "Veuillez remplir le champ descriptionOD" },
+                    { status: 400 }
+                );
+            }
+        }
+
+        // Exécuter la requête en passant les valeurs dans un tableau
         await queryDB(
-            'UPDATE classements SET title = ?, description = ?, type = ?, logo=?, faq=?, responsable=? WHERE id = ?',
-            [form.title, form.description, form.type, form.logo, JSON.stringify(form.faqListe), form.responsable, params.id]
+            'UPDATE classements SET title = ?, type = ?, logo = ?, faq = ?, responsable = ?, meta_title = ?, meta_description = ? WHERE id = ?',
+            [
+                form.title || null,
+                form.type || null,
+                imagePublicPath == '' ? form.image : imagePublicPath,
+                form.faqListe || [],
+                form.responsable || null,
+                form.meta_title || null,
+                form.meta_description || null,
+                id || null
+            ]
         );
 
-        return NextResponse.json({ message: 'Classement modifié avec succès' }, { status: 201 });
-
+        return NextResponse.json({ message: 'Classement modifié avec succès' }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
             { error: error.message || "Erreur serveur" },
             { status: 500 }
-        )
+        );
     }
 }

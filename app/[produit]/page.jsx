@@ -8,19 +8,20 @@ import React from 'react'
 
 const page = async ({ params }) => {
     const { produit } = await params
-    const [typesRes, offresRes, classementsRes, produitsRes] = await Promise.all([
+    const [typesRes, offresRes, classementsRes, produitsRes, articlesRes] = await Promise.all([
         fetch(`${process.env.NOM_DE_DOMAIN}/api/types`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?produit=${produit}`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`),
         fetch(`${process.env.NOM_DE_DOMAIN}/api/produit`),
+        fetch(`${process.env.NOM_DE_DOMAIN}/api/blog`)
     ])
 
-    const [types, offres, classements, produits] = await Promise.all([typesRes.json(), offresRes.json(), classementsRes.json(), produitsRes.json()])
+    const [types, offres, classements, produits, articles] = await Promise.all([typesRes.json(), offresRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json()])
 
     const data = offres.map((item) => ({
         ...item,
         classement: JSON.parse(item.classement),
-        descriptionOC: JSON.parse(item.descriptionOC),
+        // descriptionOC: JSON.parse(item.descriptionOC),
     }));
 
     const classement = types.map(category => ({
@@ -28,23 +29,25 @@ const page = async ({ params }) => {
         classement: classements.filter(item => item.type === category.title)
     }));
 
+    // console.log(articles)
+
     const titleSelect = produits.filter(item => slugify(item.title) == produit)
     const caractProduits = titleSelect[0]
 
     return (
         <div>
-            <Header params={produit} classement={classement} home={true} produits={produits} />
+            <Header classement={classement} produits={produits} />
             <div className="pt-10">
                 <Slider types={types} />
                 <div className="space-y-20">
                     <div className="flex justify-center mt-10">
-                        <h1 className='md:text-2xl text-xl font-medium text-gray-500'>{caractProduits.title} </h1>
+                        <h1 className='md:text-2xl text-xl font-medium text-gray-500'>{caractProduits?.title} </h1>
                     </div>
                     <Title params={caractProduits} />
                     <Pagination data={data} params={produit} classements={classement} />
                 </div>
             </div>
-            <Footer />
+            <Footer articles={articles} />
         </div>
     )
 }
