@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { MyInput } from '@/app/signup/page'
-import { NOM_DE_DOMAIN } from '../env'
 import { handleImageSelect } from '../LogoutButton'
 
 const ModifierClassement = ({ id, userdata }) => {
@@ -28,7 +27,7 @@ const ModifierClassement = ({ id, userdata }) => {
 
     const listType = async () => {
         try {
-            const response = await fetch(`${NOM_DE_DOMAIN}/api/types`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`);
             if (!response.ok) throw new Error(`Erreur: ${response.status}`);
             const typesData = await response.json();
             setTypes(typesData);
@@ -39,7 +38,7 @@ const ModifierClassement = ({ id, userdata }) => {
 
     const handleType = async () => {
         try {
-            const response = await fetch(`${NOM_DE_DOMAIN}/api/classements/${id}`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements/${id}`)
             const classement = await response.json()
             setForm({
                 title: classement[0].title || '',
@@ -68,7 +67,7 @@ const ModifierClassement = ({ id, userdata }) => {
                 if (imageType === 'upload' && imageFile) {
                     formData.append('file', imageFile);
                 }
-                const response = await axios.put(`${NOM_DE_DOMAIN}/api/classements/${id}`, formData, {
+                const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -92,7 +91,7 @@ const ModifierClassement = ({ id, userdata }) => {
 
     return (
         <div className='text-black'>
-            <h1 className='text-center text-2xl font-medium mb-10'>Ajouter un classement</h1>
+            <h1 className='text-center text-2xl font-medium mb-10'>Modifier un classement</h1>
             <div className="space-y-2 text-md text-gray-700 font-medium">
                 <div className="sm:mb-5 mb-2">
                     <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Type</label>
@@ -145,7 +144,7 @@ const ModifierClassement = ({ id, userdata }) => {
                                         <button
                                             type="button"
                                             onClick={() => handleImageSelect(setForm, form)} // Fonction pour afficher la galerie d'images
-                                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                                            className="block w-[200px] px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
                                             Choisir une image
                                         </button> :
                                         <MyInput type={'text'} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
@@ -171,7 +170,7 @@ const ModifierClassement = ({ id, userdata }) => {
                     onClick={submit}
                     className='w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors'
                 >
-                    Créer le classement
+                    Enregistrer les modifications
                 </button>
             </div>
             <p className='flex justify-center text-red-400'>{message}</p>

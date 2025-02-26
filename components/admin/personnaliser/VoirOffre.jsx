@@ -1,5 +1,4 @@
 'use client'
-import { NOM_DE_DOMAIN } from '@/components/env'
 import { useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -9,7 +8,7 @@ const VoirOffre = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${NOM_DE_DOMAIN}/api/offres/${id}`)
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres/${id}`)
                 const data = await response.json()
                 // data.classement = data.classement ? JSON.parse(data.classement) : [];
                 // data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];

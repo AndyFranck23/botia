@@ -13,7 +13,6 @@ export async function GET() {
     }
 }
 
-// 📌 Ajouter un article
 export async function POST(req) {
     try {
         const formData = await req.formData(); // Utilise formData() pour récupérer les données du formulaire
@@ -33,7 +32,6 @@ export async function POST(req) {
     }
 }
 
-// 📌 Ajouter un article
 export async function PUT(req) {
     try {
         const formData = await req.formData(); // Utilise formData() pour récupérer les données du formulaire

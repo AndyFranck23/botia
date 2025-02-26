@@ -2,8 +2,6 @@
 
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { NOM_DE_DOMAIN } from '../env'
-import { useUser } from './context/UserContext'
 
 const ListeOffre = ({ produit }) => {
     const [loading, setLoading] = useState(true)
@@ -17,7 +15,7 @@ const ListeOffre = ({ produit }) => {
     const fetchOffre = async () => {
         try {
             setLoading(true)
-            const response = await fetch(`${NOM_DE_DOMAIN}/api/offres${produit ? '?produit=' + produit.toLowerCase() : ''}`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres${produit ? '?produit=' + produit : ''}`)
             const offres = await response.json()
             setData(offres)
         } catch (err) {
@@ -29,7 +27,17 @@ const ListeOffre = ({ produit }) => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`${NOM_DE_DOMAIN}/api/offres/${id}`)
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres/${id}`)
+            fetchOffre()
+            alert(response.data.message)
+            // window.location.reload()
+        } catch (error) {
+            console.error("Erreur de suppression:", error)
+        }
+    }
+    const handleBroullion = async (id) => {
+        try {
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/broullion/${id}`)
             fetchOffre()
             alert(response.data.message)
             // window.location.reload()
@@ -65,7 +73,7 @@ const ListeOffre = ({ produit }) => {
                         <div className="text-black w-full items-center flex justify-center">Aucun résultat</div>
                         :
                         filteredData.map((offre, index) =>
-                            <Offre key={index} data={offre} onClickUpdate={`/admin/offre/modifieroffre/${offre.id}`} onClickDel={() => handleDelete(offre.id)} />
+                            <Offre key={index} data={offre} onClickBro={() => handleBroullion(offre.id)} onClickUpdate={`/admin/offre/modifieroffre/${offre.id}`} onClickDel={() => handleDelete(offre.id)} />
                         )
                 }
             </div>
@@ -75,10 +83,10 @@ const ListeOffre = ({ produit }) => {
 
 export default ListeOffre
 
-const Offre = ({ data, onClickUpdate, onClickDel }) => {
+const Offre = ({ data, onClickUpdate, onClickDel, onClickBro }) => {
     return (
         <div className="xs:flex p-3 rounded-md justify-between items-center border-gray-200 border-2 hover:bg-gray-200">
-            <img src={data.image} alt="" className='hidden sm:block h-[100px] w-[100px] object-cover rounded-md' />
+            <img src={data.image ? data.image : data.title} alt="" className='hidden sm:block h-[100px] w-[100px] object-cover rounded-md' />
             <div className="">
                 <h1 className='text-blue-500 font-medium'>{data.title} </h1>
                 <div className="flex space-x-1 w-[200px]">
@@ -101,9 +109,10 @@ const Offre = ({ data, onClickUpdate, onClickDel }) => {
                 <p>{data.date}</p>
             </div>
             <div className="">
-                <div className="flex space-x-1">
-                    <a href={onClickUpdate} className='text-blue-500'>Modifier</a>
-                    <button onClick={onClickDel} className='text-red-500'>Supprimer</button>
+                <div className="flex space-x-3">
+                    <a href={onClickUpdate} className='text-blue-500'><i className="fa-solid fa-pen-to-square text-lg"></i></a>
+                    <button onClick={onClickDel} className='text-red-500'><i className="fa-regular fa-trash-can text-lg"></i></button>
+                    <button onClick={onClickBro} className='text-blue-500'>Broullion</button>
                     {/* <a href={`/admin/offre/voiroffre/${data.id}`} className='text-blue-500'>voir</a> */}
                 </div>
                 <div className="">

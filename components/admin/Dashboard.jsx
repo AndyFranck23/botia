@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { Doughnut, Line } from "react-chartjs-2";
 import "chart.js/auto";
-import { NOM_DE_DOMAIN } from "../env";
 
 export default function Dashboard() {
     const [aggregatedData, setAggregatedData] = useState([]);
@@ -11,13 +10,13 @@ export default function Dashboard() {
 
     useEffect(() => {
         // Récupérer les données agrégées
-        fetch(`${NOM_DE_DOMAIN}/api/clicks`) // Remplace par ton endpoint API
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/clicks`) // Remplace par ton endpoint API
             .then((res) => res.json())
             .then((data) => setAggregatedData(data))
             .catch((err) => console.error(err));
 
         // Récupérer les données temporelles
-        fetch(`${NOM_DE_DOMAIN}/api/clicks/time`) // Remplace par ton endpoint API
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/clicks/time`) // Remplace par ton endpoint API
             .then((res) => res.json())
             .then((data) => setTimelineData(data))
             .catch((err) => console.error(err));

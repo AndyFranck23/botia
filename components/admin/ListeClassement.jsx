@@ -1,14 +1,13 @@
 'use client'
 import React, { useState } from 'react'
 import axios from 'axios'
-import { NOM_DE_DOMAIN } from '../env'
 
 const ListeClassement = ({ classement }) => {
     const [list, setList] = useState(classement) // État local
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${NOM_DE_DOMAIN}/api/classements/${id}`)
+            await axios.delete(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements/${id}`)
             setList(list.map(item => ({
                 ...item,
                 classement: item.classement.filter(elt => elt.id !== id)

@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { NOM_DE_DOMAIN } from '../env'
 
 export const ListeDemand = () => {
     const [loading, setLoading] = useState(true)
@@ -13,7 +12,7 @@ export const ListeDemand = () => {
 
     const listeDemand = async () => {
         try {
-            const response = await fetch(`${NOM_DE_DOMAIN}/api/demande`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/demande`)
             const users = await response.json()  // Correction: ajouter await ici
             setDemandes(users)
         } catch (e) {
@@ -25,7 +24,7 @@ export const ListeDemand = () => {
 
     const deleteDemande = async (id) => {
         try {
-            await axios.delete(`${NOM_DE_DOMAIN}/api/demande/${id}`)
+            await axios.delete(`${process.env.NEXT_PUBLIC_SITE_URL}/api/demande/${id}`)
             setDemandes(demandes.filter((demande) => demande.id !== id))
         } catch (err) {
             console.log(err.message)
@@ -34,7 +33,7 @@ export const ListeDemand = () => {
 
     const agreeDemande = async (id) => {
         try {
-            await axios.put(`${NOM_DE_DOMAIN}/api/demande/${id}`)
+            await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/demande/${id}`)
             listeDemand()
         } catch (err) {
             console.log(err.message)

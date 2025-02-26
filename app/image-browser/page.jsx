@@ -6,7 +6,7 @@ export default function page() {
     const [images, setImages] = useState([]);
 
     useEffect(() => {
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/upload`) // API pour récupérer les images du dossier uploads
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/upload`) // API pour récupérer les images du dossier uploads
             .then((res) => res.json())
             .then((data) => setImages(data.images))
             .catch((err) => console.error("Erreur de chargement des images", err));

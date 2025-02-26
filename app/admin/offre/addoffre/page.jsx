@@ -1,11 +1,12 @@
 import AddOffre from "@/components/admin/AddOffre";
 import Layout from "@/components/admin/Layout";
+import ListeOffre from "@/components/admin/ListeOffre";
 
 export default async function Page() {
     const [typesRes, classementsRes, produitsRes] = await Promise.all([
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/types`, { cache: "no-store" }),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`, { cache: "no-store" }),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/produit`)
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`, { cache: "no-store" }),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`, { cache: "no-store" }),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`)
     ]);
 
     const [types, classes, produits] = await Promise.all([
@@ -22,6 +23,9 @@ export default async function Page() {
     return (
         <Layout>
             <AddOffre classements={classements} TINY_KEY={process.env.TINY_KEY} produit={produits} />
+            <div className="mt-20">
+                <ListeOffre />
+            </div>
         </Layout>
     );
 }

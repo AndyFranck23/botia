@@ -1,17 +1,10 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import jwt from 'jsonwebtoken'
-import mysql from 'mysql2/promise'
 import HeaderAdmin from '@/components/admin/HeaderAdmin'
 import { MenuAdmin } from '@/components/admin/MenuAdmin'
 import { UserProvider } from './context/UserContext'
-
-const pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-})
+import { queryDB } from '@/lib/db'
 
 const LOGIN_ADMIN = process.env.LOGIN_ADMIN
 
@@ -26,7 +19,7 @@ export default async function Layout({ children }) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
 
-        const [user] = await pool.query(
+        const user = await queryDB(
             'SELECT * FROM users WHERE email = ?',
             [decoded.email]
         )

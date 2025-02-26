@@ -1,6 +1,5 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { NOM_DE_DOMAIN } from '../env'
 import axios from 'axios'
 
 const ListeArticle = () => {
@@ -13,7 +12,7 @@ const ListeArticle = () => {
 
     const fetchBlog = async () => {
         try {
-            const response = await fetch(`${NOM_DE_DOMAIN}/api/blog`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`)
             const blogs = await response.json()
             setBlog(blogs)
         } catch (err) {
@@ -25,7 +24,7 @@ const ListeArticle = () => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`${NOM_DE_DOMAIN}/api/blog/${id}`)
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog/${id}`)
             fetchBlog()
             alert(response.data.message)
             // window.location.reload()

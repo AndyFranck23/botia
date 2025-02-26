@@ -3,9 +3,19 @@ import { NextResponse } from 'next/server';
 import fs from "fs";
 import path from "path";
 
-export async function GET() {
+export async function GET(request) {
     try {
-        const classements = await queryDB(`SELECT * FROM classements`);
+        const { searchParams } = new URL(request.url);
+        const type = searchParams.get('type');
+        let sql = ''
+        let params = []
+        if (type) {
+            sql = `SELECT * FROM classements WHERE type = ?`
+            params = [type]
+        } else {
+            sql = `SELECT * FROM classements`
+        }
+        const classements = await queryDB(sql, params);
         return NextResponse.json(classements);
     } catch (error) {
         console.error("Erreur serveur:", error);

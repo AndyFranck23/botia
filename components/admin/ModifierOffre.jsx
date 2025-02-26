@@ -2,7 +2,6 @@
 import { useRef, useState } from "react"
 import axios from "axios"
 import { MyInput } from "@/app/signup/page"
-import { NOM_DE_DOMAIN } from "../env"
 import { slugify } from "../Slug"
 import { handleImageBrowser, handleImageSelect } from "../LogoutButton"
 import { useUser } from "./context/UserContext"
@@ -34,9 +33,9 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
         responsable: userdata.identite
     })
 
-    const correctedContent = offre?.content
-        ? offre.content.replace(/\.\.\/\.\.\/uploads\//g, '/uploads/')
-        : "";
+    // const correctedContent = offre?.content
+    //     ? offre.content.replace(/\.\.\/\.\.\/uploads\//g, '/uploads/')
+    //     : "";
 
     // const descCourtControle = (e) => {
     //     setDescCourt(e)
@@ -59,7 +58,7 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
                     formData.append('file', imageFile);
                 }
 
-                const response = await axios.put(`${NOM_DE_DOMAIN}/api/offres/${id}`, formData, {
+                const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -160,7 +159,7 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
                                     <button
                                         type="button"
                                         onClick={() => handleImageSelect(setForm, form)} // Fonction pour afficher la galerie d'images
-                                        className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                                        className="block w-[200px] px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
                                         Choisir une image
                                     </button> :
                                     <MyInput type={'text'} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
@@ -195,7 +194,7 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
                                    link image media | codesample emoticons | print fullscreen preview | \
                                    ",
                     images_upload_url: `/api/upload`,
-                    document_base_url: NOM_DE_DOMAIN,
+                    document_base_url: process.env.NEXT_PUBLIC_SITE_URL,
                     relative_urls: false,
                     automatic_uploads: true,
                     file_picker_types: "image media",

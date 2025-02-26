@@ -2,7 +2,6 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { NOM_DE_DOMAIN } from '@/components/env'
 
 export default function LoginPage() {
     const [email, setEmail] = useState('')
@@ -14,7 +13,7 @@ export default function LoginPage() {
         e.preventDefault()
 
         try {
-            const response = await fetch(`${NOM_DE_DOMAIN}/api/login`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })

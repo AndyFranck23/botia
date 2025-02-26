@@ -7,7 +7,7 @@ import React from 'react'
 
 export async function generateMetadata({ params }) {
     const { offre } = await params
-    const response = await fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?slug=${offre}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?slug=${offre}`)
     const data = await response.json()
     // data.descriptionOC = JSON.stringify(data.descriptionOC)
     return {
@@ -20,16 +20,18 @@ export async function generateMetadata({ params }) {
 const page = async ({ params }) => {
     const { offre, produit } = await params
     const nbreOffre = 10 // nombre d'offres dans les alternatives
-    const [offresRes, alternativeRes, typesRes, classementsRes, produitsRes, articlesRes] = await Promise.all([
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?slug=${offre}`),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/offres?produit=${produit}&limit=${nbreOffre}`),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/types`),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/produit`),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/blog`)
+    const [offresRes, alternativeRes, typesRes, classementsRes, produitsRes, articlesRes, footerRes, mentionRes] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?slug=${offre}`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?produit=${produit}&limit=${nbreOffre}`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`),
     ])
 
-    const [data, offres, types, classe, produits, articles] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json()])
+    const [data, offres, types, classe, produits, articles, footers, mention] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json(), mentionRes.json()])
 
     data.classement = data.classement ? JSON.parse(data.classement) : [];
     // data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];
@@ -65,26 +67,29 @@ const page = async ({ params }) => {
                 <div className="w-full lg:flex mt-10 bg-white shadow-lg rounded-lg ">
                     <div className="w-full lg:w-2/3 border-r border-gray-200 p-6">
                         <div className="border-b border-gray-200 pb-6">
-                            <div className="flex items-center px-3 pt-3">
-                                <img src={data.image} alt={data?.title} className='mr-4 w-20 h-20 rounded-xl shadow-md object-cover' />
+                            <div className="flex items-center px-3 pt-3 pb-4">
+                                <img src={data?.image ? data?.image : data?.title} className='mr-4 w-20 h-20 rounded-xl shadow-md object-cover' />
                                 <div>
                                     <h1 className='text-3xl sm:text-4xl text-gray-900 font-extrabold m-2'>{data?.title}</h1>
-                                    <p className='font-medium text-lg bg-gray-100 text-gray-700 px-4 py-2 rounded-md inline-block'>
+                                    <p className='font-medium text-lg text-gray-700 px-4 py-2 rounded-md inline-block'>
                                         {data?.descriptionOC}
                                     </p>
                                 </div>
                             </div>
-                            <ButtonClick href={data?.lien} data={data} />
+                            <div className='flex justify-between'>
+                                <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit} className="bg-gray-100 p-2 rounded-xl border font-bold text-green-600 justify-self-start">{data.id_produit}</Link>
+                                <ButtonClick href={'#'} data={data} />
+                            </div>
                             <div className='flex flex-wrap m-3 gap-4'>
                                 {
                                     data?.classement.map((item, index) =>
-                                        <a key={index} href={navigation(item, classements)} className='bg-gradient-to-r from-blue-500 to-blue-600 text-white px-3 py-1 rounded-full hover:from-blue-600 hover:to-blue-700 transition-all duration-300'>{item.title} </a>
+                                        <Link key={index} href={navigation(item, classements)} className='px-3 py-1 text-sm border-2 border-blue-200 text-blue-600 rounded-full group-hover:border-white/50 group-hover:text-white hover:bg-blue-600 hover:text-white transition-all'>{item.title} </Link>
                                     )}
                             </div>
                             <p className=' text-red-600 font-bold text-4xl p-1'>Prix:{data?.prix} $</p>
                         </div>
                         <div className='pt-6'>
-                            <img src={data?.image} alt="Illustration" className="w-full rounded-md h-[400px] sm:h-[500px] object-cover shadow-md" />
+                            <img src={data?.image ? data?.image : data?.title} alt="Illustration" className="w-full rounded-md h-[400px] sm:h-[500px] object-cover shadow-md" />
                         </div>
                         <div className=' p-6 rounded-md mt-6 '>
                             <h2 className="text-xl font-semibold mb-4">{data?.title}</h2>
@@ -100,8 +105,8 @@ const page = async ({ params }) => {
                         {/* Section des chatbots */}
                         <div className="w-full flex flex-col items-center gap-y-4">
                             {filteredData.map((item, index) => (
-                                <div key={index} className="">
-                                    <Chatbot data={item} params={produit} classements={classements} />
+                                <div key={index} className="w-full flex flex-wrap justify-center">
+                                    <Chatbot data={item} params={produit} classements={classements} className={"lg:w-full w-[400px]"} />
                                 </div>
                             ))}
                         </div>
@@ -109,7 +114,7 @@ const page = async ({ params }) => {
 
                 </div>
             </div>
-            <Footer articles={articles} />
+            <Footer articles={articles} result={footers} classements={classements} mention={mention[0]} />
         </>
     )
 }
@@ -125,5 +130,5 @@ const navigation = (pageName, classements) => {
             }
         });
     });
-    return "/class" + "/" + out.toLowerCase() + "/" + pageName.slug;
+    return process.env.NEXT_PUBLIC_SITE_URL + "/class" + "/" + out.toLowerCase() + "/" + pageName.slug;
 };

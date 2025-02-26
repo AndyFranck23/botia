@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { NOM_DE_DOMAIN } from "../env";
 import { handleImageBrowser } from "../LogoutButton";
 import axios from "axios";
 
@@ -20,7 +19,7 @@ export default function AddArticle({ TINY_KEY, page, data }) {
             formData.append('title', title);
             formData.append('content', JSON.stringify(content))
             if (page == 'blog') {
-                const response = await axios.post(`${NOM_DE_DOMAIN}/api/blog`, formData, {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -28,10 +27,10 @@ export default function AddArticle({ TINY_KEY, page, data }) {
                 setMessage(response.data.message)
                 alert(response.data.message)
             } else {
-                const mentionRes = await fetch(`${NOM_DE_DOMAIN}/api/mention`)
+                const mentionRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`)
                 const mention = await mentionRes.json()
                 if (Array.isArray(mention) && mention.length === 0) {
-                    const response = await axios.post(`${NOM_DE_DOMAIN}/api/mention`, formData, {
+                    const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -39,7 +38,7 @@ export default function AddArticle({ TINY_KEY, page, data }) {
                     setMessage(response.data.message)
                     alert(response.data.message)
                 } else {
-                    const response = await axios.put(`${NOM_DE_DOMAIN}/api/mention`, formData, {
+                    const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
@@ -73,7 +72,7 @@ export default function AddArticle({ TINY_KEY, page, data }) {
             <Editor
                 apiKey={TINY_KEY}
                 onInit={(evt, editor) => (editorRef.current = editor)}
-                initialValue={page == "blog" ? "<p>Écris ici...</p>" : data.content}
+                initialValue={page == "blog" ? "<p>Écris ici...</p>" : data?.content}
                 init={{
                     height: 500,
                     menubar: true,
@@ -90,7 +89,7 @@ export default function AddArticle({ TINY_KEY, page, data }) {
                                     link image media | codesample emoticons | print fullscreen preview | \
                                     ",
                     images_upload_url: `/api/upload`,
-                    document_base_url: NOM_DE_DOMAIN,
+                    document_base_url: process.env.NEXT_PUBLIC_SITE_URL,
                     relative_urls: false,
                     automatic_uploads: true,
                     file_picker_types: "image media",

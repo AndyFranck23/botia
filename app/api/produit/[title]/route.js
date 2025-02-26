@@ -1,18 +1,16 @@
 import { queryDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+
 export async function PUT(request, { params }) {
     try {
-        const body = await request.json(); // Récupérer le corps de la requête
-
-        if (!body?.title || !body?.description) {
-            return NextResponse.json({ message: 'Veuillez remplir tous les champs requis' }, { status: 400 });
-        }
+        const { title } = await params
+        const { form } = await request.json(); // Récupérer le corps de la requête
 
         // Insérer le classement
         await queryDB(
-            'UPDATE produit SET sous_titre = ?, text = ? WHERE title = ?',
-            [body.title, body.description, params.title]
+            'UPDATE produit SET sous_titre = ?, text = ?, meta_title = ?, meta_description = ?, titre_h1 = ? WHERE title = ?',
+            [form?.title, form?.description, form?.meta_title, form?.meta_description, form?.titre_h1, title]
         );
 
         return NextResponse.json({ message: 'Titre ajouté avec succès' }, { status: 201 });

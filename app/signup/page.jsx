@@ -32,10 +32,10 @@ export default function AdminPage() {
             if (form.password === form.tryPassword) {
                 try {
                     // Appel à l'API interne pour l'inscription
-                    const response = await axios.post(`${process.env.NOM_DE_DOMAIN}/api/signup`, { form });
+                    const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/signup`, { form });
                     setMessage(response.data.message);
                     console.log(response.data);
-                    // router.push("/login");
+                    router.push("/login");
                 } catch (e) {
                     setMessage(e.response?.data?.message || "Erreur lors de l'inscription");
                 }

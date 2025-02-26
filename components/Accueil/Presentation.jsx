@@ -8,12 +8,12 @@ const Presentation = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 place-items-center">
                     {/* Texte section */}
                     <div className="order-2 sm:order-1 space-y-5 flex flex-col items-center">
-                        <h1 className="sm:text-3xl text-xl">
+                        <h2 className="sm:text-3xl text-xl">
                             LA PLATEFORME QUI CONNECTE VOS IDÉES {''}
                             <span className="sm:text-3xl text-xl font-bold bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
                                 AUX MEILLEURES SOLUTIONS D'IA POUR TOUS VOS PROJETS
                             </span>
-                        </h1>
+                        </h2>
                         <p className="text-md sm:text-xl font-medium max-w-lg">
                             Notre plateforme vous aide à découvrir et comparer les meilleures
                             solutions de chatbots et callbots adaptées à vos besoins. Simplifiez
@@ -41,10 +41,10 @@ const Presentation = () => {
             <div className="h-[300px] w-[15vw] bg-gradient-to-r from-primary to-secondary rounded-full absolute top-0 left-0 blur-3xl animate-move-wrapper"></div>
 
             <div className="py-8 sm:p-10">
-                <h1 className="text-2xl sm:text-3xl max-w-full text-center font-cursive">
+                <h2 className="text-2xl sm:text-3xl max-w-full text-center font-cursive">
                     "Découvrez BOTIA.AI, Simplifiez votre recherche en quelques clics et trouvez facilement
                     le partenaire idéal pour transformer vos projets et optimiser votre expérience client !"
-                </h1>
+                </h2>
             </div>
         </div>
     );

@@ -1,46 +1,30 @@
 import { queryDB } from "@/lib/db";
 import { NextResponse } from "next/server";
 
-export async function POST(request) {
+export async function PUT(request) {
     try {
-        const body = await request.json(); // Récupérer le corps de la requête
+        // Attendre params avant de déstructurer
+        const formData = await request.formData(); // Utilise formData() pour récupérer les données du formulaire
+        const form = Object.fromEntries(formData);
 
-        if (!body?.title || !body?.description) {
-            return NextResponse.json({ message: 'Veuillez remplir tous les champs requis' }, { status: 400 });
-        }
-
-        // Insérer le classement
+        // Exécuter la requête en passant les valeurs dans un tableau
         await queryDB(
-            'INSERT INTO titre (produit, classement, sous_titre, text) VALUES (?, ?, ?, ?)',
-            [body.produit, body.classement, body.title, body.description]
+            'UPDATE classements SET sous_titre = ?, text = ?, content = ?, meta_title = ?, meta_description = ?, titre_h1 = ? WHERE title = ?',
+            [
+                form.title,
+                form.description,
+                JSON.parse(form.content),
+                form.meta_title,
+                form.meta_description,
+                form.titre_h1,
+                form.classement
+            ]
         );
 
-        return NextResponse.json({ message: 'Titre ajouté avec succès' }, { status: 201 });
-
+        return NextResponse.json({ message: 'Enregistrement réussi' }, { status: 200 });
     } catch (error) {
         return NextResponse.json(
             { error: error.message || "Erreur serveur" },
-            { status: 500 }
-        )
-    }
-}
-
-export async function GET(request) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const produit = searchParams.get('produit');
-        const classement = searchParams.get('classement');
-        let sql = ''
-        if (produit)
-            sql = 'SELECT * FROM titre WHERE produit = ?';
-        if (classement)
-            sql = 'SELECT * FROM titre WHERE classement = ?';
-
-        const titre = await queryDB(sql, [produit ? produit : classement])
-        return NextResponse.json(titre);
-    } catch (error) {
-        return NextResponse.json(
-            { error: "Erreur serveur" },
             { status: 500 }
         );
     }

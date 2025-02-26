@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { NOM_DE_DOMAIN } from '../env'
+import { slugify } from '../Slug'
 
 export const MenuAdmin = ({ className, userType, active }) => {
     const [activeId, setActiveId] = useState(active)
@@ -12,7 +12,7 @@ export const MenuAdmin = ({ className, userType, active }) => {
     useEffect(() => {
         const fetchProduit = async () => {
             try {
-                const response = await fetch(`${NOM_DE_DOMAIN}/api/produit`)
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`)
                 const data = await response.json()
                 setProduit(data)
             } catch (err) {
@@ -35,7 +35,7 @@ export const MenuAdmin = ({ className, userType, active }) => {
         )
 
     return (
-        <div className={`${className} fixed bg-gray-900 w-48 mt-10 h-full text-white text-sm sm:text-md overflow-y-auto py-4 shadow-lg`}>
+        <div className={`${className} fixed bg-gray-900 w-48 pt-10 h-full text-white text-sm sm:text-md overflow-y-auto py-4 shadow-lg`}>
             <ul className='space-y-2 list-none touch-pan-y'>
 
                 {/* Menu Comptes */}
@@ -67,15 +67,23 @@ export const MenuAdmin = ({ className, userType, active }) => {
                         onClick={() => toggleMenu('offre')}
                         isActive={activeId === 'offre'}
                     />
-                    <div className={`overflow-hidden transition-all duration-300 ${activeId === 'offre' ? 'h-auto' : 'max-h-0'}`}>
+                    <div
+                        className={`overflow-y-auto transition-all duration-300 ${activeId === 'offre' ? 'max-h-40' : 'max-h-0'}`}
+                    >
                         <MySubButton text={'Tous les offres'} href={'/admin/offre/listeoffre'} />
+                        <MySubButton text={'Ajouter un offre'} href={'/admin/offre/addoffre'} />
+                        <MySubButton text={'Broullion'} href={'/admin/offre/broullion'} />
                         {
                             produit.map(item =>
-                                <MySubButton key={item.id} text={item.title} href={`/admin/offre/listeoffre/${item.title.toLowerCase()}`} />
+                                <MySubButton
+                                    key={item.id}
+                                    text={item.title}
+                                    href={`/admin/offre/listeoffre/${slugify(item.title)}`}
+                                />
                             )
                         }
-                        <MySubButton text={'Ajouter un offre'} href={'/admin/offre/addoffre'} />
                     </div>
+
                 </li>
 
                 {/* Menu Classement */}
@@ -115,8 +123,8 @@ export const MenuAdmin = ({ className, userType, active }) => {
                 </li>
                 <li>
                     <MyButton
-                        disabled={true}
-                        text={'Titre accueil'}
+                        disabled={false}
+                        text={'Titre accueil & SEO accueil'}
                         icon={'fa-solid fa-newspaper'}
                         onClick={() => toggleMenu('titre')}
                         isActive={activeId === 'titre'}
@@ -128,7 +136,14 @@ export const MenuAdmin = ({ className, userType, active }) => {
                 </li>
                 <li>
                     <a href="/admin/mention" className='hover:bg-blue-600 hover:text-white hover:shadow-md flex items-center justify-start px-4 py-3 w-full font-medium text-left transition-all duration-300'>
+                        <i className='fa-solid fa-newspaper mr-3'></i>
                         Mention légal
+                    </a>
+                </li>
+                <li>
+                    <a href="/admin/footer" className='hover:bg-blue-600 hover:text-white hover:shadow-md flex items-center justify-start px-4 py-3 w-full font-medium text-left transition-all duration-300'>
+                        <i className='fa-solid fa-newspaper mr-3'></i>
+                        Footer
                     </a>
                 </li>
             </ul>

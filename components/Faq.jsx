@@ -31,12 +31,9 @@ const Faq = ({ classements }) => {
       {faqData.length > 0 && (
         <div className="flex items-center justify-center py-10 mx-10">
           <div className="max-w-3xl w-full p-6 bg-white rounded-lg">
-            <h1 className="text-2xl font-bold text-center mb-6 text-blue-700 sm:block hidden">
-              Questions fréquemment posées
-            </h1>
-            <h1 className="text-2xl font-bold text-center mb-2 text-blue-700 sm:hidden block">
+            <h3 className="text-2xl font-bold text-center mb-6 text-blue-700 sm:block hidden">
               FAQ
-            </h1>
+            </h3>
             <div className="space-y-4">
               {faqData.map((faq) => (
                 <div key={faq.id} className="rounded-md overflow-hidden">

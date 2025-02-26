@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { MyInput } from '@/app/signup/page'
-import { NOM_DE_DOMAIN } from '../env'
 import { handleImageSelect } from '../LogoutButton'
 
 const AddType = () => {
@@ -30,7 +29,7 @@ const AddType = () => {
             if (imageType === 'upload' && imageFile) {
                 formData.append('file', imageFile);
             }
-            const response = await axios.post(`${NOM_DE_DOMAIN}/api/types`, formData, {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -94,7 +93,7 @@ const AddType = () => {
                                         <button
                                             type="button"
                                             onClick={() => handleImageSelect(setForm, form)} // Fonction pour afficher la galerie d'images
-                                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                                            className="block w-[200px] px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
                                             Choisir une image
                                         </button> :
                                         <MyInput type={'text'} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />

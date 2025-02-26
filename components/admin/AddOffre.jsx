@@ -3,7 +3,6 @@
 import { useRef, useState } from "react"
 import axios from "axios"
 import { MyInput } from "@/app/signup/page"
-import { NOM_DE_DOMAIN } from "../env"
 import { slugify } from "../Slug"
 import dynamic from "next/dynamic";
 import { handleImageBrowser, handleImageSelect } from "../LogoutButton"
@@ -57,6 +56,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
         });
     };
 
+
     const submit = async () => {
         // setForm({ ...form, produit: slugify(form.produit) })
         if ((form.title && form.classement && form.descriptionOC && form.lien) !== '') {
@@ -72,7 +72,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                     formData.append('file', imageFile);
                 }
 
-                const response = await axios.post(`${NOM_DE_DOMAIN}/api/offres`, formData, {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -96,6 +96,9 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                 setImageFile('url')
                 alert(response.data.message)
                 console.log(response.data.message)
+                setTimeout(() => {
+                    window.location.reload();
+                }, 100); // Laisse le temps à l'utilisateur de voir le message
             } catch (e) {
                 console.log(e)
                 // setMessage(e.response.data.message)
@@ -113,7 +116,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                 <select
                     value={form.produit}
                     onChange={(e) => setForm({ ...form, produit: e.target.value })}
-                    className={`${form.type === '' ? 'text-gray-400' : 'text-gray-700'} block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500`}>
+                    className={`${form.produit === '' ? 'text-gray-400' : 'text-gray-700'} block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500`}>
                     <option className='hidden' value="">Produit ou l'offre appartient</option>
                     {produit.map((type, index) => (
                         <option key={index} className='text-gray-700' value={type.title}>{type.title}</option>
@@ -162,7 +165,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                                     <button
                                         type="button"
                                         onClick={() => handleImageSelect(setForm, form)} // Fonction pour afficher la galerie d'images
-                                        className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                                        className="block w-[200px] px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
                                         Choisir une image
                                     </button> :
                                     <MyInput type={'text'} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />
@@ -195,7 +198,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                         bullist numlist outdent indent | removeformat | help | \
                         link image media | codesample emoticons | print fullscreen preview | \
                         ",
-                    images_upload_url: `/api/upload`,
+                    images_upload_url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/upload`,
                     automatic_uploads: true,
                     file_picker_types: "image media",
                     file_picker_callback: handleImageBrowser,

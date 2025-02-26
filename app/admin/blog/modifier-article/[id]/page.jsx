@@ -4,7 +4,7 @@ import React from 'react'
 
 const page = async ({ params }) => {
     const { id } = await params
-    const response = await fetch(`${process.env.NOM_DE_DOMAIN}/api/blog?id=${id}`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog?id=${id}`)
     const data = await response.json()
 
     return (

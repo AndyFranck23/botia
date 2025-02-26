@@ -1,13 +1,12 @@
 'use client'
 import axios from 'axios'
 import Link from 'next/link'
-import { NOM_DE_DOMAIN } from '../env'
 
 const ListeType = ({ classements }) => {
 
     const handleDelete = async (id) => {
         try {
-            const response = await axios.delete(`${NOM_DE_DOMAIN}/api/types/${id}`)
+            const response = await axios.delete(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types/${id}`)
             alert(response.data.message)
         } catch (error) {
             console.error("Erreur de suppression:", error)

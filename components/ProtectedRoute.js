@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { NOM_DE_DOMAIN } from "./env";
 
 const ProtectedRoute = ({ children }) => {
     const router = useRouter();
@@ -12,7 +11,7 @@ const ProtectedRoute = ({ children }) => {
     useEffect(() => {
         const checkAuth = async () => {
             try {
-                await axios.get(`${NOM_DE_DOMAIN}/api/protected`, { withCredentials: true });
+                await axios.get(`${process.env.NEXT_PUBLIC_SITE_URL}/api/protected`, { withCredentials: true });
                 setIsAuthenticated(true);
             } catch (error) {
                 router.push("/login");

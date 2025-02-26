@@ -17,10 +17,10 @@ export async function GET(request) {
             let params = [];
 
             if (classement) {
-                sqlQuery = `SELECT * FROM offres WHERE JSON_CONTAINS(classement, ?, '$') ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
+                sqlQuery = `SELECT * FROM offres WHERE JSON_CONTAINS(classement, ?, '$') AND status = 'publier' ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
                 params = [JSON.stringify({ slug: classement })];
             } else {
-                sqlQuery = `SELECT * FROM offres ${produit ? "WHERE id_produit = ? " : ""} ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
+                sqlQuery = `SELECT * FROM offres ${produit ? "WHERE id_produit = ? AND status = 'publier'" : "WHERE status = 'publier'"} ORDER BY id DESC ${limit ? "LIMIT " + limit : ''}`;
                 params = produit ? [produit] : [];
             }
 
@@ -28,7 +28,7 @@ export async function GET(request) {
 
             return NextResponse.json(offres || []); // ⚠️ Évite de renvoyer `undefined`
         } else {
-            const offre = await queryDB(`SELECT * FROM offres WHERE slug = ?`, [slug]);
+            const offre = await queryDB(`SELECT * FROM offres WHERE slug = ? AND status = 'publier'`, [slug]);
             return NextResponse.json(offre?.[0] || { message: "Aucune offre trouvée" });
         }
     } catch (error) {
@@ -107,7 +107,7 @@ export async function POST(request) {
             JSON.parse(form.content),
             JSON.parse(form.meta_title),
             JSON.parse(form.meta_description),
-            JSON.parse(form.responsable)
+            JSON.parse(form.responsable),
         ];
 
         await queryDB(sql, values);

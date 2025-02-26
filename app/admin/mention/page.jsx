@@ -3,7 +3,7 @@ import Layout from "@/components/admin/Layout";
 
 export default async function page() {
     try {
-        const mentionRes = await fetch(`${process.env.NOM_DE_DOMAIN}/api/mention`);
+        const mentionRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`);
         const data = await mentionRes.json()
         return (
             <Layout>

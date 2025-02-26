@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { handleImageBrowser } from '../LogoutButton';
 import dynamic from "next/dynamic";
-import { NOM_DE_DOMAIN } from '../env';
 import axios from 'axios';
 const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), { ssr: false });
 
@@ -23,7 +22,7 @@ const ModifierArticle = ({ data, TINY_KEY, id }) => {
             const formData = new FormData();
             formData.append('title', title);
             formData.append('content', JSON.stringify(content))
-            const response = await axios.put(`${NOM_DE_DOMAIN}/api/blog/${id}`, formData, {
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -65,7 +64,7 @@ const ModifierArticle = ({ data, TINY_KEY, id }) => {
                                             link image media | codesample emoticons | print fullscreen preview | \
                                             ",
                     images_upload_url: `/api/upload`,
-                    document_base_url: NOM_DE_DOMAIN,
+                    document_base_url: process.env.NEXT_PUBLIC_SITE_URL,
                     relative_urls: false,
                     automatic_uploads: true,
                     file_picker_types: "image media",

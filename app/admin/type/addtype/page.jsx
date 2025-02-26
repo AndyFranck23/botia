@@ -4,8 +4,8 @@ import ListeType from "@/components/admin/ListeType";
 
 export default async function Page() {
     const [typesRes, classementsRes] = await Promise.all([
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/types`, { cache: "no-store" }),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`, { cache: "no-store" })
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`, { cache: "no-store" }),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`, { cache: "no-store" })
     ]);
 
     const [types, classes] = await Promise.all([

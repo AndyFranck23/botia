@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MenuAdmin } from "./MenuAdmin";
-import { NOM_DE_DOMAIN } from "../env";
 
 export default function HeaderAdmin({ userdata, userType }) {
     const router = useRouter();
@@ -16,7 +15,7 @@ export default function HeaderAdmin({ userdata, userType }) {
 
     const logout = async () => {
         try {
-            await fetch(`${NOM_DE_DOMAIN}/api/logout`, { method: 'POST' })
+            await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/logout`, { method: 'POST' })
             router.push('/login')
         } catch (error) {
             console.error("Erreur lors de la déconnexion :", error);

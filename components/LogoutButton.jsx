@@ -1,13 +1,12 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import { NOM_DE_DOMAIN } from './env'
 import axios from 'axios'
 
 export default function LogoutButton() {
     const router = useRouter()
 
     const handleLogout = async () => {
-        await fetch(`${NOM_DE_DOMAIN}/api/logout`, { method: 'POST' })
+        await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/logout`, { method: 'POST' })
         router.push('/login')
     }
 
@@ -24,7 +23,7 @@ export default function LogoutButton() {
 export const handleImageBrowser = async (callback, value, meta) => {
     try {
         // Récupère la liste des images disponibles depuis l'API
-        const response = await fetch(`${NOM_DE_DOMAIN}/api/upload`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/upload`);
         const data = await response.json();
 
         // Si aucune image n'est trouvée, retourne une erreur
@@ -143,7 +142,7 @@ export const handleImageBrowser = async (callback, value, meta) => {
 export const handleImageSelect = async (setForm, form) => {
     try {
         // Récupère la liste des images disponibles depuis l'API
-        const response = await fetch(`${NOM_DE_DOMAIN}/api/upload`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/upload`);
         const data = await response.json();
 
         // Si aucune image n'est trouvée, retourne une erreur
@@ -262,7 +261,7 @@ export const ButtonClick = ({ href, data }) => {
 
     const saveClick = async (offre) => {
         try {
-            const response = await axios.post(`${NOM_DE_DOMAIN}/api/clicks`, { offre })
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/clicks`, { offre })
             console.log(response.data.message)
         } catch (error) {
             console.log(error)
@@ -270,10 +269,10 @@ export const ButtonClick = ({ href, data }) => {
     }
 
     return (
-        <div onClick={() => saveClick(data)} className="px-3 py-3 flex flex-wrap gap-4 mt-4">
+        <div onClick={() => saveClick(data)} className=" mt-6">
             <a
                 href={href}
-                className='bg-gray-600 hover:bg-gray-800 transition-all duration-300 px-6 py-3 rounded-lg text-white shadow-md hover:shadow-lg'
+                className='bg-red-500 hover:bg-red-600 p-2 rounded-xl border font-bold text-white'
             >
                 Voir le prestataire
             </a>

@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { MyInput } from '@/app/signup/page'
-import { NOM_DE_DOMAIN } from '../env'
 import { handleImageSelect } from '../LogoutButton'
 
 const ModifierType = ({ id }) => {
@@ -21,7 +20,7 @@ const ModifierType = ({ id }) => {
 
     const handleType = async () => {
         try {
-            const response = await fetch(`${NOM_DE_DOMAIN}/api/types/${id}`)
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types/${id}`)
             const type = await response.json()
             setForm({ title: type[0].title, image: type[0].image })
         } catch (e) {
@@ -41,7 +40,7 @@ const ModifierType = ({ id }) => {
                 if (imageType === 'upload' && imageFile) {
                     formData.append('file', imageFile);
                 }
-                const response = await axios.put(`${NOM_DE_DOMAIN}/api/types/${id}`, formData, {
+                const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types/${id}`, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -112,7 +111,7 @@ const ModifierType = ({ id }) => {
                                         <button
                                             type="button"
                                             onClick={() => handleImageSelect(setForm, form)} // Fonction pour afficher la galerie d'images
-                                            className="block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
+                                            className="block w-[200px] px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500">
                                             Choisir une image
                                         </button> :
                                         <MyInput type={'text'} value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} />

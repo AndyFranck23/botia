@@ -3,15 +3,16 @@ import { Header } from '@/components/Header';
 import React from 'react'
 
 const page = async () => {
-    const [typesRes, classementsRes, produitsRes, articlesRes, mentionRes] = await Promise.all([
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/types`, { cache: "no-store" }),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/classements`, { cache: "no-store" }),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/produit`, { cache: "no-store" }),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/blog`),
-        fetch(`${process.env.NOM_DE_DOMAIN}/api/mention`),
+    const [typesRes, classementsRes, produitsRes, articlesRes, mentionRes, footerRes] = await Promise.all([
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`, { cache: "no-store" }),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`, { cache: "no-store" }),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`, { cache: "no-store" }),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`),
     ])
 
-    const [types, classements, produits, articles, mention] = await Promise.all([typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), mentionRes.json()])
+    const [types, classements, produits, articles, mention, footers] = await Promise.all([typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), mentionRes.json(), footerRes.json()])
     const classement = types.map(category => ({
         ...category,
         classement: classements.filter(item => item.type === category.title)
@@ -23,7 +24,7 @@ const page = async () => {
             <div className='text-black p-5 pt-20'>
                 <div dangerouslySetInnerHTML={{ __html: mention[0]?.content || '' }} />
             </div>
-            <Footer articles={articles} />
+            <Footer articles={articles} result={footers} classements={classement} mention={mention[0]} />
         </>
     )
 }

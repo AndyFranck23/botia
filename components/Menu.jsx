@@ -12,15 +12,15 @@ export const Menu = ({ className, classement, produits }) => {
     }
 
     return (
-        <div className="flex w-screen justify-end">
-            <div className={`fixed bg-white w-[250px] h-screen z-40 px-2 pr-5 border-l-2 border-gray-100 mt-[65px] ${className}`}>
-                <Link href='/' className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
+        <div className="flex justify-end">
+            <div className={`overflow-y-auto fixed bg-white w-[250px] h-screen z-40 px-2 pr-5 border-l-2 border-gray-100 pt-[65px] ${className}`}>
+                <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/`} className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
                     Accueil
                 </Link>
                 <div className="md:hidden">
                     {
                         produits.map(item =>
-                            <Link key={item.id} href={`/${slugify(item.title)}`} className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
+                            <Link key={item.id} href={`${process.env.NEXT_PUBLIC_SITE_URL}/${slugify(item.title)}`} className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
                                 {item.title}
                             </Link>
                         )
@@ -47,22 +47,19 @@ export const Menu = ({ className, classement, produits }) => {
 
 const OptionSelect = ({ index, options }) => {
     return (
-        <div className="p-2 space-y-2 bg-gray-100 rounded-lg">
+        <div className="overflow-y-auto p-2 space-y-2 bg-gray-100 rounded-lg max-h-60">
             {
                 options[index].classement.map((option, i) => (
                     <ul key={i}>
                         <li>
-                            <a
-                                href={`/class/${slugify(options[index].title) + '/' + slugify(option.title)}`}
+                            <Link
+                                href={`${process.env.NEXT_PUBLIC_SITE_URL}/class/${slugify(options[index].title) + '/' + slugify(option.title)}`}
                                 // onClick={() => navigation(option.title)}
                                 className='flex items-center w-full hover:bg-gray-200 p-2 rounded-xl p-1'
                             >
-                                {
-                                    option.logo != '' ?
-                                        <img src={option.logo} className='rounded-md object-cover w-[25px] h-[25px] mr-5' /> : ''
-                                }
+                                <img src={option.logo ? option.logo : option.title} className='rounded-md object-cover w-[25px] h-[25px] mr-5' />
                                 <p>{option.title}</p>
-                            </a>
+                            </Link>
                         </li>
                     </ul>
                 ))

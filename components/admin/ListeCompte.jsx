@@ -1,7 +1,6 @@
 'use client'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { NOM_DE_DOMAIN } from '../env'
 
 export const ListeCompte = () => {
     const [loading, setLoading] = useState(true)
@@ -10,7 +9,7 @@ export const ListeCompte = () => {
     useEffect(() => {
         const fetchComptes = async () => {
             try {
-                const response = await fetch(`${NOM_DE_DOMAIN}/api/compte`)
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/compte`)
                 const users = await response.json()
                 setData(users)
             } catch (e) {
@@ -24,7 +23,7 @@ export const ListeCompte = () => {
 
     const deleteCompte = async (id) => {
         try {
-            await axios.delete(`${NOM_DE_DOMAIN}/api/compte/${id}`)
+            await axios.delete(`${process.env.NEXT_PUBLIC_SITE_URL}/api/compte/${id}`)
             setData((prevData) => prevData.filter((user) => user.id !== id))
         } catch (err) {
             console.error(err.message)
