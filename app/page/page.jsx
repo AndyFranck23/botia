@@ -6,6 +6,13 @@ export async function generateMetadata() {
     const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`)
     const data = await response.json()
 
+    if (!data || data.length === 0) {
+        return {
+            title: 'Produit non trouvé',
+            description: 'Le produit demandé n\'a pas été trouvé.'
+        };
+    }
+
     return {
         title: data[0].meta_title == '' ? data[0].title : data[0].meta_title,
         description: data[0].meta_description,
