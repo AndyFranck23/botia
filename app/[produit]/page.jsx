@@ -79,7 +79,8 @@ const page = async ({ params, searchParams }) => {
                             <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: caractProduits.content }} />
                         ) : (
                             <p>Contenu indisponible.</p>
-                        )}</div>
+                        )}
+                    </div>
                 </div>
             </div>
             <Footer articles={articles} result={footers} classements={classement} mention={mention[0]} />

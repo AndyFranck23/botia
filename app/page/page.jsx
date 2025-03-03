@@ -35,7 +35,11 @@ const page = async () => {
         <>
             <Header classement={classement} produits={produits} />
             <div className='text-black lg:px-[200px] px-[12vw] pt-20 flex justify-center'>
-                <div dangerouslySetInnerHTML={{ __html: mention[0]?.content || '' }} />
+                {mention[0]?.content ? (
+                    <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: mention[0].content }} />
+                ) : (
+                    <p>Contenu indisponible.</p>
+                )}
             </div>
             <Footer articles={articles} result={footers} classements={classement} mention={mention[0]} />
         </>

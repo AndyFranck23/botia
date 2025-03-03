@@ -41,7 +41,11 @@ const page = async ({ params }) => {
             <div className='text-black lg:px-[200px] px-[12vw] pt-20 flex justify-center'>
                 <div className="">
                     <h1 className='text-2xl md:text-4xl text-black text-center font-bold mb-5'>{data[0].title} </h1>
-                    <div dangerouslySetInnerHTML={{ __html: data[0]?.content || '' }} />
+                    {data[0]?.content ? (
+                        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data[0].content }} />
+                    ) : (
+                        <p>Contenu indisponible.</p>
+                    )}
                 </div>
             </div>
             <Footer articles={articles} result={footers} classements={classement} mention={mention[0]} />

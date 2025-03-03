@@ -90,7 +90,11 @@ const page = async ({ params, searchParams }) => {
                     <Pagination data={data} classements={classements} total={total} produits={produits} />
                     <Faq classements={classes} />
                     <div className="xs:px-[5vw] px-[2vw] w-full justify-center flex">
-                        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: titres[0].content }} />
+                        {titres[0]?.content ? (
+                            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: titres[0].content }} />
+                        ) : (
+                            <p>Contenu indisponible.</p>
+                        )}
                     </div>
                 </div>
             </div>
