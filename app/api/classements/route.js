@@ -7,13 +7,14 @@ export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
         const type = searchParams.get('type');
+        const limit = parseInt(searchParams.get('limit'));
         let sql = ''
         let params = []
         if (type) {
-            sql = `SELECT * FROM classements WHERE type = ?`
+            sql = `SELECT * FROM classements WHERE type = ? ${limit ? "LIMIT " + limit : ""}`
             params = [type]
         } else {
-            sql = `SELECT * FROM classements`
+            sql = `SELECT * FROM classements ${limit ? "LIMIT " + limit : ""}`
         }
         const classements = await queryDB(sql, params);
         return NextResponse.json(classements);
@@ -69,25 +70,29 @@ export async function POST(req) {
             imagePublicPath = `/uploads/${imageName}`;
 
             // Validation du champ descriptionOD si odActive est activé
-            if (form.content == '') {
-                return NextResponse.json(
-                    { message: "Veuillez remplir le champ descriptionOD" },
-                    { status: 400 }
-                );
-            }
+            // if (form.content == '') {
+            //     return NextResponse.json(
+            //         { message: "Veuillez remplir le champ descriptionOD" },
+            //         { status: 400 }
+            //     );
+            // }
         }
 
         // Insérer le classement en s'assurant de ne pas passer de valeur undefined
         await queryDB(
-            'INSERT INTO classements (title, type, logo, faq, responsable, meta_title, meta_description) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO classements (title, type, logo, faq, responsable, text, content, meta_title, meta_description, titre_h1, indexation) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 form.title || null,
                 form.type || null,
                 imagePublicPath == '' ? form.image : imagePublicPath,
                 form.faqListe || [],
                 form.responsable || null,
+                form.description,
+                JSON.parse(form.content),
                 form.meta_title,
-                form.meta_description
+                form.meta_description,
+                form.title_h1,
+                form.indexation,
             ]
         );
 

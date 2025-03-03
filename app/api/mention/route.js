@@ -18,9 +18,12 @@ export async function POST(req) {
         const formData = await req.formData(); // Utilise formData() pour récupérer les données du formulaire
         const form = Object.fromEntries(formData);
 
-        await queryDB("INSERT INTO mention_legal (title, content) VALUES (?, ?)", [
+        await queryDB("INSERT INTO mention_legal (title, content, indexation, meta_title, meta_description) VALUES (?, ?, ?, ?, ?)", [
             form.title,
-            JSON.parse(form.content)
+            JSON.parse(form.content),
+            form.indexation,
+            form.meta_title || null,
+            form.meta_description || null
         ]);
         return NextResponse.json({ message: "Mention légal ajouté !" });
     } catch (error) {
@@ -37,9 +40,12 @@ export async function PUT(req) {
         const formData = await req.formData(); // Utilise formData() pour récupérer les données du formulaire
         const form = Object.fromEntries(formData);
 
-        await queryDB("UPDATE mention_legal SET title = ?, content = ? WHERE id = ?", [
+        await queryDB("UPDATE mention_legal SET title = ?, content = ?, indexation = ?, meta_title = ?, meta_description = ? WHERE id = ?", [
             form.title,
             JSON.parse(form.content),
+            form.indexation,
+            form.meta_title || null,
+            form.meta_description || null,
             1
         ]);
         return NextResponse.json({ message: "Enregistrement réussi" });

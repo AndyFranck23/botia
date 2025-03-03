@@ -16,7 +16,7 @@ const ListeOffre = ({ produit }) => {
         try {
             setLoading(true)
             const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres${produit ? '?produit=' + produit : ''}`)
-            const offres = await response.json()
+            const { offres } = await response.json()
             setData(offres)
         } catch (err) {
             console.log(err)

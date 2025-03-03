@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import axios from 'axios'
-import { MyInput } from '@/app/signup/page'
+import { MyInput } from "./SignUp";
 import { handleImageSelect } from '../LogoutButton'
 
 const AddType = () => {

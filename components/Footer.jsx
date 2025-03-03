@@ -16,7 +16,7 @@ export function Footer({ articles, result, classements, mention }) {
                     <div className="text-white">
                         <h2 className="text-white pb-[30px] font-bold">TRUCS & ASTUCES DE IA</h2>
                         <ul className=" list-[circle] pl-5 text-gray-200 space-y-2">
-                            {articles.map((page) => (
+                            {articles?.map((page) => (
                                 <li key={page.id} className="hover:text-gray-400">
                                     <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/blog/${slugify(page.title)}`}>{page.title}</Link>
                                 </li>
@@ -58,7 +58,7 @@ export function Footer({ articles, result, classements, mention }) {
                 </div>
             </footer>
             <div className="flex justify-center items-center text-center p-5 text-xs sm:text-lg">
-                <p>{mention.title} |
+                <p>{mention?.title} |
                     <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/page`} className="text-blue-500"> Mentions légales</Link>
                 </p>
             </div>

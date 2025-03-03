@@ -1,5 +1,4 @@
 import AddOffre from "@/components/admin/AddOffre";
-import Layout from "@/components/admin/Layout";
 import ListeOffre from "@/components/admin/ListeOffre";
 
 export default async function Page() {
@@ -21,11 +20,11 @@ export default async function Page() {
     }));
 
     return (
-        <Layout>
+        <>
             <AddOffre classements={classements} TINY_KEY={process.env.TINY_KEY} produit={produits} />
             <div className="mt-20">
                 <ListeOffre />
             </div>
-        </Layout>
+        </>
     );
 }

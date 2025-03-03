@@ -9,14 +9,14 @@ export async function PUT(request) {
 
         // Exécuter la requête en passant les valeurs dans un tableau
         await queryDB(
-            'UPDATE classements SET sous_titre = ?, text = ?, content = ?, meta_title = ?, meta_description = ?, titre_h1 = ? WHERE title = ?',
+            'UPDATE classements SET text = ?, content = ?, meta_title = ?, meta_description = ?, titre_h1 = ?, indexation = ? WHERE title = ?',
             [
-                form.title,
                 form.description,
                 JSON.parse(form.content),
                 form.meta_title,
                 form.meta_description,
                 form.titre_h1,
+                form.indexation,
                 form.classement
             ]
         );

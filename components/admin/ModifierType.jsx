@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { MyInput } from '@/app/signup/page'
+import { MyInput } from "./SignUp";
 import { handleImageSelect } from '../LogoutButton'
 
 const ModifierType = ({ id }) => {
@@ -69,9 +69,11 @@ const ModifierType = ({ id }) => {
                 <MyInput
                     label={"Titre du type"}
                     type="text"
+                    readOnly={true}
+                    onClick={() => alert("Vous ne pouvez plus changer ce champ")}
                     value={form.title}
-                    onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    required
+                    title={"Vous ne pouvez plus changer ce champ"}
+                // onChange={(e) => setForm({ ...form, title: e.target.value })}
                 />
                 <div className="">
                     <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">

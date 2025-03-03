@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { slugify } from "./Slug";
+import { nombrePage, slugify } from "./Slug";
 
 export const Offre = ({ data, className, classements, produits }) => {
     return (
@@ -38,37 +38,37 @@ export const Chatbot = ({ data, className, classements, produits }) => {
     // const prod = 
 
     return (
-        <div className={`grid grid-rows-[auto_50px] hover:scale-102 transition-all duration-300  hover:border-blue-600 border border-blue-100 rounded-xl shadow-lg my-3 w-full lg:w-[300px] xs:w-[350px]  ${className}`}>
+        <div className={`bg-white grid grid-rows-[auto_50px] hover:scale-102 transition-all duration-300  hover:border-blue-600 border border-blue-100 rounded-xl shadow-lg my-3 w-full lg:w-[300px] xs:w-[350px]  ${className}`}>
             <div className="">
-                <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit + "/" + data.slug}>
+                <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data?.id_produit + "/" + data?.slug}>
                     {/* Image en pleine largeur  */}
                     <div className="w-full">
-                        <img src={data?.image ? data?.image : data?.title} className="w-full h-46 object-cover group-hover:scale-105 transition-transform duration-300" alt={data.title} />
+                        <img src={data?.image ? data?.image : data?.title} className="w-full h-[200px] object-cover group-hover:scale-105 transition-transform duration-300" alt={data.title} />
                     </div>
                 </Link>
                 <div className="flex p-4 w-full justify-between">
-                    <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit + "/" + data.slug}>
+                    <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data?.id_produit + "/" + data?.slug}>
                         <h2 className='text-2xl font-bold text-gray-800 group-hover:text-white w-full'>{data.title}</h2>
                     </Link>
-                    <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit} className="bg-gray-100 p-2 rounded-xl border font-bold text-green-600 flex justify-end">
+                    <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data?.id_produit} className="bg-gray-100 p-2 rounded-xl border font-bold text-green-600 flex justify-end">
                         {
-                            data.id_produit
+                            produits?.filter(item => slugify(item.title) == data?.id_produit)[0].title
                         }
                     </Link>
                 </div>
 
                 {/* Section description de l'offre court */}
-                <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit + "/" + data.slug}>
+                <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data?.id_produit + "/" + data?.slug}>
                     <div className="w-full pb-3">
                         <p className='font-medium text-sm text-gray-700 px-3 py-1 rounded-lg inline-flex items-center justify-center text-center'>
-                            {data.descriptionOC}
+                            {data?.descriptionOC}
                         </p>
                     </div>
                 </Link>
 
                 {/* Section tous les classements */}
                 <div className="px-4 flex flex-wrap gap-2 list-none w-full text-white text-xs sm:text-sm">
-                    {data.classement.map((item, index) => (
+                    {data?.classement.map((item, index) => (
                         <Link
                             href={navigation(item, classements)}
                             key={index}
@@ -79,9 +79,9 @@ export const Chatbot = ({ data, className, classements, produits }) => {
                     ))}
                 </div>
             </div>
-            <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit + "/" + data.slug} className=" border border-blue-100 rounded-b-xl grid place-items-center">
+            <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data?.id_produit + "/" + data?.slug} className=" border border-blue-100 rounded-b-xl grid place-items-center">
                 <div className="text-xs sm:text-sm " >
-                    <p className='text-xl text-gray-800 font-medium'>A partir de {data.prix}$</p>
+                    <p className='text-xl text-gray-800 font-medium'>A partir de {data?.prix}$</p>
                 </div>
             </Link>
         </div>
@@ -89,13 +89,13 @@ export const Chatbot = ({ data, className, classements, produits }) => {
 };
 
 
-export const Pagination = ({ data = [], classements, produits }) => {
+export const Pagination = ({ data = [], total, classements, produits }) => {
     const searchParams = useSearchParams();
     const router = useRouter();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 5; // Nombre d'éléments par page
-    const totalPages = Math.ceil(data.length / itemsPerPage);
+    const itemsPerPage = nombrePage; // Nombre d'éléments par page (doit correspondre à l'API)
+    const totalPages = Math.ceil(total / itemsPerPage); // Calcul basé sur l'API
 
     useEffect(() => {
         const page = parseInt(searchParams.get("page"), 10) || 1;
@@ -108,13 +108,10 @@ export const Pagination = ({ data = [], classements, produits }) => {
         if (page >= 1 && page <= totalPages) {
             const params = new URLSearchParams(searchParams);
             params.set("page", page);
+            params.set("limit", itemsPerPage); // Garde `limit` pour l'API
             router.push(`?${params.toString()}`, { scroll: false });
         }
     };
-
-    const indexOfLastItem = currentPage * itemsPerPage;
-    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-    const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
     const renderPageNumbers = () => {
         const pages = [];
@@ -157,7 +154,7 @@ export const Pagination = ({ data = [], classements, produits }) => {
 
     return (
         <div>
-            <Offre data={currentItems} classements={classements} produits={produits} />
+            <Offre data={data} classements={classements} produits={produits} />
 
             {totalPages > 1 && (
                 <div className="flex my-10 justify-center">{renderPageNumbers()}</div>

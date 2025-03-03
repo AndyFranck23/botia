@@ -42,7 +42,7 @@ export async function PUT(request, { params }) {
         const form = Object.fromEntries(formData); // Convertit formData en objet pour un accès facile
 
         // Validation des champs obligatoires
-        if (!form.title || !form.classement || !form.descriptionOC || !form.lien) {
+        if (!form.title) {
             return NextResponse.json(
                 { message: "Veuillez remplir les champs nécessaires" },
                 { status: 400 }

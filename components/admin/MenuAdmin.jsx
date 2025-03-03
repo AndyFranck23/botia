@@ -7,14 +7,18 @@ export const MenuAdmin = ({ className, userType, active }) => {
     const [activeId, setActiveId] = useState(active)
     const [loading, setLoading] = useState(true)
     const [produit, setProduit] = useState([])
+    const [type, setType] = useState([])
 
 
     useEffect(() => {
         const fetchProduit = async () => {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`)
+                const typeRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`)
                 const data = await response.json()
+                const types = await typeRes.json()
                 setProduit(data)
+                setType(types)
             } catch (err) {
                 setMessage('tsy mety')
             }
@@ -94,10 +98,19 @@ export const MenuAdmin = ({ className, userType, active }) => {
                         onClick={() => toggleMenu('classement')}
                         isActive={activeId === 'classement'}
                     />
-                    <div className={`overflow-hidden transition-all duration-300 ${activeId === 'classement' ? 'max-h-40' : 'max-h-0'}`}>
+                    <div className={`overflow-y-auto transition-all duration-300 ${activeId === 'classement' ? 'max-h-40' : 'max-h-0'}`}>
                         <MySubButton text={'Ajouter un type de classement'} href={'/admin/type/addtype'} />
-                        <MySubButton text={'Ajouter un classement'} href={'/admin/type/addclassement'} />
-                        <MySubButton text={'Tout les classements'} href={'/admin/type/allclassement'} />
+                        {/* <MySubButton text={'Ajouter un classement'} href={'/admin/type/addclassement'} /> */}
+                        {
+                            type.map(item =>
+                                <MySubButton
+                                    key={item.id}
+                                    text={item.title}
+                                    href={`/admin/type/allclassement?type=${slugify(item.title)}`}
+                                />
+                            )
+                        }
+                        {/* <MySubButton text={'Tout les classements'} href={'/admin/type/allclassement'} /> */}
                         {/* {
                             // Assurez-vous que 'classements' est bien un tableau avant d'appeler .map()
                             Array.isArray(classements) && classements.map((item, index) =>

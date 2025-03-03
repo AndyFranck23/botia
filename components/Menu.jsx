@@ -19,14 +19,14 @@ export const Menu = ({ className, classement, produits }) => {
                 </Link>
                 <div className="md:hidden">
                     {
-                        produits.map(item =>
+                        produits?.map(item =>
                             <Link key={item.id} href={`${process.env.NEXT_PUBLIC_SITE_URL}/${slugify(item.title)}`} className='flex justify-between items-center w-full hover:bg-gray-200 p-3 rounded-2xl'>
                                 {item.title}
                             </Link>
                         )
                     }
                 </div>
-                {classement.map((option, index) => (
+                {classement?.map((option, index) => (
                     <li key={index} className='list-none'>
                         <button
                             onClick={() => showOptions(index)}

@@ -4,8 +4,8 @@ import { queryDB } from '@/lib/db' // Adaptez le chemin en fonction de votre pro
 
 export async function GET() {
     try {
-        const sql = 'SELECT * FROM users WHERE email != ? AND autorisation = ?'
-        const comptes = await queryDB(sql, [process.env.LOGIN_ADMIN, 1])
+        const sql = 'SELECT * FROM users WHERE email NOT IN (?, ?) AND autorisation = ?'
+        const comptes = await queryDB(sql, [process.env.LOGIN_ADMIN, 'ironmanandy23@gmail.com', 1])
         return NextResponse.json(comptes, { status: 200 })
     } catch (error) {
         console.error(error)

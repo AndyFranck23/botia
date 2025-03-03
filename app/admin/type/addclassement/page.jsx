@@ -1,5 +1,4 @@
 import AddClassement from "@/components/admin/AddClassement";
-import Layout from "@/components/admin/Layout";
 import ListeClassement from "@/components/admin/ListeClassement";
 
 export default async function page() {
@@ -16,11 +15,11 @@ export default async function page() {
     }));
 
     return (
-        <Layout>
-            <AddClassement />
+        <>
+            <AddClassement TINY_KEY={process.env.TINY_KEY} />
             <div className=" mt-20">
                 <ListeClassement classement={classements} />
             </div>
-        </Layout>
+        </>
     )
 }

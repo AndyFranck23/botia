@@ -1,7 +1,8 @@
 'use client'
 import React, { useEffect, useRef, useState } from "react";
+import { slugify } from "../Slug";
 
-const Sliders = () => {
+const Sliders = ({ data }) => {
   const slides = [
     { text: "Facebook", link: "https://www.facebook.com", bg: "bg-blue-500" },
     { text: "WhatsApp", link: "https://www.whatsapp.com", bg: "bg-green-500" },
@@ -73,15 +74,15 @@ const Sliders = () => {
             whiteSpace: "nowrap",
           }}
         >
-          {/* Duplication des slides pour une transition fluide */}
-          {[...slides, ...slides, ...slides, ...slides, ...slides, ...slides].map((slide, index) => (
+          {/* Duplication des data pour une transition fluide */}
+          {data?.classement.map((slide, index) => (
             <a
               key={index}
-              href={slide.link}
-              className={`flex items-center justify-center px-6 py-3 text-white text-lg font-semibold rounded-xl transition-transform hover:scale-105 ${slide.bg}`}
+              href={`${process.env.NEXT_PUBLIC_SITE_URL}/class/${slugify(data.title)}/${slugify(slide.title)}`}
+              className={`flex items-center justify-center px-6 py-3 text-white text-lg font-semibold rounded-xl transition-transform hover:scale-105 bg-gradient-to-tr from-blue-500 to-purple-600`}
               style={{ minWidth: "200px" }} // Largeur minimale pour chaque slide
             >
-              {slide.text}
+              {slide.title}
             </a>
           ))}
         </div>

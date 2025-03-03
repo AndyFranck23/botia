@@ -1,12 +1,17 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
-import { MyInput } from '@/app/signup/page';
-import { handleImageSelect } from '../LogoutButton';
+import { MyInput } from "./SignUp";
+import { handleImageBrowser, handleImageSelect } from '../LogoutButton';
 import { useUser } from './context/UserContext';
 
-const AddClassement = () => {
+
+import dynamic from "next/dynamic";
+const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), { ssr: false });
+
+const AddClassement = ({ type, TINY_KEY }) => {
+    const editorRef = useRef(null);
     const userdata = useUser()
     const [message, setMessage] = useState('');
     const [types, setTypes] = useState([]);
@@ -15,12 +20,15 @@ const AddClassement = () => {
 
     const [form, setForm] = useState({
         title: '',
+        title_h1: '',
+        description: '',
         type: '',
         image: '',
         faqListe: [],
         responsable: userdata.identite,
         meta_title: '',
         meta_description: '',
+        indexation: 1,
     });
 
     useEffect(() => {
@@ -39,12 +47,14 @@ const AddClassement = () => {
     };
 
     const submit = async () => {
+        const content = editorRef.current.getContent();
         try {
             const formData = new FormData();
             Object.keys(form).forEach(key => {
                 key == 'faqListe' ? formData.append(key, JSON.stringify(form[key])) :
                     formData.append(key, form[key]);
             });
+            formData.append('content', JSON.stringify(content))
             if (imageType === 'upload' && imageFile) {
                 formData.append('file', imageFile);
             }
@@ -62,12 +72,15 @@ const AddClassement = () => {
         } finally {
             setForm({
                 title: '',
+                title_h1: '',
+                description: '',
                 type: '',
                 image: '',
                 faqListe: [],
                 responsable: userdata.identite,
                 meta_title: '',
                 meta_description: '',
+                indexation: 1,
             });
         }
     };
@@ -88,7 +101,12 @@ const AddClassement = () => {
                         ))}
                     </select>
                 </div>
-                <MyInput label={"Title"} type={'text'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                <MyInput label={"Titre"} type={'text'} value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                <MyInput label={"Titre h1"} type={'text'} value={form.title_h1} onChange={(e) => setForm({ ...form, title_h1: e.target.value })} />
+                <div className="">
+                    <label className=" mb-2 font-medium text-gray-700 ">Description</label>
+                    <textarea onChange={(e) => setForm({ ...form, description: e.target.value })} value={form.description} className="mb-5 w-full outline-none border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500 text-gray-700 h-[100px] sm:h-[200px] p-2  " />
+                </div>
                 <div className="">
                     <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">
                         Image
@@ -137,6 +155,65 @@ const AddClassement = () => {
                     </div>
                 </div>
                 <AddFaq form={form} setForm={setForm} />
+                <Editor
+                    // apiKey={TINY_KEY}
+                    tinymceScriptSrc="/tinymce/tinymce.min.js"
+                    onInit={(evt, editor) => (editorRef.current = editor)}
+                    initialValue={"<p>Ecrire ici...</p>"}
+                    init={{
+                        branding: false, // Masque le branding TinyMCE
+                        promotion: false, // Désactive les promotions
+                        resize: true, // Permet le redimensionnement
+                        image_caption: true, // Active les légendes d'images
+                        height: 500,
+                        menubar: true,
+                        plugins: [
+                            "image", "fullscreen", "table", "wordcount", "code", "link",
+                            //  "autoresize"
+                            // "paste",
+                            "lists", "advlist"
+                        ],
+                        toolbar:
+                            "undo redo | formatselect | bold italic | forecolor backcolor emoticons | \
+                                                                   alignleft aligncenter alignright alignjustify | \
+                                                                   bullist numlist outdent indent | removeformat | help | \
+                                                                   link image media | codesample emoticons | print fullscreen preview | \
+                                                                   ",
+                        images_upload_url: `/api/upload`,
+                        document_base_url: process.env.NEXT_PUBLIC_SITE_URL,
+                        relative_urls: false,
+                        automatic_uploads: true,
+                        file_picker_types: "image media",
+                        file_picker_callback: handleImageBrowser,
+                        image_advtab: true,
+                        image_title: true,
+                        image_description: true,
+                        paste_as_text: false, // Ne pas convertir le texte en texte brut
+                        paste_word_valid_elements: "b,strong,i,em,u,a,span,div,p", // Conserver certains styles de Word
+                        paste_word_cleanup_mode: "keep", // Conserver tous les styles du Word
+                        paste_data_images: true,
+                        paste_preprocess: function (plugin, args) {
+                            // Traiter le contenu avant le collage
+                            console.log("Prétraitement du collage", args.content);
+                        },
+                        paste_postprocess: function (plugin, args) {
+                            // Traiter le contenu après le collage
+                            console.log("Post-traitement du collage", args.content);
+                        },
+                    }}
+                />
+                <div className="items-center flex justify-between p-3">
+                    <label className=" mb-2 font-medium text-gray-700 ">Indexation de la page (coché si vous voulez indexé la page)</label>
+                    <input
+                        type="checkbox"
+                        className="border"
+                        checked={form.indexation}
+                        onChange={(e) => {
+                            console.log(e.target.checked)
+                            setForm({ ...form, indexation: e.target.checked ? 1 : 0 })
+                        }}
+                    />
+                </div>
                 <label className="block text-gray-700 font-medium mb-2 pt-2 text-md border-t-2 border-gray-200">Référencement SEO:</label>
                 <div className="flex flex-wrap">
                     <div className="flex items-center">

@@ -2,6 +2,7 @@ import { queryDB } from '@/lib/db'
 import { NextResponse } from 'next/server'
 import fs from "fs";
 import path from "path";
+import { slugify } from '@/components/Slug';
 
 
 export async function GET(request, { params }) {
@@ -70,25 +71,35 @@ export async function PUT(request, { params }) {
             imagePublicPath = `/uploads/${imageName}`;
 
             // Validation du champ descriptionOD si odActive est activé
-            if (form.content == '') {
-                return NextResponse.json(
-                    { message: "Veuillez remplir le champ descriptionOD" },
-                    { status: 400 }
-                );
-            }
+            // if (form.content == '') {
+            //     return NextResponse.json(
+            //         { message: "Veuillez remplir le champ descriptionOD" },
+            //         { status: 400 }
+            //     );
+            // }
         }
+
+        // const classementStr = form.classement ? JSON.stringify(JSON.parse(form.classement)) : null;
+
+        // await queryDB(`UPDATE offres SET classement = ? WHERE JSON_CONTAINS(classement, ?, '$')`,
+        //     [5, JSON.stringify({ id: id })]
+        // )
 
         // Exécuter la requête en passant les valeurs dans un tableau
         await queryDB(
-            'UPDATE classements SET title = ?, type = ?, logo = ?, faq = ?, responsable = ?, meta_title = ?, meta_description = ? WHERE id = ?',
+            'UPDATE classements SET title = ?, type = ?, logo = ?, faq = ?, responsable = ?, text = ?, content = ?, meta_title = ?, meta_description = ?, titre_h1 = ?, indexation = ? WHERE id = ?',
             [
                 form.title || null,
                 form.type || null,
                 imagePublicPath == '' ? form.image : imagePublicPath,
                 form.faqListe || [],
                 form.responsable || null,
+                form.description || null,
+                JSON.parse(form.content) || null,
                 form.meta_title || null,
                 form.meta_description || null,
+                form.title_h1 || null,
+                form.indexation || null,
                 id || null
             ]
         );

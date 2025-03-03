@@ -5,7 +5,8 @@ import path from "path";
 
 export async function GET(request, { params }) {
     try {
-        const types = await queryDB('SELECT * FROM type WHERE id = ?', [params.id]);
+        const { id } = await params
+        const types = await queryDB('SELECT * FROM type WHERE id = ?', [id]);
         return NextResponse.json(types);
     } catch (error) {
         return NextResponse.json(

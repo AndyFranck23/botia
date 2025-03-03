@@ -28,12 +28,12 @@ const ListeType = ({ classements }) => {
                             >
                                 Modifier
                             </Link>
-                            <button
+                            {/* <button
                                 className='text-red-500 hover:underline'
                                 onClick={() => handleDelete(item.id)}
                             >
                                 Supprimer
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                     {/* Section facultative pour les classements enfants */}

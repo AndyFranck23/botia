@@ -20,21 +20,21 @@ export function parseShortcode(input) {
 
 
 export async function ShortCode({ code }) {
-    try {
+    try {// code.limit ? ""
         const [classementsRes] = await Promise.all([
-            fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`, { cache: "no-store" }),
+            fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements${code?.type ? code?.limit ? '?type=' + code.type + '&limit=' + code.limit : '' : code?.limit ? '?limit=' + code?.limit : ''}`),
         ])
 
         const [classements] = await Promise.all([classementsRes.json()])
 
-        const classement = classements.filter(item => item.type = slugify(item.type))
+        // const classement = classements.filter(item => item.type = slugify(item.type))
 
         if (code.table == "classements") {
-            // console.log(classement)
+            // console.log(code)
             if (code.type) {
-                return classement.filter(item => item.type == code.type)
+                return classements.filter(item => slugify(item.type) == code.type)
             } else {
-                return classement
+                return classements
             }
         } else if (code.table === "offres") {
             let url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/${code.table}`;

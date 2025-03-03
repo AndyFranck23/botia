@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import axios from "axios"
-import { MyInput } from "@/app/signup/page"
+import { MyInput } from "./SignUp";
 import { slugify } from "../Slug"
 import dynamic from "next/dynamic";
 import { handleImageBrowser, handleImageSelect } from "../LogoutButton"
@@ -180,16 +180,21 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
             <MyInput type={'number'} label={'Reduction'} value={form.reduction} onChange={(e) => setForm({ ...form, reduction: e.target.value })} />
             <MyInput placeholder={'https://exemple.com'} type={'text'} label={'Lien principale'} value={form.lien} onChange={(e) => setForm({ ...form, lien: e.target.value })} />
             <Editor
-                apiKey={TINY_KEY}
+                // apiKey={TINY_KEY}
+                tinymceScriptSrc="/tinymce/tinymce.min.js"
                 onInit={(evt, editor) => (editorRef.current = editor)}
                 initialValue="<p>Écris ici...</p>"
                 init={{
+                    branding: false, // Masque le branding TinyMCE
+                    promotion: false, // Désactive les promotions
+                    resize: true, // Permet le redimensionnement
+                    image_caption: true, // Active les légendes d'images
                     height: 500,
                     menubar: true,
                     plugins: [
                         "image", "fullscreen", "table", "wordcount", "code", "link",
                         //  "autoresize"
-                        "powerpaste",
+                        // "powerpaste",
                         "lists", "advlist"
                     ],
                     toolbar:
@@ -256,7 +261,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                                             <div key={i} className="flex items-center   ">
                                                 <input
                                                     type="checkbox"
-                                                    value={JSON.stringify({ title: elt.title, slug: slugify(elt.title) })}
+                                                    value={JSON.stringify({ id: elt.id, title: elt.title, slug: slugify(elt.title) })}
                                                     className="mr-2"
                                                     checked={form.classement.some((item) => item.slug === slugify(elt.title))}
                                                     onChange={handleCheckboxChange}

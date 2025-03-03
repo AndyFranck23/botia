@@ -68,7 +68,8 @@ export default function ModifierFooter() {
                 alert("Shortcode invalide !");
             }
         } else {
-            list.push(value);
+            // list.push(value);
+            alert("Shortcode invalide ou sans données !");
         }
 
         setColumns(newColumns);
@@ -77,6 +78,13 @@ export default function ModifierFooter() {
     const removeFromList = (colIndex, listIndex, itemIndex) => {
         const newColumns = [...columns];
         newColumns[colIndex].lists[listIndex].splice(itemIndex, 1);
+        setColumns(newColumns);
+    };
+
+    // Fonction pour supprimer une liste entière
+    const removeList = (colIndex, listIndex) => {
+        const newColumns = [...columns];
+        newColumns[colIndex].lists.splice(listIndex, 1);
         setColumns(newColumns);
     };
 
@@ -99,7 +107,15 @@ export default function ModifierFooter() {
     return (
         <div className="p-4 border rounded-xl shadow-md w-full mx-auto text-black">
             <h2 className="text-lg font-bold mb-3">Gestion des Colonnes du footer</h2>
-
+            <div className="flex justify-center items-center">
+                <div className="list-disc">
+                    <label className="text-lg font-medium text-center flex justify-center">Exemple d'entrer:</label>
+                    <ul>
+                        <li>[table=classements type=X]</li>
+                        <li>[table=classements type=plateformes limit=2]</li>
+                    </ul>
+                </div>
+            </div>
             <div className="flex flex-wrap gap-4 justify-center">
                 {columns.map((col, colIndex) => (
                     <div key={colIndex} className="p-2 border rounded bg-gray-100">
@@ -121,14 +137,23 @@ export default function ModifierFooter() {
 
                         {col.lists.map((list, listIndex) => (
                             <div key={listIndex} className="mb-4 p-2 border rounded bg-white">
-                                <h4 className="font-medium">Liste {listIndex + 1}</h4>
+                                <h4 className="font-medium flex justify-between items-center">Liste {listIndex + 1}
+                                    <button
+                                        onClick={() => removeList(colIndex, listIndex)}
+                                        className="text-red-500 text-lg"
+                                        title="Supprimer la liste entière"
+                                    >
+                                        🗑
+                                        {/* <i className="fa-regular fa-trash-can text-red-500 text-lg"></i> */}
+                                    </button>
+                                </h4>
                                 <input
                                     type="text"
                                     placeholder="Ajouter une valeur ou shortcode"
                                     className="block w-full p-2 border rounded mb-2"
                                     onKeyDown={async (e) => {
                                         if (e.key === "Enter") {
-                                            await addToList(colIndex, listIndex, e.target.value);
+                                            addToList(colIndex, listIndex, e.target.value);
                                             e.target.value = "";
                                         }
                                     }}
@@ -153,11 +178,13 @@ export default function ModifierFooter() {
                         ))}
                     </div>
                 ))}
+            </div>
+            <div className="flex justify-center items-center">
                 <button
                     onClick={saveAll}
                     className="px-3 py-1 bg-green-500 text-white rounded-md mt-4"
                 >
-                    ✅ Sauvegarder tout
+                    Sauvegarder tout
                 </button>
             </div>
 

@@ -37,10 +37,13 @@ export async function POST(req) {
         const formData = await req.formData(); // Utilise formData() pour récupérer les données du formulaire
         const form = Object.fromEntries(formData);
 
-        await queryDB("INSERT INTO blog (title, slug, content) VALUES (?, ?, ?)", [
-            form.title,
+        await queryDB("INSERT INTO blog (title, slug, content, indexation, meta_title, meta_description) VALUES (?, ?, ?, ?, ?, ?)", [
+            form.title || null,
             slugify(form.title),
-            JSON.parse(form.content)
+            JSON.parse(form.content),
+            form.indexation || null,
+            form.meta_title || null,
+            form.description || null
         ]);
         return NextResponse.json({ message: "Article ajouté !" });
     } catch (error) {

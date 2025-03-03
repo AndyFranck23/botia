@@ -1,11 +1,10 @@
-import Layout from "@/components/admin/Layout";
 import TextAccueil from "@/components/admin/TextAccueil";
 
 export default function page() {
 
     return (
-        <Layout>
-            <TextAccueil />
-        </Layout>
+        <>
+            <TextAccueil TINY_KEY={process.env.TINY_KEY} />
+        </>
     )
 }

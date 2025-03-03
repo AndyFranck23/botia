@@ -1,9 +1,9 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react'
-import { MyInput } from '@/app/signup/page'
+import { MyInput } from "./SignUp";
 import axios from 'axios'
-import dynamic from "next/dynamic";
 import { handleImageBrowser } from '../LogoutButton';
+import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), { ssr: false });
 
 const TextClassement = ({ TINY_KEY }) => {
@@ -13,11 +13,11 @@ const TextClassement = ({ TINY_KEY }) => {
     const [form, setForm] = useState({
         titre_h1: '',
         classement: '',
-        title: '',
         description: '',
         meta_title: '',
         meta_description: '',
-        content: ''
+        content: '',
+        indexation: 1
     })
 
 
@@ -40,11 +40,11 @@ const TextClassement = ({ TINY_KEY }) => {
         setForm({
             classement: e.target.value,
             titre_h1: data[0].titre_h1,
-            title: data[0].sous_titre,
             description: data[0].text,
             meta_title: data[0].meta_title,
             meta_description: data[0].meta_description,
-            content: data[0].content
+            content: data[0].content,
+            indexation: data[0].indexation
         })
     }
 
@@ -93,27 +93,26 @@ const TextClassement = ({ TINY_KEY }) => {
                         value={form.titre_h1}
                         onChange={(e) => setForm({ ...form, titre_h1: e.target.value })}
                     />
-                    <MyInput
-                        label={"Titre"}
-                        type="text"
-                        value={form.title}
-                        onChange={(e) => setForm({ ...form, title: e.target.value })}
-                    />
                     <div className="">
                         <label className=" mb-2 font-medium text-gray-700 ">Description</label>
                         <textarea onChange={(e) => setForm({ ...form, description: e.target.value })} value={form.description} className="mb-5 w-full outline-none border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500 text-gray-700 h-[100px] sm:h-[200px] p-2  " />
                     </div>
                     <Editor
-                        apiKey={TINY_KEY}
+                        // apiKey={TINY_KEY}
+                        tinymceScriptSrc="/tinymce/tinymce.min.js"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         initialValue={form.content}
                         init={{
+                            branding: false, // Masque le branding TinyMCE
+                            promotion: false, // Désactive les promotions
+                            resize: true, // Permet le redimensionnement
+                            image_caption: true, // Active les légendes d'images
                             height: 500,
                             menubar: true,
                             plugins: [
                                 "image", "fullscreen", "table", "wordcount", "code", "link",
                                 //  "autoresize"
-                                "powerpaste",
+                                // "paste",
                                 "lists", "advlist"
                             ],
                             toolbar:
@@ -145,6 +144,18 @@ const TextClassement = ({ TINY_KEY }) => {
                             },
                         }}
                     />
+                    <div className="items-center flex justify-between p-3">
+                        <label className=" mb-2 font-medium text-gray-700 ">Indexation de la page (coché si vous voulez indexé la page)</label>
+                        <input
+                            type="checkbox"
+                            className="border"
+                            checked={form.indexation}
+                            onChange={(e) => {
+                                console.log(e.target.checked)
+                                setForm({ ...form, indexation: e.target.checked ? 1 : 0 })
+                            }}
+                        />
+                    </div>
                     <div className="">
                         <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">Référencement SEO</label>
                         <div className="ml-10">

@@ -52,7 +52,7 @@ export const ListeDemand = () => {
             <p className='text-xl font-medium mb-5'>Liste des demandes</p>
             <div className="space-y-5">
                 {
-                    demandes.map((user, index) => (
+                    demandes?.map((user, index) => (
                         <Demande
                             key={index}
                             userData={user}

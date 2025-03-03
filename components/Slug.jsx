@@ -7,3 +7,5 @@ export function slugify(title) {
         .trim() // Supprime les espaces en début et fin
         .replace(/\s+/g, "-"); // Remplace les espaces par des tirets
 }
+
+export const nombrePage = 20

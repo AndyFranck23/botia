@@ -25,7 +25,7 @@ export default function HeaderAdmin({ userdata, userType }) {
     return (
         <>
             <div className="fixed w-full p-2 bg-gray-800 text-white text-md z-50">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                     <div className="flex space-x-5">
                         <button className="sm:hidden block" onClick={toggleMenu}>
                             {isActive ? (
@@ -34,7 +34,7 @@ export default function HeaderAdmin({ userdata, userType }) {
                                 <i className="fa-solid fa-bars"></i>
                             )}
                         </button>
-                        <p>PenPilot</p>
+                        <p className="font-medium">BotIA.ai</p>
                     </div>
                     <div className="flex">
                         <p className="flex items-center space-x-2">

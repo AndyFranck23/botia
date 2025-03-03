@@ -9,10 +9,13 @@ export async function PUT(req, { params }) {
         const formData = await req.formData(); // Utilise formData() pour récupérer les données du formulaire
         const form = Object.fromEntries(formData);
 
-        await queryDB("UPDATE blog SET title = ?, slug = ?, content = ? WHERE id = ?", [
+        await queryDB("UPDATE blog SET title = ?, slug = ?, content = ?, indexation = ?, meta_title = ?, meta_description = ? WHERE id = ?", [
             form.title,
             slugify(form.title),
             JSON.parse(form.content),
+            form.indexation || null,
+            form.meta_title || null,
+            form.meta_description || null,
             id
         ]);
         return NextResponse.json({ message: "Article modifié avec succès" });

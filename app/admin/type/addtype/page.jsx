@@ -1,5 +1,4 @@
 import AddType from "@/components/admin/AddType";
-import Layout from "@/components/admin/Layout";
 import ListeType from "@/components/admin/ListeType";
 
 export default async function Page() {
@@ -19,9 +18,9 @@ export default async function Page() {
     }));
 
     return (
-        <Layout>
+        <>
             <AddType />
             <ListeType classements={classements} />
-        </Layout>
+        </>
     );
 }

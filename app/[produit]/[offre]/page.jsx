@@ -1,5 +1,5 @@
 import { Footer } from '@/components/Footer'
-import { Header } from '@/components/Header'
+import Header from '@/components/Header'
 import { ButtonClick } from '@/components/LogoutButton'
 import { Chatbot } from '@/components/Offre'
 import Link from 'next/link'
@@ -13,7 +13,7 @@ export async function generateMetadata({ params }) {
     return {
         title: data?.meta_title?.trim() ? data.meta_title : data?.title,
         description: data?.meta_description?.trim() ? data.meta_description : data?.descriptionOC,
-        // robots: data.indexation == 0 ? "noindex, nofollow" : "index, follow",
+        robots: data.indexation == 0 ? "noindex, nofollow" : "index, follow",
     }
 }
 
@@ -22,7 +22,7 @@ const page = async ({ params }) => {
     const nbreOffre = 10 // nombre d'offres dans les alternatives
     const [offresRes, alternativeRes, typesRes, classementsRes, produitsRes, articlesRes, footerRes, mentionRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?slug=${offre}`),
-        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?produit=${produit}&limit=${nbreOffre}`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?limit=${nbreOffre}`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`),
@@ -31,7 +31,7 @@ const page = async ({ params }) => {
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`),
     ])
 
-    const [data, offres, types, classe, produits, articles, footers, mention] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json(), mentionRes.json()])
+    const [data, { offres }, types, classe, produits, articles, footers, mention] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json(), mentionRes.json()])
 
     data.classement = data.classement ? JSON.parse(data.classement) : [];
     // data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];
@@ -93,8 +93,9 @@ const page = async ({ params }) => {
                         </div>
                         <div className=' p-6 rounded-md mt-6 '>
                             <h2 className="text-xl font-semibold mb-4">{data?.title}</h2>
-                            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data?.content }} />
-                        </div>
+                            {data?.content && (
+                                <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data.content }} />
+                            )}                        </div>
                     </div>
                     <div className="w-full lg:w-1/3 flex flex-col items-center mx-auto p-6 bg-gray-50">
                         {/* Section Titre */}
@@ -106,7 +107,7 @@ const page = async ({ params }) => {
                         <div className="w-full flex flex-col items-center gap-y-4">
                             {filteredData.map((item, index) => (
                                 <div key={index} className="w-full flex flex-wrap justify-center">
-                                    <Chatbot data={item} params={produit} classements={classements} className={"lg:w-full w-[400px]"} />
+                                    <Chatbot produits={produits} data={item} params={produit} classements={classements} className={"lg:w-full w-[400px]"} />
                                 </div>
                             ))}
                         </div>

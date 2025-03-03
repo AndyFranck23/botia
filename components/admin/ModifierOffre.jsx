@@ -1,7 +1,7 @@
 'use client'
 import { useRef, useState } from "react"
 import axios from "axios"
-import { MyInput } from "@/app/signup/page"
+import { MyInput } from "./SignUp";
 import { slugify } from "../Slug"
 import { handleImageBrowser, handleImageSelect } from "../LogoutButton"
 import { useUser } from "./context/UserContext"
@@ -45,7 +45,7 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
 
     const submit = async () => {
         setForm({ ...form, produit: slugify(form.produit) })
-        if ((form.title && form.classement && form.descriptionOC && form.image && form.lien) !== '') {
+        if ((form.title || form.lien) !== '') {
             const content = editorRef.current.getContent();
             try {
                 const formData = new FormData();
@@ -175,16 +175,21 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
             <MyInput placeholder={'https://exemple.com'} type={'text'} label={'Lien principale'} value={form.lien} onChange={(e) => setForm({ ...form, lien: e.target.value })} />
 
             <Editor
-                apiKey={TINY_KEY}
+                // apiKey={TINY_KEY}
+                tinymceScriptSrc="/tinymce/tinymce.min.js"
                 onInit={(evt, editor) => (editorRef.current = editor)}
                 initialValue={offre.content}
                 init={{
+                    branding: false, // Masque le branding TinyMCE
+                    promotion: false, // Désactive les promotions
+                    resize: true, // Permet le redimensionnement
+                    image_caption: true, // Active les légendes d'images
                     height: 500,
                     menubar: true,
                     plugins: [
                         "image", "fullscreen", "table", "wordcount", "code", "link",
                         //  "autoresize"
-                        "powerpaste",
+                        // "powerpaste",
                         "lists", "advlist"
                     ],
                     toolbar:

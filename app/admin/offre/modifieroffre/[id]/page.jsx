@@ -1,4 +1,3 @@
-import Layout from "@/components/admin/Layout";
 import ModifierOffre from "@/components/admin/ModifierOffre";
 
 export default async function page({ params }) {
@@ -18,8 +17,8 @@ export default async function page({ params }) {
     }));
 
     return (
-        <Layout>
+        <>
             <ModifierOffre offre={offre[0]} id={id} classements={classements} TINY_KEY={process.env.TINY_KEY} produit={produits} />
-        </Layout>
+        </>
     )
 }

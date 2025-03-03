@@ -1,17 +1,33 @@
 import AddArticle from "@/components/admin/AddArticle";
-import Layout from "@/components/admin/Layout";
 
 export default async function page() {
     try {
         const mentionRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`);
-        const data = await mentionRes.json()
+        if (!mentionRes.ok) {
+            throw new Error(`Erreur HTTP : ${mentionRes.status}`);
+        }
+        const data = await mentionRes.json();
+        const mentionData = data[0];
+
+        if (!mentionData) {
+            return (
+                <>
+                    <p>Aucune mention trouvée.</p>
+                </>
+            );
+        }
+
         return (
-            <Layout>
-                <AddArticle TINY_KEY={process.env.TINY_KEY} data={data[0]} page={'mention'} />
-            </Layout>
-        )
+            <>
+                <AddArticle TINY_KEY={process.env.TINY_KEY} data={mentionData} page="mention" />
+            </>
+        );
     } catch (err) {
         console.error("Erreur lors de la récupération des mentions:", err);
-        return [];
+        return (
+            <>
+                <p>Une erreur est survenue lors du chargement des mentions.</p>
+            </>
+        );
     }
 }
