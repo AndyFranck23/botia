@@ -1,5 +1,6 @@
 import AddArticle from "@/components/admin/AddArticle";
 
+
 export default async function page() {
     try {
         const mentionRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`);
@@ -8,14 +9,6 @@ export default async function page() {
         }
         const data = await mentionRes.json();
         const mentionData = data[0];
-
-        if (!mentionData) {
-            return (
-                <>
-                    <p>Aucune mention trouvée.</p>
-                </>
-            );
-        }
 
         return (
             <>

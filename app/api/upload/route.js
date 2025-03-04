@@ -5,7 +5,7 @@ import fs from "fs";
 
 export async function GET(req, res) {
     try {
-        const uploadsDir = path.join(process.cwd(), "public/uploads");
+        const uploadsDir = path.join(process.cwd(), "uploads");
 
         if (!fs.existsSync(uploadsDir)) {
             console.error("❌ Le dossier 'uploads' n'existe pas !");
@@ -34,12 +34,12 @@ export async function POST(req) {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         const filename = `${Date.now()}-${file.name}`;
-        const filepath = path.join(process.cwd(), "public/uploads", filename);
+        const filepath = path.join(process.cwd(), "uploads", filename);
 
         await writeFile(filepath, buffer);
 
         // 🔥 Vérifie que la réponse a bien "location"
-        return NextResponse.json({ location: `/uploads/${filename}` });
+        return NextResponse.json({ location: `/api/uploads/${filename}` });
     } catch (error) {
         console.error("Erreur serveur :", error);
         return NextResponse.json({ error: "Erreur serveur" }, { status: 500 });

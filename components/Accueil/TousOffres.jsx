@@ -21,16 +21,16 @@ const TousOffres = ({ offres, classements, produits, classe }) => {
             {tab}
           </button>
         ))}
-        <div className="">
-          {
-            activeTab == 'Tous' &&
-            <Offre
-              data={offres?.slice(0, 6)}
-              classements={classements}
-              produits={produits}
-            />
-          }
-        </div>
+        {/* <div className=""> */}
+        {
+          activeTab == 'Tous' &&
+          <Offre
+            data={offres?.slice(0, 6)}
+            classements={classements}
+            produits={produits}
+          />
+        }
+        {/* </div> */}
         {
           classements?.map(item =>
             activeTab == item.title &&

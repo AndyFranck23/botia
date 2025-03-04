@@ -1,6 +1,6 @@
 import { queryDB } from '@/lib/db'
 import { NextResponse } from 'next/server'
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
 export async function GET(request, { params }) {
@@ -49,31 +49,27 @@ export async function PUT(request, { params }) {
 
         let imagePublicPath = ''
         if (form.file) {
-            // Définition du dossier d'upload (public/uploads)
-            const uploadDir = path.join(process.cwd(), "public/uploads");
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir, { recursive: true });
-            }
-            // Génération d'un nom unique pour l'image
-            const imageName = `${Date.now()}-${form.file.name}`;
-            const filePath = path.join(uploadDir, imageName);
-
-            // Récupération du contenu du fichier sous forme de buffer
-            const buffer = Buffer.from(await form.file.arrayBuffer());
-
-            // Sauvegarde du fichier sur le disque
-            fs.writeFileSync(filePath, buffer);
-
-            // Construction du chemin public de l'image
-            imagePublicPath = `/uploads/${imageName}`;
-
-            // Validation du champ descriptionOD si odActive est activé
-            if (form.content == '') {
+            // Vérifier si file est bien un objet File
+            if (!(form.file instanceof File)) {
                 return NextResponse.json(
-                    { message: "Veuillez remplir le champ descriptionOD" },
+                    { error: "Le fichier est invalide" },
                     { status: 400 }
                 );
             }
+            // Définition du dossier d'upload (en dehors de /public/)
+            const uploadDir = path.join(process.cwd(), "uploads"); // Stocke dans un dossier hors `public`
+            await fs.mkdir(uploadDir, { recursive: true }); // Création du dossier si inexistant
+
+            // Génération d'un nom unique pour l'image
+            const imageName = `${Date.now()}-${form.file.name.replace(/\s/g, "_")}`;
+            const filePath = path.join(uploadDir, imageName);
+
+            // Sauvegarde de l'image
+            const buffer = Buffer.from(await form.file.arrayBuffer());
+            await fs.writeFile(filePath, buffer);
+
+            // Construction du chemin pour servir l'image via une API
+            imagePublicPath = `/api/uploads/${imageName}`;
         }
 
         await queryDB('UPDATE type SET title = ?, image = ? WHERE id = ?', [form.title, imagePublicPath == '' ? form.image : imagePublicPath, id])

@@ -1,6 +1,6 @@
 import { queryDB } from '@/lib/db';
 import { NextResponse } from 'next/server';
-import fs from "fs";
+import fs from "fs/promises";
 import path from "path";
 
 export async function GET() {
@@ -17,56 +17,54 @@ export async function GET() {
 
 export async function POST(request) {
     try {
-        const formData = await request.formData(); // Utilise formData() pour récupérer les données du formulaire
-        const form = Object.fromEntries(formData);
+        const formData = await request.formData();
+        const title = formData.get("title");
+        const file = formData.get("file");
 
-        // Validation des données
-        if (!form.title) {
+        // Vérification des champs requis
+        if (!title) {
             return NextResponse.json(
-                { error: "Tout les champs sont requis" },
+                { error: "Le champ 'title' est requis" },
                 { status: 400 }
             );
         }
 
-        let imagePublicPath = ''
-        if (form.file) {
-            // Définition du dossier d'upload (public/uploads)
-            const uploadDir = path.join(process.cwd(), "public/uploads");
-            if (!fs.existsSync(uploadDir)) {
-                fs.mkdirSync(uploadDir, { recursive: true });
-            }
-            // Génération d'un nom unique pour l'image
-            const imageName = `${Date.now()}-${form.file.name}`;
-            const filePath = path.join(uploadDir, imageName);
+        let imagePublicPath = "";
 
-            // Récupération du contenu du fichier sous forme de buffer
-            const buffer = Buffer.from(await form.file.arrayBuffer());
-
-            // Sauvegarde du fichier sur le disque
-            fs.writeFileSync(filePath, buffer);
-
-            // Construction du chemin public de l'image
-            imagePublicPath = `/uploads/${imageName}`;
-
-            // Validation du champ descriptionOD si odActive est activé
-            if (form.content == '') {
+        if (file) {
+            // Vérifier si file est bien un objet File
+            if (!(file instanceof File)) {
                 return NextResponse.json(
-                    { message: "Veuillez remplir le champ descriptionOD" },
+                    { error: "Le fichier est invalide" },
                     { status: 400 }
                 );
             }
-        }
 
+            // Définition du dossier d'upload (en dehors de /public/)
+            const uploadDir = path.join(process.cwd(), "uploads"); // Stocke dans un dossier hors `public`
+            await fs.mkdir(uploadDir, { recursive: true }); // Création du dossier si inexistant
+
+            // Génération d'un nom unique pour l'image
+            const imageName = `${Date.now()}-${file.name.replace(/\s/g, "_")}`;
+            const filePath = path.join(uploadDir, imageName);
+
+            // Sauvegarde de l'image
+            const buffer = Buffer.from(await file.arrayBuffer());
+            await fs.writeFile(filePath, buffer);
+
+            // Construction du chemin pour servir l'image via une API
+            imagePublicPath = `/api/uploads/${imageName}`;
+        }
 
         // Insertion dans la base de données
         await queryDB(
-            'INSERT INTO type (title, image) VALUES (?, ?)',
-            [form.title, imagePublicPath == '' ? form.image : imagePublicPath]
+            "INSERT INTO type (title, image) VALUES (?, ?)",
+            [title, imagePublicPath]
         );
 
         return NextResponse.json(
-            { message: "Type ajouté avec succès" },
-            { status: 201 },
+            { message: "Type ajouté avec succès", image: imagePublicPath },
+            { status: 201 }
         );
 
     } catch (error) {

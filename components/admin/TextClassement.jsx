@@ -6,7 +6,7 @@ import { handleImageBrowser } from '../LogoutButton';
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), { ssr: false });
 
-const TextClassement = ({ TINY_KEY }) => {
+const TextClassement = () => {
     const editorRef = useRef(null);
     const [classements, setClassements] = useState([])
     const [message, setMessage] = useState('')
@@ -39,12 +39,12 @@ const TextClassement = ({ TINY_KEY }) => {
         const data = classements.filter(item => item.title == e.target.value)
         setForm({
             classement: e.target.value,
-            titre_h1: data[0].titre_h1,
-            description: data[0].text,
-            meta_title: data[0].meta_title,
-            meta_description: data[0].meta_description,
-            content: data[0].content,
-            indexation: data[0].indexation
+            titre_h1: data[0]?.titre_h1,
+            description: data[0]?.text,
+            meta_title: data[0]?.meta_title,
+            meta_description: data[0]?.meta_description,
+            content: data[0]?.content,
+            indexation: data[0]?.indexation
         })
     }
 
