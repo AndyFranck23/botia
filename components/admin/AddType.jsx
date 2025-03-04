@@ -47,7 +47,7 @@ const AddType = () => {
     return (
         <div className='text-black'>
             <h1 className='text-center text-2xl font-medium mb-10'>Ajouter un type de classement</h1>
-            <form onSubmit={handleSubmit} className="space-y-2 text-md text-gray-700 font-medium">
+            <div className="space-y-2 text-md text-gray-700 font-medium">
                 <MyInput
                     label={"Titre du type"}
                     type="text"
@@ -104,13 +104,13 @@ const AddType = () => {
                 </div>
                 <div className="w-full justify-end flex">
                     <button
-                        type="submit"
+                        onClick={handleSubmit}
                         className='bg-blue-500 p-2 rounded-md px-5 text-white hover:bg-blue-600 focus:outline-none focus:ring focus:ring-violet-300'
                     >
                         Ajouter
                     </button>
                 </div>
-            </form>
+            </div>
             {message && (
                 <p className={`mt-4 text-center ${message.includes('Erreur') ? 'text-red-400' : 'text-green-500'}`}>
                     {message}

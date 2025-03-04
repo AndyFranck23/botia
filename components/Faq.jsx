@@ -31,7 +31,7 @@ const Faq = ({ classements }) => {
       {faqData.length > 0 && (
         <div className="flex items-center justify-center py-10 mx-10">
           <div className="max-w-3xl w-full p-6 bg-white rounded-lg">
-            <h3 className="text-2xl font-bold text-center mb-6 text-blue-700 sm:block hidden">
+            <h3 className="text-2xl font-bold text-center mb-6 text-blue-700">
               FAQ
             </h3>
             <div className="space-y-4">
