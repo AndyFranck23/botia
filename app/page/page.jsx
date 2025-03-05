@@ -41,9 +41,9 @@ const page = async () => {
     return (
         <>
             <Header classement={classement} produits={produits} />
-            <div className='text-black lg:px-[200px] px-[12vw] pt-20 flex justify-center'>
+            <div className='text-black pt-20 xs:px-[5vw] px-[20px] w-full justify-center flex'>
                 {mention[0]?.content ? (
-                    <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: mention[0].content }} />
+                    <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: mention[0].content }} />
                 ) : (
                     <p>Contenu indisponible.</p>
                 )}

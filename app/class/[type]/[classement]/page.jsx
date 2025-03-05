@@ -89,9 +89,9 @@ const page = async ({ params, searchParams }) => {
                     <Title params={titres[0]} />
                     <Pagination data={data} classements={classements} total={total} produits={produits} />
                     <Faq classements={classes} />
-                    <div className="xs:px-[5vw] px-[2vw] w-full justify-center flex">
+                    <div className="xs:px-[5vw] px-[20px] w-full justify-center flex">
                         {titres[0]?.content ? (
-                            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: titres[0].content }} />
+                            <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: titres[0].content }} />
                         ) : (
                             <p>Contenu indisponible.</p>
                         )}

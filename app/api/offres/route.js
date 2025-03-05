@@ -127,7 +127,7 @@ export async function POST(request) {
             classementStr,
             JSON.parse(form.descriptionOC),
             imagePublicPath == '' ? JSON.parse(form.image) : imagePublicPath,
-            JSON.parse(form.prix) || 0,
+            JSON.parse(form.prix) + " " + JSON.parse(form.prixType) || 0,
             JSON.parse(form.reduction) || 0,
             JSON.parse(form.lien),
             slugify(JSON.parse(form.produit)) || null,

@@ -78,7 +78,10 @@ const page = async ({ params }) => {
                             </div>
                             <div className='flex justify-between'>
                                 <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit} className="bg-gray-100 p-2 rounded-xl border font-bold text-green-600 justify-self-start">{data.id_produit}</Link>
-                                <ButtonClick href={'#'} data={data} />
+                                <ButtonClick
+                                    href={data?.lien.startsWith("http://") || data?.lien.startsWith("https://") ? data?.lien : '#'}
+                                    data={data}
+                                />
                             </div>
                             <div className='flex flex-wrap m-3 gap-4'>
                                 {
@@ -86,16 +89,17 @@ const page = async ({ params }) => {
                                         <Link key={index} href={navigation(item, classements)} className='px-3 py-1 text-sm border-2 border-blue-200 text-blue-600 rounded-full group-hover:border-white/50 group-hover:text-white hover:bg-blue-600 hover:text-white transition-all'>{item.title} </Link>
                                     )}
                             </div>
-                            <p className=' text-red-600 font-bold text-4xl p-1'>Prix:{data?.prix} $</p>
+                            <p className=' text-red-600 font-bold text-4xl p-1'>A partir de: {data?.prix}</p>
                         </div>
                         <div className='pt-6'>
                             <img src={data?.image ? data?.image : data?.title} alt="Illustration" className="w-full rounded-md h-[400px] sm:h-[500px] object-cover shadow-md" />
                         </div>
-                        <div className=' p-6 rounded-md mt-6 '>
+                        <div className='xs:px-[5vw] px-[5px] rounded-md mt-6 '>
                             <h2 className="text-xl font-semibold mb-4">{data?.title}</h2>
                             {data?.content && (
-                                <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data.content }} />
-                            )}                        </div>
+                                <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: data.content }} />
+                            )}
+                        </div>
                     </div>
                     <div className="w-full lg:w-1/3 flex flex-col items-center mx-auto p-6 bg-gray-50">
                         {/* Section Titre */}

@@ -106,7 +106,8 @@ export async function PUT(request, { params }) {
             JSON.parse(form.slug),
             classementStr,
             JSON.parse(form.descriptionOC),
-            imagePublicPath == '' ? JSON.parse(form.image) : imagePublicPath, JSON.parse(form.prix),
+            imagePublicPath == '' ? JSON.parse(form.image) : imagePublicPath,
+            JSON.parse(form.prix) + " " + JSON.parse(form.prixType),
             JSON.parse(form.reduction),
             JSON.parse(form.lien),
             slugify(JSON.parse(form.produit)), // correspond à l'id ou identifiant du produit associé à l'offre

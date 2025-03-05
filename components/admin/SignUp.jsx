@@ -136,11 +136,11 @@ export default function SignUp() {
     );
 }
 
-export const MyInput = ({ label, value, onChange, type, placeholder, title, defaultValue, readOnly, onClick }) => {
+export const MyInput = ({ label, value, onChange, onChangeSelect, valueSelect, type, placeholder, title, defaultValue, readOnly, onClick }) => {
     const [showPassword, setShowPassword] = useState(true);
 
     return (
-        <div className="sm:mb-4 mb-2 relative">
+        <div className={`sm:mb-4 mb-2 relative`} >
             <label className="block text-gray-700 font-medium mb-2 text-sm sm:text-md">
                 {label}
             </label>
@@ -162,19 +162,32 @@ export const MyInput = ({ label, value, onChange, type, placeholder, title, defa
                 }
                 className="z-10 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring focus:ring-blue-200 focus:border-blue-500 text-gray-700"
             />
-            {label === "Mot de passe" && (
-                <button
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-9 text-gray-400"
-                    type="button"
-                >
-                    {showPassword ? (
-                        <i className="fa-solid fa-eye text-black"></i>
-                    ) : (
-                        <i className="fa-solid fa-eye-slash text-black"></i>
-                    )}
-                </button>
-            )}
-        </div>
+            {
+                label == "Prix" && (
+                    <select
+                        value={valueSelect}
+                        onChange={onChangeSelect}
+                        className="absolute right-7 top-7 text-black p-2 bg-transparent outline-none">
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                    </select>
+                )
+            }
+            {
+                label === "Mot de passe" && (
+                    <button
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-9 text-gray-400"
+                        type="button"
+                    >
+                        {showPassword ? (
+                            <i className="fa-solid fa-eye text-black"></i>
+                        ) : (
+                            <i className="fa-solid fa-eye-slash text-black"></i>
+                        )}
+                    </button>
+                )
+            }
+        </div >
     );
 };

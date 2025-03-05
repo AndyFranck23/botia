@@ -81,7 +81,7 @@ export const Chatbot = ({ data, className, classements, produits }) => {
             </div>
             <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data?.id_produit + "/" + data?.slug} className=" border border-blue-100 rounded-b-xl grid place-items-center">
                 <div className="text-xs sm:text-sm " >
-                    <p className='text-xl text-gray-800 font-medium'>A partir de {data?.prix}$</p>
+                    <p className='text-xl text-gray-800 font-medium'>A partir de {data?.prix}</p>
                 </div>
             </Link>
         </div>

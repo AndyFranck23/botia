@@ -38,11 +38,11 @@ const page = async ({ params }) => {
     return (
         <>
             <Header classement={classement} produits={produits} />
-            <div className='text-black lg:px-[200px] px-[12vw] pt-20 flex justify-center'>
-                <div className="">
-                    <h1 className='text-2xl md:text-4xl text-black text-center font-bold mb-5'>{data[0].title} </h1>
+            <div className='text-black pt-20'>
+                <h1 className='text-2xl md:text-4xl text-black text-center font-bold mb-5'>{data[0].title} </h1>
+                <div className="xs:px-[5vw] px-[20px] w-full justify-center flex">
                     {data[0]?.content ? (
-                        <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: data[0].content }} />
+                        <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: data[0].content }} />
                     ) : (
                         <p>Contenu indisponible.</p>
                     )}

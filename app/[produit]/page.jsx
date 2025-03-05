@@ -74,9 +74,9 @@ const page = async ({ params, searchParams }) => {
                 <div className="space-y-20">
                     <Title params={caractProduits} />
                     <Pagination data={data} total={total} classements={classement} produits={produits} />
-                    <div className="xs:px-[5vw] px-[2vw] w-full justify-center flex">
+                    <div className="xs:px-[5vw] px-[20px] w-full justify-center flex">
                         {caractProduits?.content ? (
-                            <div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: caractProduits.content }} />
+                            <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: caractProduits.content }} />
                         ) : (
                             <p>Contenu indisponible.</p>
                         )}

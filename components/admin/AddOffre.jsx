@@ -13,7 +13,6 @@ const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.
 export default function AddOffre({ classements, TINY_KEY, produit }) {
     const userdata = useUser()
     const editorRef = useRef(null);
-    // const [descCourt, setDescCourt] = useState('')
     const [message, setMessage] = useState('')
     const [imageType, setImageType] = useState('url') // 'url' ou 'upload'
     const [imageFile, setImageFile] = useState(null) // Pour stocker le fichier uploadé
@@ -24,14 +23,15 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
         classement: [],
         descriptionOC: '',
         image: '',
-        prix: 0,
+        prix: '0',
         reduction: 0,
         lien: '',
         produit: '',
         indexation: 1,
         meta_title: '',
         meta_description: '',
-        responsable: userdata.identite
+        responsable: userdata.identite,
+        prixType: 'USD'
     })
 
     // const descCourtControle = (e) => {
@@ -175,7 +175,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                 </div>
             </div>
 
-            <MyInput type={'number'} label={'Prix'} value={form.prix} onChange={(e) => setForm({ ...form, prix: e.target.value })} />
+            <MyInput type={'number'} label={'Prix'} value={form.prix} valueSelect={form.prixType} onChangeSelect={(e) => setForm({ ...form, prixType: e.target.value })} onChange={(e) => setForm({ ...form, prix: e.target.value })} />
 
             <MyInput type={'number'} label={'Reduction'} value={form.reduction} onChange={(e) => setForm({ ...form, reduction: e.target.value })} />
             <MyInput placeholder={'https://exemple.com'} type={'text'} label={'Lien principale'} value={form.lien} onChange={(e) => setForm({ ...form, lien: e.target.value })} />

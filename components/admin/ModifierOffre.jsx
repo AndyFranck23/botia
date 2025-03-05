@@ -16,13 +16,14 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
     const [message, setMessage] = useState('')
     const [imageType, setImageType] = useState('url') // 'url' ou 'upload'
     const [imageFile, setImageFile] = useState(null) // Pour stocker le fichier uploadé
+    const [montant, devise] = offre?.prix.split(" ");
     const [form, setForm] = useState({
         title: offre?.title,
         slug: offre?.slug,
         classement: JSON.parse(offre?.classement),
         descriptionOC: offre?.descriptionOC,
         image: offre?.image,
-        prix: offre?.prix,
+        prix: montant,
         reduction: offre?.reduction,
         lien: offre?.lien,
         produit: offre?.id_produit,
@@ -30,7 +31,8 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
         content: offre?.content,
         meta_title: offre?.meta_title,
         meta_description: offre?.meta_description,
-        responsable: userdata.identite
+        responsable: userdata.identite,
+        prixType: devise
     })
 
     // const correctedContent = offre?.content
@@ -169,7 +171,7 @@ export default function ModifierOffre({ id, classements, TINY_KEY, produit, offr
                 </div>
             </div>
 
-            <MyInput type={'number'} label={'Prix'} value={form.prix} onChange={(e) => setForm({ ...form, prix: e.target.value })} />
+            <MyInput type={'number'} label={'Prix'} value={form.prix} valueSelect={form.prixType} onChangeSelect={(e) => setForm({ ...form, prixType: e.target.value })} onChange={(e) => setForm({ ...form, prix: e.target.value })} />
 
             <MyInput type={'number'} label={'Reduction'} value={form.reduction} onChange={(e) => setForm({ ...form, reduction: e.target.value })} />
             <MyInput placeholder={'https://exemple.com'} type={'text'} label={'Lien principale'} value={form.lien} onChange={(e) => setForm({ ...form, lien: e.target.value })} />
