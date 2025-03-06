@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { parseShortcode, ShortCode } from "./ShortCode";
 import axios from "axios";
+import { MyInput } from "./SignUp";
 
 
 export default function ModifierFooter() {
     const [columns, setColumns] = useState([]);
+    const [text, setText] = useState('')
 
     const [finalData, setFinalData] = useState([]);
 
@@ -16,9 +18,9 @@ export default function ModifierFooter() {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`);
                 const data = await response.json()
                 // console.log("Données récupérées brutes :", data);
-
+                setText(data[0]?.text)
                 // Parser les listes pour transformer les chaînes JSON en tableaux réels
-                const formattedData = data.map(col => ({
+                const formattedData = data?.map(col => ({
                     ...col,
                     lists: JSON.parse(col.lists) // Convertir la chaîne JSON en tableau
                 }));
@@ -96,7 +98,7 @@ export default function ModifierFooter() {
         // ----------------------------------------------------
         // console.log(columns)
         try {
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`, { form: columns })
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`, { form: columns, text: text })
             alert(response.data.message)
         } catch (error) {
             console.log(error)
@@ -106,6 +108,13 @@ export default function ModifierFooter() {
 
     return (
         <div className="p-4 border rounded-xl shadow-md w-full mx-auto text-black">
+            <MyInput
+                label={"Text du fond"}
+                // placeholder={''}
+                type={'text'}
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+            />
             <h2 className="text-lg font-bold mb-3">Gestion des Colonnes du footer</h2>
             <div className="flex justify-center items-center">
                 <div className="list-disc">

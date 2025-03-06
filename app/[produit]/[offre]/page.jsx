@@ -20,7 +20,7 @@ export async function generateMetadata({ params }) {
 const page = async ({ params }) => {
     const { offre, produit } = await params
     const nbreOffre = 10 // nombre d'offres dans les alternatives
-    const [offresRes, alternativeRes, typesRes, classementsRes, produitsRes, articlesRes, footerRes, mentionRes] = await Promise.all([
+    const [offresRes, alternativeRes, typesRes, classementsRes, produitsRes, articlesRes, footerRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?slug=${offre}`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?limit=${nbreOffre}`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`),
@@ -28,10 +28,9 @@ const page = async ({ params }) => {
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`),
-        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`),
     ])
 
-    const [data, { offres }, types, classe, produits, articles, footers, mention] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json(), mentionRes.json()])
+    const [data, { offres }, types, classe, produits, articles, footers] = await Promise.all([offresRes.json(), alternativeRes.json(), typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json()])
 
     data.classement = data.classement ? JSON.parse(data.classement) : [];
     // data.descriptionOC = data.descriptionOC ? JSON.parse(data.descriptionOC) : [];
@@ -79,7 +78,12 @@ const page = async ({ params }) => {
                             <div className='flex justify-between'>
                                 <Link href={process.env.NEXT_PUBLIC_SITE_URL + "/" + data.id_produit} className="bg-gray-100 p-2 rounded-xl border font-bold text-green-600 justify-self-start">{data.id_produit}</Link>
                                 <ButtonClick
-                                    href={data?.lien.startsWith("http://") || data?.lien.startsWith("https://") ? data?.lien : '#'}
+                                    href={
+                                        typeof data?.lien === "string" &&
+                                            (data.lien.startsWith("http://") || data.lien.startsWith("https://"))
+                                            ? data.lien
+                                            : '#'
+                                    }
                                     data={data}
                                 />
                             </div>
@@ -97,7 +101,9 @@ const page = async ({ params }) => {
                         <div className='xs:px-[5vw] px-[5px] rounded-md mt-6 '>
                             <h2 className="text-xl font-semibold mb-4">{data?.title}</h2>
                             {data?.content && (
-                                <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: data.content }} />
+                                <div className="overflow-x-auto prose max-w-none">
+                                    <div className="no-tailwind" dangerouslySetInnerHTML={{ __html: data.content }} />
+                                </div>
                             )}
                         </div>
                     </div>
@@ -119,7 +125,7 @@ const page = async ({ params }) => {
 
                 </div>
             </div>
-            <Footer articles={articles} result={footers} classements={classements} mention={mention[0]} />
+            <Footer articles={articles} result={footers} classements={classements} />
         </>
     )
 }

@@ -1,3 +1,4 @@
+import Faq from '@/components/Faq';
 import { Footer } from '@/components/Footer';
 import Header from '@/components/Header';
 import { Pagination } from '@/components/Offre';
@@ -35,17 +36,16 @@ const page = async ({ params, searchParams }) => {
     const { page } = await searchParams
     const pageNumber = page ? parseInt(page) : 1; // Récupérer le numéro de page depuis l'URL
 
-    const [typesRes, offresRes, classementsRes, produitsRes, articlesRes, footerRes, mentionRes] = await Promise.all([
+    const [typesRes, offresRes, classementsRes, produitsRes, articlesRes, footerRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?produit=${produit}&page=${pageNumber}`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`),
-        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`),
     ])
 
-    const [types, { offres, total }, classements, produits, articles, footers, mention] = await Promise.all([typesRes.json(), offresRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json(), mentionRes.json()])
+    const [types, { offres, total }, classements, produits, articles, footers] = await Promise.all([typesRes.json(), offresRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json()])
 
     const data = offres?.map((item) => ({
         ...item,
@@ -74,16 +74,19 @@ const page = async ({ params, searchParams }) => {
                 <div className="space-y-20">
                     <Title params={caractProduits} />
                     <Pagination data={data} total={total} classements={classement} produits={produits} />
+                    <Faq classements={produits} />
                     <div className="xs:px-[5vw] px-[20px] w-full justify-center flex">
                         {caractProduits?.content ? (
-                            <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: caractProduits.content }} />
+                            <div className="overflow-x-auto prose max-w-none">
+                                <div className="no-tailwind" dangerouslySetInnerHTML={{ __html: caractProduits.content }} />
+                            </div>
                         ) : (
                             <p>Contenu indisponible.</p>
                         )}
                     </div>
                 </div>
             </div>
-            <Footer articles={articles} result={footers} classements={classement} mention={mention[0]} />
+            <Footer articles={articles} result={footers} classements={classement} />
         </div>
     )
 }

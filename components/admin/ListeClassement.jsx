@@ -1,41 +1,28 @@
 'use client'
-import React, { useState } from 'react'
-// import axios from 'axios'
+import React from 'react'
 import { useSearchParams } from 'next/navigation'
 
 const ListeClassement = ({ classement }) => {
     const { type } = useSearchParams()
     console.log(type)
-    // const [list, setList] = useState(classement) // État local
-
-    // const handleDelete = async (id) => {
-    //     try {
-    //         await axios.delete(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements/${id}`)
-    //         setList(list.map(item => ({
-    //             ...item,
-    //             classement: item.classement.filter(elt => elt.id !== id)
-    //         })))
-    //     } catch (error) {
-    //         console.error("Erreur de suppression:", error)
-    //     }
-    // }
 
     return (
-        <div className="text-black">
-            {/* {list.map(item =>
-                <div key={item.id} className=""> */}
-            {/* <h1 className="text-blue-500 text-500">{item.title}</h1> */}
-            {classement.map(elt =>
-                <div key={elt.id} className="flex w-full justify-between">
-                    <p>{elt.title}</p>
-                    <div className="space-x-2">
-                        {/* <button onClick={() => handleDelete(elt.id)} className="text-red-500">supprimer</button> */}
-                        <a href={`/admin/type/updateclassement/${elt.id}`} className="text-blue-500">modifier</a>
+        <div className="max-w-lg mx-auto bg-white shadow-md rounded-lg p-6">
+            <h2 className="text-2xl font-bold text-gray-800 mb-4">Liste des classements</h2>
+
+            <div className="divide-y divide-gray-200">
+                {classement.map(elt => (
+                    <div key={elt.id} className="flex justify-between items-center py-3 px-4 hover:bg-gray-100 rounded-lg transition">
+                        <p className="text-gray-700 font-medium">{elt.title}</p>
+                        <a
+                            href={`/admin/type/updateclassement/${elt.id}`}
+                            className="px-3 py-1 text-sm text-white bg-blue-500 hover:bg-blue-600 rounded-md transition"
+                        >
+                            Modifier
+                        </a>
                     </div>
-                </div>
-            )}
-            {/* </div>
-            )} */}
+                ))}
+            </div>
         </div>
     )
 }

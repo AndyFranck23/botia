@@ -47,16 +47,17 @@ export default function Card() {
         </p>
       </div>
       {/* Conteneur des cartes */}
-      <div className="relative group">
-        <div className="flex justify-center overflow-x-auto pb-4 gap-10 px-8 md:px-12">
+      <div className="">
+        <div className="flex overflow-x-auto pb-4 gap-10 px-8 md:px-12">
           {/* ChatBot IA Card */}
-          <div className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 flex-shrink-0 w-80">            <div className="pb-2 p-4">
-            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
-              <FontAwesomeIcon icon={faCommentDots} className="w-6 h-6 text-blue-500" />
+          <div className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300 flex-shrink-0 w-80">
+            <div className="pb-2 p-4">
+              <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mb-4">
+                <FontAwesomeIcon icon={faCommentDots} className="w-6 h-6 text-blue-500" />
+              </div>
+              <h3 className="text-xl">ChatBot IA</h3>
+              <p className="text-gray-500">Assistance conversationnelle 24/7</p>
             </div>
-            <h3 className="text-xl">ChatBot IA</h3>
-            <p className="text-gray-500">Assistance conversationnelle 24/7</p>
-          </div>
             <div className="px-4 py-2">
               <ul className="space-y-2">
                 {["Réponses instantanées", "Personnalisation avancée", "Intégration multiplateforme"].map((feature) => (

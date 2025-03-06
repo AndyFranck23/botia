@@ -10,8 +10,8 @@ export async function PUT(request, { params }) {
 
         // Insérer le classement
         await queryDB(
-            'UPDATE produit SET logo = ?, text = ?, meta_title = ?, meta_description = ?, titre_h1 = ?, content = ?, indexation = ? WHERE title = ?',
-            [form?.logo, form?.description, form?.meta_title, form?.meta_description, form?.titre_h1, JSON.parse(form?.content), form?.indexation, title]
+            'UPDATE produit SET logo = ?, text = ?, faq = ?, meta_title = ?, meta_description = ?, titre_h1 = ?, content = ?, indexation = ? WHERE title = ?',
+            [form?.logo, form?.description, form?.faqListe || [], form?.meta_title, form?.meta_description, form?.titre_h1, JSON.parse(form?.content), form?.indexation, title]
         );
 
         return NextResponse.json({ message: 'Enregistrement réussi' }, { status: 201 });

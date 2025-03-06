@@ -211,7 +211,7 @@ export default function AddOffre({ classements, TINY_KEY, produit }) {
                     image_title: true,
                     image_description: true,
                     paste_as_text: false, // Ne pas convertir le texte en texte brut
-                    paste_word_valid_elements: "b,strong,i,em,u,a,span,div,p", // Conserver certains styles de Word
+                    paste_word_valid_elements: "p,h1,h2,h3,b,strong,i,em,u,a,span,div,br", // Conserver certains styles de Word
                     paste_word_cleanup_mode: "keep", // Conserver tous les styles du Word
                     paste_data_images: true,
                     paste_preprocess: function (plugin, args) {

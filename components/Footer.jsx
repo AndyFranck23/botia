@@ -8,7 +8,7 @@ import { navigation } from "./Offre";
 // setColumns(columns.map(col => ({ ...col, lists: [] }))); // Réinitialise les listes
 
 
-export function Footer({ articles, result, classements, mention }) {
+export function Footer({ articles, result, classements }) {
     return (
         <div className="pt-20">
             <footer className="bg-gray-800">
@@ -58,8 +58,8 @@ export function Footer({ articles, result, classements, mention }) {
                 </div>
             </footer>
             <div className="flex justify-center items-center text-center p-5 text-xs sm:text-lg">
-                <p>{mention?.title} |
-                    <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/page`} className="text-blue-500"> Mentions légales</Link>
+                <p>{result[0].text} |
+                    <Link href={`${process.env.NEXT_PUBLIC_SITE_URL}/page/mentions-legales`} className="text-blue-500"> Mentions légales</Link>
                 </p>
             </div>
         </div>

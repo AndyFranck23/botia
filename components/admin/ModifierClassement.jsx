@@ -260,8 +260,12 @@ const ModifierClassement = ({ id, userdata }) => {
 
 export default ModifierClassement
 
-const AddFaq = ({ form, setForm }) => {
+
+export const AddFaq = ({ form, setForm }) => {
+    // faq sert à la fois pour l'ajout et l'édition
     const [faq, setFaq] = useState({ question: "", answer: "" });
+    // editIndex null signifie qu'on est en mode ajout ; sinon, on modifie la FAQ à cet index
+    const [editIndex, setEditIndex] = useState(null);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -272,7 +276,17 @@ const AddFaq = ({ form, setForm }) => {
         e.preventDefault();
 
         if (faq.question.trim() && faq.answer.trim()) {
-            setForm({ ...form, faqListe: [...form.faqListe, faq] });
+            if (editIndex !== null) {
+                // Mode modification : on met à jour l'élément existant
+                const updatedFaqListe = form.faqListe.map((item, index) =>
+                    index === editIndex ? faq : item
+                );
+                setForm({ ...form, faqListe: updatedFaqListe });
+                setEditIndex(null);
+            } else {
+                // Mode ajout : on ajoute la nouvelle FAQ
+                setForm({ ...form, faqListe: [...form.faqListe, faq] });
+            }
             setFaq({ question: "", answer: "" });
         } else {
             alert("Veuillez remplir tous les champs !");
@@ -282,13 +296,27 @@ const AddFaq = ({ form, setForm }) => {
     const handleDelete = (index) => {
         const updatedList = form.faqListe.filter((_, i) => i !== index);
         setForm({ ...form, faqListe: updatedList });
+        // Si on supprime l'élément en cours d'édition, on réinitialise le formulaire
+        if (editIndex === index) {
+            setEditIndex(null);
+            setFaq({ question: "", answer: "" });
+        }
+    };
+
+    const handleEdit = (index) => {
+        const item = form.faqListe[index];
+        setFaq(item);
+        setEditIndex(index);
     };
 
     return (
         <div className="p-6 w-full sm:flex justify-between bg-gray-100 rounded-md">
+            {/* Formulaire pour ajouter / modifier une FAQ */}
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                    <h1 className="text-2xl font-bold mb-4">Ajouter une FAQ</h1>
+                    <h1 className="text-2xl font-bold mb-4">
+                        {editIndex !== null ? "Modifier une FAQ" : "Ajouter une FAQ"}
+                    </h1>
                     <label htmlFor="question" className="block font-medium mb-1">
                         Question
                     </label>
@@ -317,27 +345,52 @@ const AddFaq = ({ form, setForm }) => {
                     />
                 </div>
 
-                <button
-                    type="submit"
-                    className='bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600'
-                >
-                    Ajouter FAQ
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        type="submit"
+                        className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                    >
+                        {editIndex !== null ? "Sauvegarder les modifications" : "Ajouter FAQ"}
+                    </button>
+                    {editIndex !== null && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setEditIndex(null);
+                                setFaq({ question: "", answer: "" });
+                            }}
+                            className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+                        >
+                            Annuler
+                        </button>
+                    )}
+                </div>
             </form>
 
+            {/* Liste des FAQs */}
             <div className="mt-5 sm:mt-0">
                 <h2 className="text-xl font-bold mb-4">Liste des FAQ</h2>
                 {form.faqListe?.length > 0 ? (
                     <ul className="space-y-2 bg-white p-5">
-                        {form.faqListe?.map((item, index) => (
-                            <div key={index} className="flex space-x-2 w-full sm:w-[250px]">
-                                <li className="border py-1 px-2 rounded shadow bg-gray-100">
+                        {form.faqListe.map((item, index) => (
+                            <div key={index} className="flex space-x-2 w-full sm:w-[250px] items-start">
+                                <li className="border py-1 px-2 rounded shadow bg-gray-100 flex-1">
                                     <p className="font-semibold">Q: {item.question}</p>
                                     <p className="ml-2">R: {item.answer}</p>
                                 </li>
-                                <div>
-                                    <button className='text-blue-500'>Modifier</button>
-                                    <button className='text-red-500' onClick={() => handleDelete(index)}>Supprimer</button>
+                                <div className="flex flex-col space-y-1">
+                                    <button
+                                        className="text-blue-500 hover:underline"
+                                        onClick={() => handleEdit(index)}
+                                    >
+                                        Modifier
+                                    </button>
+                                    <button
+                                        className="text-red-500 hover:underline"
+                                        onClick={() => handleDelete(index)}
+                                    >
+                                        Supprimer
+                                    </button>
                                 </div>
                             </div>
                         ))}

@@ -37,24 +37,22 @@ const page = async ({ params, searchParams }) => {
     const { page } = await searchParams
     const pageNumber = page ? parseInt(page) : 1; // Récupérer le numéro de page depuis l'URL
 
-    const [typesRes, offresRes, classementsRes, produitsRes, articlesRes, footerRes, mentionRes] = await Promise.all([
+    const [typesRes, offresRes, classementsRes, produitsRes, articlesRes, footerRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?classement=${classement}&page=${pageNumber}`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`),
-        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`)
     ])
 
-    const [types, { offres, total }, classes, produits, articles, footers, mention] = await Promise.all([
+    const [types, { offres, total }, classes, produits, articles, footers] = await Promise.all([
         typesRes.json(),
         offresRes.json(),
         classementsRes.json(),
         produitsRes.json(),
         articlesRes.json(),
         footerRes.json(),
-        mentionRes.json()
     ])
 
     const data = offres?.map((item) => ({
@@ -91,14 +89,16 @@ const page = async ({ params, searchParams }) => {
                     <Faq classements={classes} />
                     <div className="xs:px-[5vw] px-[20px] w-full justify-center flex">
                         {titres[0]?.content ? (
-                            <div className="overflow-x-auto prose max-w-none" dangerouslySetInnerHTML={{ __html: titres[0].content }} />
+                            <div className="overflow-x-auto prose max-w-none">
+                                <div className="no-tailwind" dangerouslySetInnerHTML={{ __html: titres[0].content }} />
+                            </div>
                         ) : (
                             <p>Contenu indisponible.</p>
                         )}
                     </div>
                 </div>
             </div>
-            <Footer articles={articles} result={footers} classements={classements} mention={mention[0]} />
+            <Footer articles={articles} result={footers} classements={classements} />
         </div >
     )
 }

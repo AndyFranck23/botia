@@ -147,11 +147,19 @@ export const MenuAdmin = ({ className, userType, active }) => {
                         <MySubButton text={'Classements'} href={'/admin/titre-accueil/classements'} />
                     </div>
                 </li>
+                {/* Menu Blog */}
                 <li>
-                    <a href="/admin/mention" className='hover:bg-blue-600 hover:text-white hover:shadow-md flex items-center justify-start px-4 py-3 w-full font-medium text-left transition-all duration-300'>
-                        <i className='fa-solid fa-newspaper mr-3'></i>
-                        Mention légal
-                    </a>
+                    <MyButton
+                        disabled={false}
+                        text={'Page'}
+                        icon={'fa-solid fa-newspaper'}
+                        onClick={() => toggleMenu('page')}
+                        isActive={activeId === 'page'}
+                    />
+                    <div className={`overflow-hidden transition-all duration-300 ${activeId === 'page' ? 'max-h-40' : 'max-h-0'}`}>
+                        <MySubButton text={'Ajouter un page'} href={'/admin/page/add-page'} />
+                        <MySubButton text={'Tous les pages'} href={'/admin/page/liste-page'} />
+                    </div>
                 </li>
                 <li>
                     <a href="/admin/footer" className='hover:bg-blue-600 hover:text-white hover:shadow-md flex items-center justify-start px-4 py-3 w-full font-medium text-left transition-all duration-300'>

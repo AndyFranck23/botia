@@ -8,11 +8,11 @@ import dynamic from "next/dynamic";
 import { MyInput } from "./SignUp";
 const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), { ssr: false });
 
-export default function AddArticle({ page, data }) {
+export default function AddArticle({ page }) {
     const [message, setMessage] = useState('')
     const editorRef = useRef(null);
     const [form, setForm] = useState({
-        title: page == 'blog' ? '' : data?.title,
+        title: '',
         meta_title: '',
         meta_description: '',
         indexation: 1,
@@ -26,38 +26,16 @@ export default function AddArticle({ page, data }) {
                 formData.append(key, form[key]);
             });
             formData.append('content', JSON.stringify(content))
-            if (page == 'blog') {
-                const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                });
-                setMessage(response.data.message)
-                alert(response.data.message)
-                setTimeout(() => {
-                    window.location.reload();
-                }, 100); // Laisse le temps à l'utilisateur de voir le message
-            } else {
-                const mentionRes = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`)
-                const mention = await mentionRes.json()
-                if (Array.isArray(mention) && mention.length === 0) {
-                    const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`, formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
-                    setMessage(response.data.message)
-                    alert(response.data.message)
-                } else {
-                    const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`, formData, {
-                        headers: {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
-                    setMessage(response.data.message)
-                    alert(response.data.message)
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_SITE_URL}/api/${page == 'blog' ? 'blog' : 'page'}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
                 }
-            }
+            });
+            setMessage(response.data.message)
+            alert(response.data.message)
+            setTimeout(() => {
+                window.location.reload();
+            }, 100); // Laisse le temps à l'utilisateur de voir le message
         } catch (err) {
             console.log(err)
         }
@@ -71,7 +49,7 @@ export default function AddArticle({ page, data }) {
         <div>
             {page == 'blog' ?
                 <h1 className='flex justify-center text-xl font-medium mb-5 text-black'>Ajout d'un article</h1> :
-                <h1 className='flex justify-center text-xl font-medium mb-5 text-black'>Mention légal</h1>
+                <h1 className='flex justify-center text-xl font-medium mb-5 text-black'>Ajout d'un page</h1>
             }
             <input
                 type="text"
@@ -84,7 +62,7 @@ export default function AddArticle({ page, data }) {
                 // apiKey={TINY_KEY}
                 tinymceScriptSrc="/tinymce/tinymce.min.js"
                 onInit={(evt, editor) => (editorRef.current = editor)}
-                initialValue={page == "blog" ? "<p>Écris ici...</p>" : data?.content}
+                initialValue={"<p>Écris ici...</p>"}
                 init={{
                     branding: false, // Masque le branding TinyMCE
                     promotion: false, // Désactive les promotions

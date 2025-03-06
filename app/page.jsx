@@ -20,17 +20,16 @@ export async function generateMetadata() {
 
 
 export default async function page() {
-  const [typesRes, classementsRes, produitsRes, articlesRes, footerRes, mentionRes, offresRes] = await Promise.all([
+  const [typesRes, classementsRes, produitsRes, articlesRes, footerRes, offresRes] = await Promise.all([
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`, { cache: "no-store" }),
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`, { cache: "no-store" }),
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`, { cache: "no-store" }),
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog`),
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/footer`),
-    fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/mention`),
     fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?accueil=produit`),
   ])
 
-  const [types, classements, produits, articles, footers, mention, { offres }] = await Promise.all([typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json(), mentionRes.json(), offresRes.json()])
+  const [types, classements, produits, articles, footers, { offres }] = await Promise.all([typesRes.json(), classementsRes.json(), produitsRes.json(), articlesRes.json(), footerRes.json(), offresRes.json()])
 
   const data = offres?.map((item) => ({
     ...item,
@@ -60,7 +59,7 @@ export default async function page() {
           <SectionCTA />
         </div>
       </div>
-      <Footer articles={articles} result={footers} classements={classement} mention={mention[0]} />
+      <Footer articles={articles} result={footers} classements={classement} />
     </div>
   )
 }

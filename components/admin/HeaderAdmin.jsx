@@ -64,7 +64,7 @@ export default function HeaderAdmin({ userdata, userType }) {
             )}
             <MenuAdmin
                 userType={userType}
-                className={`sm:hidden block transform ease-in-out duration-500 z-50 ${isActive ? "translate-x-[0%]" : "translate-x-[-100%]"
+                className={`sm:hidden block transform ease-in-out duration-500 z-40 ${isActive ? "translate-x-[0%]" : "translate-x-[-100%]"
                     }`}
             />
         </>

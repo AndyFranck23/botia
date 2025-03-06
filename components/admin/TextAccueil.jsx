@@ -4,6 +4,7 @@ import { MyInput } from "./SignUp";
 import axios from 'axios'
 import { handleImageBrowser } from '../LogoutButton'
 import dynamic from "next/dynamic";
+import { AddFaq } from './ModifierClassement';
 const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), { ssr: false });
 
 const TextAccueil = ({ TINY_KEY }) => {
@@ -16,6 +17,7 @@ const TextAccueil = ({ TINY_KEY }) => {
         meta_title: '',
         meta_description: '',
         titre_h1: '',
+        faqListe: [],
         content: '',
         indexation: 1,
         logo: ''
@@ -43,6 +45,7 @@ const TextAccueil = ({ TINY_KEY }) => {
             meta_title: data[0].meta_title,
             meta_description: data[0].meta_description,
             titre_h1: data[0].titre_h1,
+            faqListe: data[0].faq ? JSON.parse(data[0].faq) : [],
             content: data[0].content,
             indexation: data[0].indexation,
             logo: data[0].logo
@@ -54,7 +57,8 @@ const TextAccueil = ({ TINY_KEY }) => {
         try {
             const formData = new FormData();
             Object.keys(form).forEach(key => {
-                formData.append(key, form[key]);
+                key == 'faqListe' ? formData.append(key, JSON.stringify(form[key])) :
+                    formData.append(key, form[key]);
             });
             formData.append('content', JSON.stringify(content))
             const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit/${form.produit}`, formData, {
@@ -104,6 +108,7 @@ const TextAccueil = ({ TINY_KEY }) => {
                             <label className=" mb-2 font-medium text-gray-700 ">Description</label>
                             <textarea onChange={(e) => setForm({ ...form, description: e.target.value })} value={form.description} className="mb-5 w-full outline-none border border-gray-300 rounded-lg focus:ring focus:ring-blue-200 focus:border-blue-500 text-gray-700 h-[100px] sm:h-[200px] p-2  " />
                         </div>
+                        <AddFaq form={form} setForm={setForm} />
                         <Editor
                             // apiKey={TINY_KEY}
                             tinymceScriptSrc="/tinymce/tinymce.min.js"

@@ -36,7 +36,7 @@ const TousOffres = ({ offres, classements, produits, classe }) => {
             activeTab == item.title &&
             <Offre
               key={item.id}
-              data={offres?.filter(offre =>
+              data={offres?.slice(0, 6).filter(offre =>
                 offre.classement.find(ele =>
                   classe.find(elt => elt.type == item.title && ele.title == elt.title)
                 )

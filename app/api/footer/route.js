@@ -15,10 +15,10 @@ export async function GET() {
 // PUT - Mettre à jour une colonne existante
 export async function PUT(req) {
     try {
-        const { form } = await req.json(); // Liste des colonnes [{ id, title, lists }, ...]
+        const { form, text } = await req.json(); // Liste des colonnes [{ id, title, lists }, ...]
         let index = 2
         form?.forEach(async (element) => {
-            await queryDB("UPDATE footer SET title = ?, lists = ? WHERE id = ?", [element.title, JSON.stringify(element.lists), index++])
+            await queryDB("UPDATE footer SET title = ?, lists = ?, text = ? WHERE id = ?", [element.title, JSON.stringify(element.lists), text, index++])
         });
 
         return NextResponse.json({ message: "Données sauvegardées avec succès" });

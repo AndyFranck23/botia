@@ -2,8 +2,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 /* 
 .reset-tailwind,
 .reset-tailwind * {
     all: unset !important;
 } */
+.no-tailwind,
+.no-tailwind * {
+    all: revert;
+}

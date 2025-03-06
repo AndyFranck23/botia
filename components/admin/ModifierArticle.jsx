@@ -8,7 +8,7 @@ import { MyInput } from "./SignUp";
 const Editor = dynamic(() => import("@tinymce/tinymce-react").then((mod) => mod.Editor), { ssr: false });
 
 
-const ModifierArticle = ({ data, id }) => {
+const ModifierArticle = ({ data, id, page }) => {
     const [message, setMessage] = useState('')
     const editorRef = useRef(null);
     const [form, setForm] = useState({
@@ -30,7 +30,7 @@ const ModifierArticle = ({ data, id }) => {
                 formData.append(key, form[key]);
             });
             formData.append('content', JSON.stringify(content))
-            const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/blog/${id}`, formData, {
+            const response = await axios.put(`${process.env.NEXT_PUBLIC_SITE_URL}/api/${page == 'blog' ? 'blog' : 'page'}/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
@@ -44,7 +44,7 @@ const ModifierArticle = ({ data, id }) => {
 
     return (
         <div>
-            <h1 className='flex justify-center text-xl font-medium mb-5 text-black'>Modifier un article</h1>
+            <h1 className='flex justify-center text-xl font-medium mb-5 text-black'>Modifier un {page == 'blog' ? 'article' : 'page'}</h1>
             <input
                 type="text"
                 placeholder="Titre de la page"

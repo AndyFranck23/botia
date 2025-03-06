@@ -4,9 +4,9 @@ import ListeArticle from "@/components/admin/ListeArticle";
 export default function page() {
     return (
         <>
-            <AddArticle page={'blog'} />
+            <AddArticle page={'page'} />
             <div className="mt-20">
-                <ListeArticle page={'blog'} />
+                <ListeArticle page={'page'} />
             </div>
         </>
     )

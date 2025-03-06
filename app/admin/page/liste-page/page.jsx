@@ -3,7 +3,7 @@ import ListeArticle from "@/components/admin/ListeArticle";
 const page = () => {
     return (
         <>
-            <ListeArticle page={'blog'} />
+            <ListeArticle page={'page'} />
         </>
     );
 }

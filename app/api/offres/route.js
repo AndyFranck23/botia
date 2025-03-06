@@ -57,6 +57,8 @@ export async function GET(request) {
             [{ total }] = await queryDB(`SELECT COUNT(*) as total FROM offres WHERE status = 'publier' AND JSON_CONTAINS(classement, ?, '$')`, [JSON.stringify({ slug: classement })]);
         } else if (produit) {
             [{ total }] = await queryDB(`SELECT COUNT(*) as total FROM offres WHERE status = 'publier' AND id_produit = ?`, [produit]);
+        } else {
+            [{ total }] = await queryDB(`SELECT COUNT(*) as total FROM offres WHERE status = 'publier'`, []);
         }
 
         // Récupération des offres avec pagination

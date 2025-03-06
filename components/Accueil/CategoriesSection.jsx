@@ -15,7 +15,7 @@ const CategoriesSection = ({ classement, produit, offres }) => {
   //   { icon: "🎨", title: "Design", description: "Assistants IA pour graphistes et designers", count: 31 },
   // ];
 
-  const btn = ["Tous", "Type de Bot"];
+  const btn = ["Type de Bot"];
   const tabs = btn.concat(classement.map(item => item.title))
 
   return (

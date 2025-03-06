@@ -2,16 +2,18 @@ import AddOffre from "@/components/admin/AddOffre";
 import ListeOffre from "@/components/admin/ListeOffre";
 
 export default async function Page() {
-    const [typesRes, classementsRes, produitsRes] = await Promise.all([
+    const [typesRes, classementsRes, produitsRes, offresRes] = await Promise.all([
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/types`, { cache: "no-store" }),
         fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/classements`, { cache: "no-store" }),
-        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`)
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/produit`),
+        fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/offres?limit=10}`)
     ]);
 
-    const [types, classes, produits] = await Promise.all([
+    const [types, classes, produits, { offres }] = await Promise.all([
         typesRes.json(),
         classementsRes.json(),
-        produitsRes.json()
+        produitsRes.json(),
+        offresRes.json()
     ]);
 
     const classements = types.map(category => ({
@@ -23,7 +25,7 @@ export default async function Page() {
         <>
             <AddOffre classements={classements} TINY_KEY={process.env.TINY_KEY} produit={produits} />
             <div className="mt-20">
-                <ListeOffre />
+                <ListeOffre data={offres} />
             </div>
         </>
     );
